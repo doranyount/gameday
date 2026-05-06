@@ -135,6 +135,9 @@ table{width:100%;border-collapse:collapse;}
 th{padding:9px 10px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#fff;background:var(--mid);}
 td{padding:11px 10px;font-size:14px;border-bottom:1px solid #f0f3f9;vertical-align:middle;color:var(--txt);}
 tr:last-child td{border-bottom:none;}
+.tscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.tscroll table{width:max-content;min-width:100%;}
+.tscroll th,.tscroll td{white-space:nowrap;}
 .bno{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--pri);color:#fff;font-size:11px;font-weight:700;}
 .pos{display:inline-block;padding:3px 9px;border-radius:20px;font-size:12px;font-weight:600;white-space:nowrap;}
 .pp{background:#eeedf8;color:#3c3480;}.pc{background:#fff3e0;color:#8a4500;}
@@ -667,10 +670,10 @@ function render(){
     +'<div class="sc"><div class="sl">Field spots</div><div class="sv">'+spots+'</div><div class="ss">per inning</div></div>'
     +'<div class="sc"><div class="sl">Bench (3 inn)</div><div class="sv">'+(bpc>0?'0–1':'0')+'</div><div class="ss">innings on bench</div></div>'
     +'<div class="sc"><div class="sl">Bench (4 inn)</div><div class="sv">'+(bpc>0?'1–2':'0')+'</div><div class="ss">if game goes 4</div></div>'
-    +'</div><div class="lnc"><table><thead><tr><th>Player</th><th>Inn 1</th><th>Inn 2</th><th>Inn 3</th><th>Inn 4 ✦</th></tr></thead><tbody>'
+    +'</div><div class="lnc"><div class="tscroll"><table><thead><tr><th>Player</th><th>Inn 1</th><th>Inn 2</th><th>Inn 3</th><th>Inn 4 ✦</th></tr></thead><tbody>'
     +ao.map(function(p){var cells=[0,1,2].map(function(i){return '<td>'+chip(inn[i][p]||'Bench')+'</td>';}).join('');
       return '<tr><td style="font-size:13px">'+esc(p)+'</td>'+cells+'<td style="opacity:.65">'+chip(inn4[p]||'Bench')+'</td></tr>';}).join('')
-    +'</tbody></table><div class="fn">✦ Only if game goes to a 4th inning</div></div>');
+    +'</tbody></table></div><div class="fn">Swipe to see all innings. ✦ Only if game goes to a 4th inning</div></div>');
 }
 
 /* ── LOCK ────────────────────────────────────── */
