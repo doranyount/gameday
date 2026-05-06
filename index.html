@@ -1,13 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="GameDay">
-<title>GameDay</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GameDay Code</title>
 <style>
+body{font-family:sans-serif;padding:16px;background:#f5f5f5;}
+h2{font-size:18px;margin-bottom:8px;color:#333;}
+p{font-size:14px;color:#666;margin-bottom:12px;line-height:1.5;}
+#copyBtn{width:100%;padding:16px;font-size:17px;font-weight:700;background:#0f2044;color:white;border:none;border-radius:10px;cursor:pointer;margin-bottom:16px;}
+#copyBtn.done{background:#1a5c2a;}
+pre{background:white;border:1px solid #ddd;border-radius:8px;padding:12px;font-size:11px;overflow-x:auto;white-space:pre-wrap;word-break:break-all;max-height:300px;overflow-y:auto;}
+</style>
+</head>
+<body>
+<h2>GameDay — Copy Code</h2>
+<p>Tap the button to copy all the code, then paste it into your GitHub index.html file.</p>
+<button id="copyBtn" onclick="copyCode()">⬆ Tap to Copy All Code</button>
+<p style="font-size:13px;color:#888">Or scroll below to see the code</p>
+<pre id="code">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no&quot;&gt;
+&lt;meta name=&quot;apple-mobile-web-app-capable&quot; content=&quot;yes&quot;&gt;
+&lt;meta name=&quot;apple-mobile-web-app-status-bar-style&quot; content=&quot;black-translucent&quot;&gt;
+&lt;meta name=&quot;apple-mobile-web-app-title&quot; content=&quot;GameDay&quot;&gt;
+&lt;title&gt;GameDay&lt;/title&gt;
+&lt;style&gt;
 :root{--pri:#0f2044;--mid:#1a3060;--lit:#243d78;--fnt:#e8ecf5;--acc:#e8b800;--acb:#fff8dc;--wht:#fff;--off:#f4f6fb;--brd:#d0d8ec;--txt:#0f2044;--mut:#4a5a80;}
 [data-theme=red]   {--pri:#8b0000;--mid:#a00000;--lit:#b50000;--fnt:#fdecea;--brd:#f0cece;--txt:#5a0000;--mut:#8a4a4a;}
 [data-theme=green] {--pri:#1a4d2e;--mid:#236038;--lit:#2c7344;--fnt:#e8f5ec;--acc:#f0c040;--acb:#fffde0;--brd:#c5dfc9;--txt:#1a4d2e;--mut:#3d6b4a;}
@@ -110,7 +130,7 @@ body{font-family:-apple-system,sans-serif;background:var(--pri);color:#fff;min-h
 .tog{position:relative;width:48px;height:28px;flex-shrink:0;}
 .tog input{opacity:0;width:0;height:0;}
 .ttr{position:absolute;inset:0;background:#ccc;border-radius:28px;cursor:pointer;transition:background .2s;}
-.ttr:before{content:'';position:absolute;width:22px;height:22px;left:3px;top:3px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.25);}
+.ttr:before{content:&#x27;&#x27;;position:absolute;width:22px;height:22px;left:3px;top:3px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.25);}
 .tog input:checked+.ttr{background:var(--pri);}
 .tog input:checked+.ttr:before{transform:translateX(20px);}
 .srow{display:flex;gap:8px;}
@@ -125,7 +145,7 @@ body{font-family:-apple-system,sans-serif;background:var(--pri);color:#fff;min-h
 .ttb.on{background:#fff;color:var(--pri);border-color:#fff;font-weight:700;}
 .ttb.i4{border-style:dashed;}
 .ttb.i4.on{border-style:solid;}
-.lnc{background:#fff;border-radius:12px;border:1px solid var(--brd);overflow:hidden;margin-bottom:12px;}
+.lnc{background:#fff;border-radius:12px;border:1px solid var(--brd);overflow:visible;margin-bottom:12px;}
 .lnn{padding:10px 14px;font-size:13px;color:var(--mut);background:var(--fnt);border-bottom:1px solid var(--brd);line-height:1.5;}
 .lnn.w{background:var(--acb);color:#7a4a00;}
 .lgd{display:flex;gap:10px;flex-wrap:wrap;padding:8px 12px;background:var(--off);border-bottom:1px solid var(--brd);}
@@ -135,7 +155,7 @@ table{width:100%;border-collapse:collapse;}
 th{padding:9px 10px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#fff;background:var(--mid);}
 td{padding:11px 10px;font-size:14px;border-bottom:1px solid #f0f3f9;vertical-align:middle;color:var(--txt);}
 tr:last-child td{border-bottom:none;}
-.tscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.tscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:0 0 12px 12px;}
 .tscroll table{width:max-content;min-width:100%;}
 .tscroll th,.tscroll td{white-space:nowrap;}
 .bno{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--pri);color:#fff;font-size:11px;font-weight:700;}
@@ -153,196 +173,196 @@ tr:last-child td{border-bottom:none;}
 .tsec{display:none;}.tsec.on{display:block;}
 .emp{padding:36px 20px;text-align:center;color:var(--mut);font-size:15px;background:#fff;border-radius:12px;border:1px solid var(--brd);}
 .fn{font-size:11px;color:var(--mut);padding:8px 13px 12px;}
-</style>
-</head>
-<body data-theme="">
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body data-theme=&quot;&quot;&gt;
 
-<!-- HEADER -->
-<div class="hdr">
-  <div class="hdr-l">
-    <div class="hdr-logo">⚾</div>
-    <div>
-      <div class="hdr-app">GameDay</div>
-      <div class="hdr-sub" id="hdr-sub">Select a team</div>
-    </div>
-  </div>
-  <div class="hdr-r">
-    <button class="hbtn" id="lock-btn" style="display:none">🔓 Lock</button>
-  </div>
-</div>
+&lt;!-- HEADER --&gt;
+&lt;div class=&quot;hdr&quot;&gt;
+  &lt;div class=&quot;hdr-l&quot;&gt;
+    &lt;div class=&quot;hdr-logo&quot;&gt;⚾&lt;/div&gt;
+    &lt;div&gt;
+      &lt;div class=&quot;hdr-app&quot;&gt;GameDay&lt;/div&gt;
+      &lt;div class=&quot;hdr-sub&quot; id=&quot;hdr-sub&quot;&gt;Select a team&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;hdr-r&quot;&gt;
+    &lt;button class=&quot;hbtn&quot; id=&quot;lock-btn&quot; style=&quot;display:none&quot;&gt;🔓 Lock&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
 
-<div class="body">
+&lt;div class=&quot;body&quot;&gt;
 
-<!-- TEAMS -->
-<div class="scr on" id="scr-teams">
-  <div class="hero">
-    <div class="hero-ico">⚾</div>
-    <div class="hero-nm">GameDay</div>
-    <div class="hero-s">Youth Baseball Lineup Manager</div>
-  </div>
-  <div class="card">
-    <div class="chd"><span class="ct">My Teams</span><span class="cr" id="teams-lbl"></span></div>
-    <div id="teams-wrap"></div>
-  </div>
-  <div class="delbox" id="delbox">
-    <div class="delmsg" id="delmsg"></div>
-    <div class="delrow">
-      <button class="dely" id="del-yes">Delete</button>
-      <button class="deln" id="del-no">Cancel</button>
-    </div>
-  </div>
-  <button class="ntbtn" id="new-team-btn">＋ Create new team</button>
-</div>
+&lt;!-- TEAMS --&gt;
+&lt;div class=&quot;scr on&quot; id=&quot;scr-teams&quot;&gt;
+  &lt;div class=&quot;hero&quot;&gt;
+    &lt;div class=&quot;hero-ico&quot;&gt;⚾&lt;/div&gt;
+    &lt;div class=&quot;hero-nm&quot;&gt;GameDay&lt;/div&gt;
+    &lt;div class=&quot;hero-s&quot;&gt;Youth Baseball Lineup Manager&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;card&quot;&gt;
+    &lt;div class=&quot;chd&quot;&gt;&lt;span class=&quot;ct&quot;&gt;My Teams&lt;/span&gt;&lt;span class=&quot;cr&quot; id=&quot;teams-lbl&quot;&gt;&lt;/span&gt;&lt;/div&gt;
+    &lt;div id=&quot;teams-wrap&quot;&gt;&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;delbox&quot; id=&quot;delbox&quot;&gt;
+    &lt;div class=&quot;delmsg&quot; id=&quot;delmsg&quot;&gt;&lt;/div&gt;
+    &lt;div class=&quot;delrow&quot;&gt;
+      &lt;button class=&quot;dely&quot; id=&quot;del-yes&quot;&gt;Delete&lt;/button&gt;
+      &lt;button class=&quot;deln&quot; id=&quot;del-no&quot;&gt;Cancel&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;button class=&quot;ntbtn&quot; id=&quot;new-team-btn&quot;&gt;＋ Create new team&lt;/button&gt;
+&lt;/div&gt;
 
-<!-- SETTINGS -->
-<div class="scr" id="scr-settings">
-  <div class="card">
-    <div class="chd"><span class="ct">Team Info</span></div>
-    <div class="cbd">
-      <div>
-        <div class="slbl">Team name</div>
-        <input class="sinp" id="s-name" type="text" placeholder="e.g. Fisher Cats" maxlength="30">
-      </div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="chd"><span class="ct">Color Theme</span></div>
-    <div class="cbd"><div class="tgrid" id="theme-grid"></div></div>
-  </div>
-  <div class="card">
-    <div class="chd"><span class="ct">Roster</span><span class="cr" id="s-count"></span></div>
-    <div class="cbd">
-      <div id="roster-ed"></div>
-      <div class="arow">
-        <input type="text" id="new-player" placeholder="Add player name…" maxlength="40">
-        <button class="abtn" id="add-player-btn">+ Add</button>
-      </div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="chd"><span class="ct">Import from CSV</span></div>
-    <div class="cbd">
-      <div class="csvpk" id="csv-pick">📂 Choose CSV file</div>
-      <input type="file" id="csv-input" accept=".csv" style="display:none">
-      <div class="csvhint">One player name per row, first column. Header rows are auto-skipped.</div>
-      <div class="csvmsg" id="csv-msg"></div>
-    </div>
-  </div>
-  <div class="brow">
-    <button class="sbtn sbtn-p" id="save-btn">💾 Save</button>
-    <button class="sbtn sbtn-s" id="saveas-btn">📋 Save as new</button>
-  </div>
-  <button class="sbtn sbtn-s" id="back-btn" style="width:100%;margin-bottom:12px">← Back to teams</button>
-</div>
+&lt;!-- SETTINGS --&gt;
+&lt;div class=&quot;scr&quot; id=&quot;scr-settings&quot;&gt;
+  &lt;div class=&quot;card&quot;&gt;
+    &lt;div class=&quot;chd&quot;&gt;&lt;span class=&quot;ct&quot;&gt;Team Info&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;cbd&quot;&gt;
+      &lt;div&gt;
+        &lt;div class=&quot;slbl&quot;&gt;Team name&lt;/div&gt;
+        &lt;input class=&quot;sinp&quot; id=&quot;s-name&quot; type=&quot;text&quot; placeholder=&quot;e.g. Fisher Cats&quot; maxlength=&quot;30&quot;&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;card&quot;&gt;
+    &lt;div class=&quot;chd&quot;&gt;&lt;span class=&quot;ct&quot;&gt;Color Theme&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;cbd&quot;&gt;&lt;div class=&quot;tgrid&quot; id=&quot;theme-grid&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;card&quot;&gt;
+    &lt;div class=&quot;chd&quot;&gt;&lt;span class=&quot;ct&quot;&gt;Roster&lt;/span&gt;&lt;span class=&quot;cr&quot; id=&quot;s-count&quot;&gt;&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;cbd&quot;&gt;
+      &lt;div id=&quot;roster-ed&quot;&gt;&lt;/div&gt;
+      &lt;div class=&quot;arow&quot;&gt;
+        &lt;input type=&quot;text&quot; id=&quot;new-player&quot; placeholder=&quot;Add player name…&quot; maxlength=&quot;40&quot;&gt;
+        &lt;button class=&quot;abtn&quot; id=&quot;add-player-btn&quot;&gt;+ Add&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;card&quot;&gt;
+    &lt;div class=&quot;chd&quot;&gt;&lt;span class=&quot;ct&quot;&gt;Import from CSV&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;cbd&quot;&gt;
+      &lt;div class=&quot;csvpk&quot; id=&quot;csv-pick&quot;&gt;📂 Choose CSV file&lt;/div&gt;
+      &lt;input type=&quot;file&quot; id=&quot;csv-input&quot; accept=&quot;.csv&quot; style=&quot;display:none&quot;&gt;
+      &lt;div class=&quot;csvhint&quot;&gt;One player name per row, first column. Header rows are auto-skipped.&lt;/div&gt;
+      &lt;div class=&quot;csvmsg&quot; id=&quot;csv-msg&quot;&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;brow&quot;&gt;
+    &lt;button class=&quot;sbtn sbtn-p&quot; id=&quot;save-btn&quot;&gt;💾 Save&lt;/button&gt;
+    &lt;button class=&quot;sbtn sbtn-s&quot; id=&quot;saveas-btn&quot;&gt;📋 Save as new&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;button class=&quot;sbtn sbtn-s&quot; id=&quot;back-btn&quot; style=&quot;width:100%;margin-bottom:12px&quot;&gt;← Back to teams&lt;/button&gt;
+&lt;/div&gt;
 
-<!-- GAME -->
-<div class="scr" id="scr-game">
-  <div class="card">
-    <div class="chd"><span class="ct">Roster Check-In</span><span class="cpill pg" id="cpill">—</span></div>
-    <div class="sarow" id="sarow">
-      <input type="checkbox" id="sel-all" checked>
-      <span class="salbl">Select all / none</span>
-    </div>
-    <div id="roster-list"></div>
-  </div>
-  <div class="card">
-    <div class="chd"><span class="ct">Lineup Controls</span></div>
-    <div class="cin">
-      <div class="crow">
-        <span class="clbl">Player catching today?</span>
-        <label class="tog">
-          <input type="checkbox" id="catch-tog">
-          <span class="ttr"></span>
-        </label>
-        <span class="mtag mtof" id="mode-tag">Coach</span>
-      </div>
-      <div class="srow">
-        <button class="sfb" id="shuf-bat"><span class="sfic">🔀</span>Batting</button>
-        <button class="sfb" id="shuf-pos"><span class="sfic">🔀</span>Positions</button>
-        <button class="sfb" id="shuf-both"><span class="sfic">🔀</span>Both</button>
-      </div>
-    </div>
-  </div>
-  <div class="tabs">
-    <div class="tbar">
-      <button class="ttb on" data-tab="t-bat">Batting</button>
-      <button class="ttb" data-tab="t-i1">Inning 1</button>
-      <button class="ttb" data-tab="t-i2">Inning 2</button>
-      <button class="ttb" data-tab="t-i3">Inning 3</button>
-      <button class="ttb i4" data-tab="t-i4">Inning 4 ✦</button>
-      <button class="ttb" data-tab="t-sum">Summary</button>
-    </div>
-  </div>
-  <div id="t-bat" class="tsec on"></div>
-  <div id="t-i1"  class="tsec"></div>
-  <div id="t-i2"  class="tsec"></div>
-  <div id="t-i3"  class="tsec"></div>
-  <div id="t-i4"  class="tsec"></div>
-  <div id="t-sum" class="tsec"></div>
-</div>
+&lt;!-- GAME --&gt;
+&lt;div class=&quot;scr&quot; id=&quot;scr-game&quot;&gt;
+  &lt;div class=&quot;card&quot;&gt;
+    &lt;div class=&quot;chd&quot;&gt;&lt;span class=&quot;ct&quot;&gt;Roster Check-In&lt;/span&gt;&lt;span class=&quot;cpill pg&quot; id=&quot;cpill&quot;&gt;—&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;sarow&quot; id=&quot;sarow&quot;&gt;
+      &lt;input type=&quot;checkbox&quot; id=&quot;sel-all&quot; checked&gt;
+      &lt;span class=&quot;salbl&quot;&gt;Select all / none&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;div id=&quot;roster-list&quot;&gt;&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;card&quot;&gt;
+    &lt;div class=&quot;chd&quot;&gt;&lt;span class=&quot;ct&quot;&gt;Lineup Controls&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;cin&quot;&gt;
+      &lt;div class=&quot;crow&quot;&gt;
+        &lt;span class=&quot;clbl&quot;&gt;Player catching today?&lt;/span&gt;
+        &lt;label class=&quot;tog&quot;&gt;
+          &lt;input type=&quot;checkbox&quot; id=&quot;catch-tog&quot;&gt;
+          &lt;span class=&quot;ttr&quot;&gt;&lt;/span&gt;
+        &lt;/label&gt;
+        &lt;span class=&quot;mtag mtof&quot; id=&quot;mode-tag&quot;&gt;Coach&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;srow&quot;&gt;
+        &lt;button class=&quot;sfb&quot; id=&quot;shuf-bat&quot;&gt;&lt;span class=&quot;sfic&quot;&gt;🔀&lt;/span&gt;Batting&lt;/button&gt;
+        &lt;button class=&quot;sfb&quot; id=&quot;shuf-pos&quot;&gt;&lt;span class=&quot;sfic&quot;&gt;🔀&lt;/span&gt;Positions&lt;/button&gt;
+        &lt;button class=&quot;sfb&quot; id=&quot;shuf-both&quot;&gt;&lt;span class=&quot;sfic&quot;&gt;🔀&lt;/span&gt;Both&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;tabs&quot;&gt;
+    &lt;div class=&quot;tbar&quot;&gt;
+      &lt;button class=&quot;ttb on&quot; data-tab=&quot;t-bat&quot;&gt;Batting&lt;/button&gt;
+      &lt;button class=&quot;ttb&quot; data-tab=&quot;t-i1&quot;&gt;Inning 1&lt;/button&gt;
+      &lt;button class=&quot;ttb&quot; data-tab=&quot;t-i2&quot;&gt;Inning 2&lt;/button&gt;
+      &lt;button class=&quot;ttb&quot; data-tab=&quot;t-i3&quot;&gt;Inning 3&lt;/button&gt;
+      &lt;button class=&quot;ttb i4&quot; data-tab=&quot;t-i4&quot;&gt;Inning 4 ✦&lt;/button&gt;
+      &lt;button class=&quot;ttb&quot; data-tab=&quot;t-sum&quot;&gt;Summary&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div id=&quot;t-bat&quot; class=&quot;tsec on&quot;&gt;&lt;/div&gt;
+  &lt;div id=&quot;t-i1&quot;  class=&quot;tsec&quot;&gt;&lt;/div&gt;
+  &lt;div id=&quot;t-i2&quot;  class=&quot;tsec&quot;&gt;&lt;/div&gt;
+  &lt;div id=&quot;t-i3&quot;  class=&quot;tsec&quot;&gt;&lt;/div&gt;
+  &lt;div id=&quot;t-i4&quot;  class=&quot;tsec&quot;&gt;&lt;/div&gt;
+  &lt;div id=&quot;t-sum&quot; class=&quot;tsec&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;
 
-</div><!-- /body -->
+&lt;/div&gt;&lt;!-- /body --&gt;
 
-<!-- BOTTOM NAV -->
-<div class="nav">
-  <button class="nb on" id="nb-teams"><span class="nb-i">👥</span>Teams</button>
-  <button class="nb"    id="nb-game" ><span class="nb-i">⚾</span>Lineup</button>
-  <button class="nb"    id="nb-edit" ><span class="nb-i">⚙️</span>Edit Team</button>
-</div>
+&lt;!-- BOTTOM NAV --&gt;
+&lt;div class=&quot;nav&quot;&gt;
+  &lt;button class=&quot;nb on&quot; id=&quot;nb-teams&quot;&gt;&lt;span class=&quot;nb-i&quot;&gt;👥&lt;/span&gt;Teams&lt;/button&gt;
+  &lt;button class=&quot;nb&quot;    id=&quot;nb-game&quot; &gt;&lt;span class=&quot;nb-i&quot;&gt;⚾&lt;/span&gt;Lineup&lt;/button&gt;
+  &lt;button class=&quot;nb&quot;    id=&quot;nb-edit&quot; &gt;&lt;span class=&quot;nb-i&quot;&gt;⚙️&lt;/span&gt;Edit Team&lt;/button&gt;
+&lt;/div&gt;
 
-<script>
+&lt;script&gt;
 /* ── DATA ─────────────────────────────────────── */
 var TEAMS = [
-  { id:'fc', name:'Fisher Cats', theme:'navy', roster:[
-    'Berry, Bode','Cogen, James','Dalla Mura, Mason','Felder, Wyatt',
-    'Francis, Rio','Lovely-Yarbrough, Robert','McManis, Rome',
-    'Mintz, Luke','Proctor, Woods','Summers, Casen','Yount, Curran'
+  { id:&#x27;fc&#x27;, name:&#x27;Fisher Cats&#x27;, theme:&#x27;navy&#x27;, roster:[
+    &#x27;Berry, Bode&#x27;,&#x27;Cogen, James&#x27;,&#x27;Dalla Mura, Mason&#x27;,&#x27;Felder, Wyatt&#x27;,
+    &#x27;Francis, Rio&#x27;,&#x27;Lovely-Yarbrough, Robert&#x27;,&#x27;McManis, Rome&#x27;,
+    &#x27;Mintz, Luke&#x27;,&#x27;Proctor, Woods&#x27;,&#x27;Summers, Casen&#x27;,&#x27;Yount, Curran&#x27;
   ]}
 ];
 
 var THEMES = [
-  {id:'navy',  bg:'#0f2044', em:'💙', lbl:'Navy'},
-  {id:'red',   bg:'#8b0000', em:'❤️',  lbl:'Red'},
-  {id:'green', bg:'#1a4d2e', em:'💚', lbl:'Green'},
-  {id:'purple',bg:'#3b1a6e', em:'💜', lbl:'Purple'},
-  {id:'black', bg:'#111',    em:'🖤', lbl:'Black'},
-  {id:'maroon',bg:'#4a0020', em:'🍷', lbl:'Maroon'},
-  {id:'orange',bg:'#b84a00', em:'🧡', lbl:'Orange'}
+  {id:&#x27;navy&#x27;,  bg:&#x27;#0f2044&#x27;, em:&#x27;💙&#x27;, lbl:&#x27;Navy&#x27;},
+  {id:&#x27;red&#x27;,   bg:&#x27;#8b0000&#x27;, em:&#x27;❤️&#x27;,  lbl:&#x27;Red&#x27;},
+  {id:&#x27;green&#x27;, bg:&#x27;#1a4d2e&#x27;, em:&#x27;💚&#x27;, lbl:&#x27;Green&#x27;},
+  {id:&#x27;purple&#x27;,bg:&#x27;#3b1a6e&#x27;, em:&#x27;💜&#x27;, lbl:&#x27;Purple&#x27;},
+  {id:&#x27;black&#x27;, bg:&#x27;#111&#x27;,    em:&#x27;🖤&#x27;, lbl:&#x27;Black&#x27;},
+  {id:&#x27;maroon&#x27;,bg:&#x27;#4a0020&#x27;, em:&#x27;🍷&#x27;, lbl:&#x27;Maroon&#x27;},
+  {id:&#x27;orange&#x27;,bg:&#x27;#b84a00&#x27;, em:&#x27;🧡&#x27;, lbl:&#x27;Orange&#x27;}
 ];
 
-var INF = ['1st Base','2nd Base','3rd Base','Shortstop'];
-var OUT = ['Left Field','Center Field','Right Field'];
+var INF = [&#x27;1st Base&#x27;,&#x27;2nd Base&#x27;,&#x27;3rd Base&#x27;,&#x27;Shortstop&#x27;];
+var OUT = [&#x27;Left Field&#x27;,&#x27;Center Field&#x27;,&#x27;Right Field&#x27;];
 var POS = INF.concat(OUT);
 
 /* ── STATE ───────────────────────────────────── */
-var activeId  = 'fc';
-var editTheme = 'navy';
+var activeId  = &#x27;fc&#x27;;
+var editTheme = &#x27;navy&#x27;;
 var pendingDel = null;
 var batting   = [];
 var posOrder  = [];
 var locked    = false;
 
 /* ── UTILS ───────────────────────────────────── */
-function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function uid(){ return 'T'+Date.now(); }
-function shuf(a){ var b=a.slice(); for(var i=b.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=b[i];b[i]=b[j];b[j]=t;} return b; }
-function getTeam(id){ for(var i=0;i<TEAMS.length;i++) if(TEAMS[i].id===id) return TEAMS[i]; return null; }
-function getTheme(id){ for(var i=0;i<THEMES.length;i++) if(THEMES[i].id===id) return THEMES[i]; return THEMES[0]; }
+function esc(s){ return (s||&#x27;&#x27;).replace(/&amp;/g,&#x27;&amp;amp;&#x27;).replace(/&lt;/g,&#x27;&amp;lt;&#x27;).replace(/&gt;/g,&#x27;&amp;gt;&#x27;).replace(/&quot;/g,&#x27;&amp;quot;&#x27;); }
+function uid(){ return &#x27;T&#x27;+Date.now(); }
+function shuf(a){ var b=a.slice(); for(var i=b.length-1;i&gt;0;i--){var j=Math.floor(Math.random()*(i+1)),t=b[i];b[i]=b[j];b[j]=t;} return b; }
+function getTeam(id){ for(var i=0;i&lt;TEAMS.length;i++) if(TEAMS[i].id===id) return TEAMS[i]; return null; }
+function getTheme(id){ for(var i=0;i&lt;THEMES.length;i++) if(THEMES[i].id===id) return THEMES[i]; return THEMES[0]; }
 function aTeam(){ return getTeam(activeId); }
-function applyTheme(id){ document.body.setAttribute('data-theme', id==='navy'?'':id); }
+function applyTheme(id){ document.body.setAttribute(&#x27;data-theme&#x27;, id===&#x27;navy&#x27;?&#x27;&#x27;:id); }
 function posC(p){
-  var m={Pitcher:'pp',Catcher:'pc','1st Base':'pi','2nd Base':'pi','3rd Base':'pi',
-    Shortstop:'pi','Left Field':'po','Center Field':'po','Right Field':'po',Bench:'pb2'};
-  return m[p]||'pi';
+  var m={Pitcher:&#x27;pp&#x27;,Catcher:&#x27;pc&#x27;,&#x27;1st Base&#x27;:&#x27;pi&#x27;,&#x27;2nd Base&#x27;:&#x27;pi&#x27;,&#x27;3rd Base&#x27;:&#x27;pi&#x27;,
+    Shortstop:&#x27;pi&#x27;,&#x27;Left Field&#x27;:&#x27;po&#x27;,&#x27;Center Field&#x27;:&#x27;po&#x27;,&#x27;Right Field&#x27;:&#x27;po&#x27;,Bench:&#x27;pb2&#x27;};
+  return m[p]||&#x27;pi&#x27;;
 }
-function chip(p){ return '<span class="pos '+posC(p)+'">'+p+'</span>'; }
+function chip(p){ return &#x27;&lt;span class=&quot;pos &#x27;+posC(p)+&#x27;&quot;&gt;&#x27;+p+&#x27;&lt;/span&gt;&#x27;; }
 function lgnd(){
-  return '<div class="lgd">'
-    +'<div class="lg"><div class="lgd2" style="background:#3c3480"></div>Pitcher</div>'
-    +'<div class="lg"><div class="lgd2" style="background:#8a4500"></div>Catcher</div>'
-    +'<div class="lg"><div class="lgd2" style="background:#1a4080"></div>Infield</div>'
-    +'<div class="lg"><div class="lgd2" style="background:#1a5c2a"></div>Outfield</div>'
-    +'</div>';
+  return &#x27;&lt;div class=&quot;lgd&quot;&gt;&#x27;
+    +&#x27;&lt;div class=&quot;lg&quot;&gt;&lt;div class=&quot;lgd2&quot; style=&quot;background:#3c3480&quot;&gt;&lt;/div&gt;Pitcher&lt;/div&gt;&#x27;
+    +&#x27;&lt;div class=&quot;lg&quot;&gt;&lt;div class=&quot;lgd2&quot; style=&quot;background:#8a4500&quot;&gt;&lt;/div&gt;Catcher&lt;/div&gt;&#x27;
+    +&#x27;&lt;div class=&quot;lg&quot;&gt;&lt;div class=&quot;lgd2&quot; style=&quot;background:#1a4080&quot;&gt;&lt;/div&gt;Infield&lt;/div&gt;&#x27;
+    +&#x27;&lt;div class=&quot;lg&quot;&gt;&lt;div class=&quot;lgd2&quot; style=&quot;background:#1a5c2a&quot;&gt;&lt;/div&gt;Outfield&lt;/div&gt;&#x27;
+    +&#x27;&lt;/div&gt;&#x27;;
 }
 function el(id){ return document.getElementById(id); }
 function setT(id,v){ var e=el(id); if(e) e.textContent=v; }
@@ -350,36 +370,36 @@ function setH(id,v){ var e=el(id); if(e) e.innerHTML=v; }
 
 /* ── SCREENS ─────────────────────────────────── */
 function showScr(name){
-  ['teams','settings','game'].forEach(function(s){
-    var e=el('scr-'+s); if(e) e.className='scr'+(s===name?' on':'');
+  [&#x27;teams&#x27;,&#x27;settings&#x27;,&#x27;game&#x27;].forEach(function(s){
+    var e=el(&#x27;scr-&#x27;+s); if(e) e.className=&#x27;scr&#x27;+(s===name?&#x27; on&#x27;:&#x27;&#x27;);
   });
-  ['nb-teams','nb-game','nb-edit'].forEach(function(b){
-    var e=el(b); if(e) e.className='nb';
+  [&#x27;nb-teams&#x27;,&#x27;nb-game&#x27;,&#x27;nb-edit&#x27;].forEach(function(b){
+    var e=el(b); if(e) e.className=&#x27;nb&#x27;;
   });
-  var nbmap={teams:'nb-teams',game:'nb-game',settings:'nb-edit'};
-  if(nbmap[name]){ var e=el(nbmap[name]); if(e) e.className='nb on'; }
-  var lb=el('lock-btn'); if(lb) lb.style.display=name==='game'?'flex':'none';
+  var nbmap={teams:&#x27;nb-teams&#x27;,game:&#x27;nb-game&#x27;,settings:&#x27;nb-edit&#x27;};
+  if(nbmap[name]){ var e=el(nbmap[name]); if(e) e.className=&#x27;nb on&#x27;; }
+  var lb=el(&#x27;lock-btn&#x27;); if(lb) lb.style.display=name===&#x27;game&#x27;?&#x27;flex&#x27;:&#x27;none&#x27;;
   window.scrollTo(0,0);
 }
 
 /* ── TEAMS SCREEN ────────────────────────────── */
 function renderTeams(){
-  el('teams-lbl').textContent = TEAMS.length+' team'+(TEAMS.length!==1?'s':'');
-  var wrap=el('teams-wrap');
-  if(!TEAMS.length){ wrap.innerHTML='<div class="notr">No teams yet. Tap "Create new team" below.</div>'; return; }
-  var h='';
+  el(&#x27;teams-lbl&#x27;).textContent = TEAMS.length+&#x27; team&#x27;+(TEAMS.length!==1?&#x27;s&#x27;:&#x27;&#x27;);
+  var wrap=el(&#x27;teams-wrap&#x27;);
+  if(!TEAMS.length){ wrap.innerHTML=&#x27;&lt;div class=&quot;notr&quot;&gt;No teams yet. Tap &quot;Create new team&quot; below.&lt;/div&gt;&#x27;; return; }
+  var h=&#x27;&#x27;;
   TEAMS.forEach(function(t){
     var th=getTheme(t.theme);
     var isAct=t.id===activeId;
-    h+='<div class="trow" data-tid="'+t.id+'">'
-      +'<div class="tsw" style="background:'+th.bg+'">'+th.em+'</div>'
-      +'<div class="ti"><div class="tn">'+esc(t.name)+'</div><div class="tm">'+t.roster.length+' players · '+th.lbl+'</div></div>'
-      +'<div class="tbs">'
+    h+=&#x27;&lt;div class=&quot;trow&quot; data-tid=&quot;&#x27;+t.id+&#x27;&quot;&gt;&#x27;
+      +&#x27;&lt;div class=&quot;tsw&quot; style=&quot;background:&#x27;+th.bg+&#x27;&quot;&gt;&#x27;+th.em+&#x27;&lt;/div&gt;&#x27;
+      +&#x27;&lt;div class=&quot;ti&quot;&gt;&lt;div class=&quot;tn&quot;&gt;&#x27;+esc(t.name)+&#x27;&lt;/div&gt;&lt;div class=&quot;tm&quot;&gt;&#x27;+t.roster.length+&#x27; players · &#x27;+th.lbl+&#x27;&lt;/div&gt;&lt;/div&gt;&#x27;
+      +&#x27;&lt;div class=&quot;tbs&quot;&gt;&#x27;
       +(isAct
-        ?'<span class="badge">Active</span>'
-        :'<button class="tbtn tbtn-l" data-action="load" data-tid="'+t.id+'">Load</button>')
-      +'<button class="tbtn tbtn-d" data-action="del" data-tid="'+t.id+'">✕</button>'
-      +'</div></div>';
+        ?&#x27;&lt;span class=&quot;badge&quot;&gt;Active&lt;/span&gt;&#x27;
+        :&#x27;&lt;button class=&quot;tbtn tbtn-l&quot; data-action=&quot;load&quot; data-tid=&quot;&#x27;+t.id+&#x27;&quot;&gt;Load&lt;/button&gt;&#x27;)
+      +&#x27;&lt;button class=&quot;tbtn tbtn-d&quot; data-action=&quot;del&quot; data-tid=&quot;&#x27;+t.id+&#x27;&quot;&gt;✕&lt;/button&gt;&#x27;
+      +&#x27;&lt;/div&gt;&lt;/div&gt;&#x27;;
   });
   wrap.innerHTML=h;
 }
@@ -387,9 +407,9 @@ function renderTeams(){
 function askDel(id){
   var t=getTeam(id); if(!t) return;
   pendingDel=id;
-  var box=el('delbox'), msg=el('delmsg');
-  if(msg) msg.textContent='Delete '+t.name+'? This cannot be undone.';
-  if(box) box.className='delbox on';
+  var box=el(&#x27;delbox&#x27;), msg=el(&#x27;delmsg&#x27;);
+  if(msg) msg.textContent=&#x27;Delete &#x27;+t.name+&#x27;? This cannot be undone.&#x27;;
+  if(box) box.className=&#x27;delbox on&#x27;;
 }
 function doDel(){
   if(!pendingDel) return;
@@ -397,101 +417,101 @@ function doDel(){
   if(activeId===pendingDel){
     activeId=TEAMS.length?TEAMS[0].id:null;
     var at=aTeam();
-    applyTheme(at?at.theme:'navy');
-    el('hdr-sub').textContent=at?at.name:'Select a team';
+    applyTheme(at?at.theme:&#x27;navy&#x27;);
+    el(&#x27;hdr-sub&#x27;).textContent=at?at.name:&#x27;Select a team&#x27;;
   }
   pendingDel=null;
-  el('delbox').className='delbox';
+  el(&#x27;delbox&#x27;).className=&#x27;delbox&#x27;;
   renderTeams();
 }
 function cancelDel(){
   pendingDel=null;
-  el('delbox').className='delbox';
+  el(&#x27;delbox&#x27;).className=&#x27;delbox&#x27;;
 }
 
 function loadTeam(id){
   var t=getTeam(id); if(!t) return;
   activeId=id; locked=false;
   applyTheme(t.theme);
-  el('hdr-sub').textContent=t.name;
+  el(&#x27;hdr-sub&#x27;).textContent=t.name;
   batting =shuf(t.roster.slice());
   posOrder=shuf(t.roster.slice());
   buildRosterList();
   updateLockUI();
   renderTeams();
-  showScr('game');
+  showScr(&#x27;game&#x27;);
   render();
 }
 
 function newTeam(){
-  var t={id:uid(),name:'New Team',theme:'navy',roster:[]};
+  var t={id:uid(),name:&#x27;New Team&#x27;,theme:&#x27;navy&#x27;,roster:[]};
   TEAMS.push(t);
   activeId=t.id;
-  el('hdr-sub').textContent=t.name;
+  el(&#x27;hdr-sub&#x27;).textContent=t.name;
   batting=[]; posOrder=[];
   openSettings();
-  showScr('settings');
+  showScr(&#x27;settings&#x27;);
 }
 
 /* ── SETTINGS ────────────────────────────────── */
 function openSettings(){
   var t=aTeam(); if(!t) return;
-  el('s-name').value=t.name;
+  el(&#x27;s-name&#x27;).value=t.name;
   editTheme=t.theme;
   buildThemeGrid();
   buildRosterEd(t.roster);
-  el('csv-msg').className='csvmsg';
-  el('csv-msg').textContent='';
-  el('csv-input').value='';
+  el(&#x27;csv-msg&#x27;).className=&#x27;csvmsg&#x27;;
+  el(&#x27;csv-msg&#x27;).textContent=&#x27;&#x27;;
+  el(&#x27;csv-input&#x27;).value=&#x27;&#x27;;
 }
 
 function buildThemeGrid(){
-  var h='';
+  var h=&#x27;&#x27;;
   THEMES.forEach(function(t){
-    h+='<div class="tc'+(t.id===editTheme?' on':'')+'" data-theme-id="'+t.id+'" style="background:'+t.bg+'">'
-      +'<span class="tc-e">'+t.em+'</span>'+t.lbl+'</div>';
+    h+=&#x27;&lt;div class=&quot;tc&#x27;+(t.id===editTheme?&#x27; on&#x27;:&#x27;&#x27;)+&#x27;&quot; data-theme-id=&quot;&#x27;+t.id+&#x27;&quot; style=&quot;background:&#x27;+t.bg+&#x27;&quot;&gt;&#x27;
+      +&#x27;&lt;span class=&quot;tc-e&quot;&gt;&#x27;+t.em+&#x27;&lt;/span&gt;&#x27;+t.lbl+&#x27;&lt;/div&gt;&#x27;;
   });
-  el('theme-grid').innerHTML=h;
+  el(&#x27;theme-grid&#x27;).innerHTML=h;
 }
 
 function selectTheme(id){
   editTheme=id;
-  var chips=document.querySelectorAll('.tc');
-  for(var i=0;i<chips.length;i++){
-    chips[i].className=chips[i].className.replace(' on','');
-    if(chips[i].getAttribute('data-theme-id')===id) chips[i].className+=' on';
+  var chips=document.querySelectorAll(&#x27;.tc&#x27;);
+  for(var i=0;i&lt;chips.length;i++){
+    chips[i].className=chips[i].className.replace(&#x27; on&#x27;,&#x27;&#x27;);
+    if(chips[i].getAttribute(&#x27;data-theme-id&#x27;)===id) chips[i].className+=&#x27; on&#x27;;
   }
   applyTheme(id);
 }
 
 function buildRosterEd(roster){
-  var h='';
-  for(var i=0;i<roster.length;i++){
-    h+='<div class="rei" data-idx="'+i+'">'
-      +'<input type="text" value="'+esc(roster[i])+'">'
-      +'<button class="xbtn" data-action="delplayer" data-idx="'+i+'">×</button>'
-      +'</div>';
+  var h=&#x27;&#x27;;
+  for(var i=0;i&lt;roster.length;i++){
+    h+=&#x27;&lt;div class=&quot;rei&quot; data-idx=&quot;&#x27;+i+&#x27;&quot;&gt;&#x27;
+      +&#x27;&lt;input type=&quot;text&quot; value=&quot;&#x27;+esc(roster[i])+&#x27;&quot;&gt;&#x27;
+      +&#x27;&lt;button class=&quot;xbtn&quot; data-action=&quot;delplayer&quot; data-idx=&quot;&#x27;+i+&#x27;&quot;&gt;×&lt;/button&gt;&#x27;
+      +&#x27;&lt;/div&gt;&#x27;;
   }
-  el('roster-ed').innerHTML=h;
-  el('s-count').textContent=roster.length+' players';
+  el(&#x27;roster-ed&#x27;).innerHTML=h;
+  el(&#x27;s-count&#x27;).textContent=roster.length+&#x27; players&#x27;;
 }
 
 function getRoster(){
-  var names=[]; var inputs=el('roster-ed').querySelectorAll('input[type=text]');
-  for(var i=0;i<inputs.length;i++){ var v=inputs[i].value.trim(); if(v) names.push(v); }
+  var names=[]; var inputs=el(&#x27;roster-ed&#x27;).querySelectorAll(&#x27;input[type=text]&#x27;);
+  for(var i=0;i&lt;inputs.length;i++){ var v=inputs[i].value.trim(); if(v) names.push(v); }
   return names;
 }
 
 function addPlayer(){
-  var inp=el('new-player'); var name=inp.value.trim(); if(!name) return;
-  var cur=getRoster(); cur.push(name); inp.value='';
+  var inp=el(&#x27;new-player&#x27;); var name=inp.value.trim(); if(!name) return;
+  var cur=getRoster(); cur.push(name); inp.value=&#x27;&#x27;;
   buildRosterEd(cur); inp.focus();
 }
 
 function delPlayer(idx){
-  var items=el('roster-ed').querySelectorAll('.rei');
+  var items=el(&#x27;roster-ed&#x27;).querySelectorAll(&#x27;.rei&#x27;);
   if(items[idx]) items[idx].parentNode.removeChild(items[idx]);
-  el('s-count').textContent=getRoster().length+' players';
+  el(&#x27;s-count&#x27;).textContent=getRoster().length+&#x27; players&#x27;;
 }
 
 function handleCSV(file){
@@ -499,19 +519,19 @@ function handleCSV(file){
   var r=new FileReader();
   r.onload=function(e){
     var lines=e.target.result.split(/\r?\n/); var names=[];
-    for(var i=0;i<lines.length;i++){
-      var col=(lines[i].split(',')[0]||'').trim().replace(/^["']|["']$/g,'');
-      if(col&&!/^(name|player|first|last)/i.test(col)) names.push(col);
+    for(var i=0;i&lt;lines.length;i++){
+      var col=(lines[i].split(&#x27;,&#x27;)[0]||&#x27;&#x27;).trim().replace(/^[&quot;&#x27;]|[&quot;&#x27;]$/g,&#x27;&#x27;);
+      if(col&amp;&amp;!/^(name|player|first|last)/i.test(col)) names.push(col);
     }
-    var msg=el('csv-msg');
-    if(!names.length){ msg.className='csvmsg csver'; msg.textContent='No names found. Make sure names are in the first column.'; }
-    else{ buildRosterEd(names); msg.className='csvmsg csvok'; msg.textContent='✓ Loaded '+names.length+' players.'; }
+    var msg=el(&#x27;csv-msg&#x27;);
+    if(!names.length){ msg.className=&#x27;csvmsg csver&#x27;; msg.textContent=&#x27;No names found. Make sure names are in the first column.&#x27;; }
+    else{ buildRosterEd(names); msg.className=&#x27;csvmsg csvok&#x27;; msg.textContent=&#x27;✓ Loaded &#x27;+names.length+&#x27; players.&#x27;; }
   };
   r.readAsText(file);
 }
 
 function saveTeam(asNew){
-  var name=el('s-name').value.trim()||'Unnamed Team';
+  var name=el(&#x27;s-name&#x27;).value.trim()||&#x27;Unnamed Team&#x27;;
   var roster=getRoster();
   if(asNew){
     var copy={id:uid(),name:name,theme:editTheme,roster:roster};
@@ -522,55 +542,55 @@ function saveTeam(asNew){
   }
   var at=aTeam();
   applyTheme(at.theme);
-  el('hdr-sub').textContent=at.name;
+  el(&#x27;hdr-sub&#x27;).textContent=at.name;
   batting =shuf(at.roster.slice());
   posOrder=shuf(at.roster.slice());
   locked=false; updateLockUI();
   buildRosterList();
-  showScr('game'); render();
+  showScr(&#x27;game&#x27;); render();
 }
 
 /* ── ROSTER CHECK-IN ─────────────────────────── */
 function buildRosterList(){
   var t=aTeam(); var roster=t?t.roster:[];
-  var h='';
-  for(var i=0;i<roster.length;i++){
-    h+='<div class="ritem" data-idx="'+i+'">'
-      +'<input type="checkbox" id="cb'+i+'" checked>'
-      +'<span class="rn" id="rn'+i+'">'+esc(roster[i])+'</span>'
-      +'</div>';
+  var h=&#x27;&#x27;;
+  for(var i=0;i&lt;roster.length;i++){
+    h+=&#x27;&lt;div class=&quot;ritem&quot; data-idx=&quot;&#x27;+i+&#x27;&quot;&gt;&#x27;
+      +&#x27;&lt;input type=&quot;checkbox&quot; id=&quot;cb&#x27;+i+&#x27;&quot; checked&gt;&#x27;
+      +&#x27;&lt;span class=&quot;rn&quot; id=&quot;rn&#x27;+i+&#x27;&quot;&gt;&#x27;+esc(roster[i])+&#x27;&lt;/span&gt;&#x27;
+      +&#x27;&lt;/div&gt;&#x27;;
   }
-  el('roster-list').innerHTML=h;
-  var sa=el('sel-all'); if(sa){sa.checked=true;sa.indeterminate=false;}
+  el(&#x27;roster-list&#x27;).innerHTML=h;
+  var sa=el(&#x27;sel-all&#x27;); if(sa){sa.checked=true;sa.indeterminate=false;}
 }
 
 function getPresent(){
   var t=aTeam(); var roster=t?t.roster:[];
   var out=[];
-  for(var i=0;i<roster.length;i++){
-    var cb=el('cb'+i); if(cb&&cb.checked) out.push(roster[i]);
+  for(var i=0;i&lt;roster.length;i++){
+    var cb=el(&#x27;cb&#x27;+i); if(cb&amp;&amp;cb.checked) out.push(roster[i]);
   }
   return out;
 }
 
 function togglePlayer(i){
   if(locked) return;
-  var cb=el('cb'+i); if(!cb) return;
+  var cb=el(&#x27;cb&#x27;+i); if(!cb) return;
   cb.checked=!cb.checked; syncRoster();
 }
 
 function syncRoster(){
   var t=aTeam(); var roster=t?t.roster:[];
   var present=getPresent();
-  for(var i=0;i<roster.length;i++){
-    var nn=el('rn'+i),cb=el('cb'+i);
-    if(nn&&cb) nn.className='rn'+(cb.checked?'':' ab');
+  for(var i=0;i&lt;roster.length;i++){
+    var nn=el(&#x27;rn&#x27;+i),cb=el(&#x27;cb&#x27;+i);
+    if(nn&amp;&amp;cb) nn.className=&#x27;rn&#x27;+(cb.checked?&#x27;&#x27;:&#x27; ab&#x27;);
   }
-  var sa=el('sel-all');
-  if(sa){ sa.checked=present.length===roster.length; sa.indeterminate=present.length>0&&present.length<roster.length; }
-  var newP=roster.filter(function(p){return present.indexOf(p)>=0&&posOrder.indexOf(p)<0;});
-  posOrder=posOrder.filter(function(p){return present.indexOf(p)>=0;}).concat(shuf(newP));
-  batting =batting.filter(function(p){return present.indexOf(p)>=0;}).concat(shuf(newP.slice()));
+  var sa=el(&#x27;sel-all&#x27;);
+  if(sa){ sa.checked=present.length===roster.length; sa.indeterminate=present.length&gt;0&amp;&amp;present.length&lt;roster.length; }
+  var newP=roster.filter(function(p){return present.indexOf(p)&gt;=0&amp;&amp;posOrder.indexOf(p)&lt;0;});
+  posOrder=posOrder.filter(function(p){return present.indexOf(p)&gt;=0;}).concat(shuf(newP));
+  batting =batting.filter(function(p){return present.indexOf(p)&gt;=0;}).concat(shuf(newP.slice()));
   render();
 }
 
@@ -578,205 +598,233 @@ function toggleAll(){
   if(locked) return;
   var t=aTeam(); var roster=t?t.roster:[];
   var allOn=getPresent().length===roster.length;
-  for(var i=0;i<roster.length;i++){var cb=el('cb'+i);if(cb)cb.checked=!allOn;}
-  var sa=el('sel-all'); if(sa){sa.checked=!allOn;sa.indeterminate=false;}
+  for(var i=0;i&lt;roster.length;i++){var cb=el(&#x27;cb&#x27;+i);if(cb)cb.checked=!allOn;}
+  var sa=el(&#x27;sel-all&#x27;); if(sa){sa.checked=!allOn;sa.indeterminate=false;}
   syncRoster();
 }
 
 /* ── LINEUP LOGIC ────────────────────────────── */
 function buildInnings(withC,pres){
   var n=pres.length,spots=Math.min(withC?9:8,n),bpc=n-spots;
-  var r=[{},{},{}]; if(n<2) return r;
-  for(var i=0;i<3;i++){
+  var r=[{},{},{}]; if(n&lt;2) return r;
+  for(var i=0;i&lt;3;i++){
     var st=(i*bpc)%n;
-    for(var j=0;j<bpc;j++) r[i][pres[(st+j)%n]]='Bench';
+    for(var j=0;j&lt;bpc;j++) r[i][pres[(st+j)%n]]=&#x27;Bench&#x27;;
     var pi=(i*3)%n,ptch=pres[pi];
     if(r[i][ptch]) ptch=pres[(pi+1)%n];
-    if(!r[i][ptch]) r[i][ptch]='Pitcher';
-    if(withC&&spots>=2){
+    if(!r[i][ptch]) r[i][ptch]=&#x27;Pitcher&#x27;;
+    if(withC&amp;&amp;spots&gt;=2){
       var ci=(i*3+2)%n,att=0,cat=pres[ci];
-      while((r[i][cat]||cat===ptch)&&att<n){att++;cat=pres[(ci+att)%n];}
-      if(!r[i][cat]) r[i][cat]='Catcher';
+      while((r[i][cat]||cat===ptch)&amp;&amp;att&lt;n){att++;cat=pres[(ci+att)%n];}
+      if(!r[i][cat]) r[i][cat]=&#x27;Catcher&#x27;;
     }
     var rem=pres.filter(function(p){return !r[i][p];});
     var pool=shuf(POS).slice(0,rem.length);
-    for(var k=0;k<rem.length;k++) r[i][rem[k]]=pool[k]||'Left Field';
+    for(var k=0;k&lt;rem.length;k++) r[i][rem[k]]=pool[k]||&#x27;Left Field&#x27;;
   }
   return r;
 }
 
 function build4(withC,pres,inn){
-  var n=pres.length; if(n<2) return{inn4:{},bc:{}};
+  var n=pres.length; if(n&lt;2) return{inn4:{},bc:{}};
   var spots=Math.min(withC?9:8,n),bc={};
-  pres.forEach(function(p){bc[p]=[0,1,2].filter(function(i){return inn[i][p]==='Bench';}).length;});
+  pres.forEach(function(p){bc[p]=[0,1,2].filter(function(i){return inn[i][p]===&#x27;Bench&#x27;;}).length;});
   var sorted=pres.slice().sort(function(a,b){return bc[b]-bc[a];});
   var benched=sorted.slice(spots),field=sorted.slice(0,spots),inn4={};
-  benched.forEach(function(p){inn4[p]='Bench';});
-  var ptch=field[0]; inn4[ptch]='Pitcher';
-  if(withC&&field.length>=2){var cat=field[1];if(!inn4[cat])inn4[cat]='Catcher';}
+  benched.forEach(function(p){inn4[p]=&#x27;Bench&#x27;;});
+  var ptch=field[0]; inn4[ptch]=&#x27;Pitcher&#x27;;
+  if(withC&amp;&amp;field.length&gt;=2){var cat=field[1];if(!inn4[cat])inn4[cat]=&#x27;Catcher&#x27;;}
   var rem=field.filter(function(p){return !inn4[p];});
   var pool=shuf(POS).slice(0,rem.length);
-  rem.forEach(function(p,j){inn4[p]=pool[j]||'Left Field';});
+  rem.forEach(function(p,j){inn4[p]=pool[j]||&#x27;Left Field&#x27;;});
   return{inn4:inn4,bc:bc};
 }
 
 /* ── RENDER ──────────────────────────────────── */
 function render(){
-  var withC=el('catch-tog').checked;
+  var withC=el(&#x27;catch-tog&#x27;).checked;
   var pres=getPresent(), n=pres.length;
   var t=aTeam(), roster=t?t.roster:[];
   var spots=Math.min(withC?9:8,n), bpc=n-spots;
 
-  var mt=el('mode-tag'); if(mt){mt.textContent=withC?'Player':'Coach';mt.className='mtag '+(withC?'mton':'mtof');}
-  var cp=el('cpill'); if(cp){cp.textContent=n+' player'+(n!==1?'s':'');cp.className='cpill '+(n>=9?'pg':n>=6?'pw':'pb');}
-  el('hdr-sub').textContent=locked?'🔒 '+(t?t.name:''):(t?t.name:'Select a team');
+  var mt=el(&#x27;mode-tag&#x27;); if(mt){mt.textContent=withC?&#x27;Player&#x27;:&#x27;Coach&#x27;;mt.className=&#x27;mtag &#x27;+(withC?&#x27;mton&#x27;:&#x27;mtof&#x27;);}
+  var cp=el(&#x27;cpill&#x27;); if(cp){cp.textContent=n+&#x27; player&#x27;+(n!==1?&#x27;s&#x27;:&#x27;&#x27;);cp.className=&#x27;cpill &#x27;+(n&gt;=9?&#x27;pg&#x27;:n&gt;=6?&#x27;pw&#x27;:&#x27;pb&#x27;);}
+  el(&#x27;hdr-sub&#x27;).textContent=locked?&#x27;🔒 &#x27;+(t?t.name:&#x27;&#x27;):(t?t.name:&#x27;Select a team&#x27;);
 
-  if(n<4){
-    ['t-bat','t-i1','t-i2','t-i3','t-i4','t-sum'].forEach(function(id){setH(id,'<div class="emp">Check in at least 4 players to build a lineup.</div>');});
+  if(n&lt;4){
+    [&#x27;t-bat&#x27;,&#x27;t-i1&#x27;,&#x27;t-i2&#x27;,&#x27;t-i3&#x27;,&#x27;t-i4&#x27;,&#x27;t-sum&#x27;].forEach(function(id){setH(id,&#x27;&lt;div class=&quot;emp&quot;&gt;Check in at least 4 players to build a lineup.&lt;/div&gt;&#x27;);});
     return;
   }
 
-  var ab=batting.filter(function(p){return pres.indexOf(p)>=0;});
-  var ao=posOrder.filter(function(p){return pres.indexOf(p)>=0;});
+  var ab=batting.filter(function(p){return pres.indexOf(p)&gt;=0;});
+  var ao=posOrder.filter(function(p){return pres.indexOf(p)&gt;=0;});
   var inn=buildInnings(withC,ao);
   var r4=build4(withC,ao,inn); var inn4=r4.inn4,bc=r4.bc;
 
-  setH('t-bat','<div class="lnc"><div class="lnn">'+n+' players — all bat every inning. '+(bpc>0?bpc+' sit each inning field-side.':'Everyone fields every inning!')+'</div>'
-    +lgnd()+'<table><thead><tr><th style="width:36px">#</th><th>Player</th><th>Inn. 1 Position</th></tr></thead><tbody>'
-    +ab.map(function(p,i){return '<tr><td><span class="bno">'+(i+1)+'</span></td><td>'+esc(p)+'</td><td>'+chip(inn[0][p]||'Bench')+'</td></tr>';}).join('')
-    +'</tbody></table></div>');
+  setH(&#x27;t-bat&#x27;,&#x27;&lt;div class=&quot;lnc&quot;&gt;&lt;div class=&quot;lnn&quot;&gt;&#x27;+n+&#x27; players — all bat every inning. &#x27;+(bpc&gt;0?bpc+&#x27; sit each inning field-side.&#x27;:&#x27;Everyone fields every inning!&#x27;)+&#x27;&lt;/div&gt;&#x27;
+    +lgnd()+&#x27;&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th style=&quot;width:36px&quot;&gt;#&lt;/th&gt;&lt;th&gt;Player&lt;/th&gt;&lt;th&gt;Inn. 1 Position&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&#x27;
+    +ab.map(function(p,i){return &#x27;&lt;tr&gt;&lt;td&gt;&lt;span class=&quot;bno&quot;&gt;&#x27;+(i+1)+&#x27;&lt;/span&gt;&lt;/td&gt;&lt;td&gt;&#x27;+esc(p)+&#x27;&lt;/td&gt;&lt;td&gt;&#x27;+chip(inn[0][p]||&#x27;Bench&#x27;)+&#x27;&lt;/td&gt;&lt;/tr&gt;&#x27;;}).join(&#x27;&#x27;)
+    +&#x27;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;&#x27;);
 
-  var notes=['Inning 1 — '+spots+' field, '+bpc+' sit.'+(withC?' Player catcher in lineup.':' Coach behind the plate.'),
-    'Inning 2 — bench group from inning 1 rotates in. Everyone moves to a new position.',
-    'Inning 3 — final scheduled rotation. Last bench group takes the field.'];
-  for(var i=0;i<3;i++){
+  var notes=[&#x27;Inning 1 — &#x27;+spots+&#x27; field, &#x27;+bpc+&#x27; sit.&#x27;+(withC?&#x27; Player catcher in lineup.&#x27;:&#x27; Coach behind the plate.&#x27;),
+    &#x27;Inning 2 — bench group from inning 1 rotates in. Everyone moves to a new position.&#x27;,
+    &#x27;Inning 3 — final scheduled rotation. Last bench group takes the field.&#x27;];
+  for(var i=0;i&lt;3;i++){
     (function(x){
-      setH('t-i'+(x+1),'<div class="lnc"><div class="lnn">'+notes[x]+'</div>'+lgnd()
-        +'<table><thead><tr><th>Player</th><th>Position</th></tr></thead><tbody>'
-        +ao.map(function(p){return '<tr><td>'+esc(p)+'</td><td>'+chip(inn[x][p]||'Bench')+'</td></tr>';}).join('')
-        +'</tbody></table></div>');
+      setH(&#x27;t-i&#x27;+(x+1),&#x27;&lt;div class=&quot;lnc&quot;&gt;&lt;div class=&quot;lnn&quot;&gt;&#x27;+notes[x]+&#x27;&lt;/div&gt;&#x27;+lgnd()
+        +&#x27;&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Player&lt;/th&gt;&lt;th&gt;Position&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&#x27;
+        +ao.map(function(p){return &#x27;&lt;tr&gt;&lt;td&gt;&#x27;+esc(p)+&#x27;&lt;/td&gt;&lt;td&gt;&#x27;+chip(inn[x][p]||&#x27;Bench&#x27;)+&#x27;&lt;/td&gt;&lt;/tr&gt;&#x27;;}).join(&#x27;&#x27;)
+        +&#x27;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;&#x27;);
     })(i);
   }
 
-  var ds=ao.filter(function(p){return bc[p]>=1&&inn4[p]==='Bench';});
-  setH('t-i4','<div class="lnc"><div class="lnn'+(ds.length?' w':'')+'">Inning 4 — '+spots+' play, '+(n-spots)+' sit. Priority to most-benched players.'+(ds.length?' '+ds.map(function(p){return p.split(',')[0];}).join(' & ')+' sit a 2nd time.':' No one sits twice!')+'</div>'
-    +lgnd()+'<table><thead><tr><th>Player</th><th>Position</th><th style="width:54px;text-align:center">Bench</th></tr></thead><tbody>'
-    +ao.map(function(p){var pos=inn4[p]||'Bench',cnt=bc[p]+(pos==='Bench'?1:0);
-      return '<tr><td>'+esc(p)+'</td><td>'+chip(pos)+'</td><td style="text-align:center"><span class="tly t'+cnt+'">'+cnt+'</span></td></tr>';}).join('')
-    +'</tbody></table><div class="fn">Bench count = total bench innings across all 4 innings</div></div>');
+  var ds=ao.filter(function(p){return bc[p]&gt;=1&amp;&amp;inn4[p]===&#x27;Bench&#x27;;});
+  setH(&#x27;t-i4&#x27;,&#x27;&lt;div class=&quot;lnc&quot;&gt;&lt;div class=&quot;lnn&#x27;+(ds.length?&#x27; w&#x27;:&#x27;&#x27;)+&#x27;&quot;&gt;Inning 4 — &#x27;+spots+&#x27; play, &#x27;+(n-spots)+&#x27; sit. Priority to most-benched players.&#x27;+(ds.length?&#x27; &#x27;+ds.map(function(p){return p.split(&#x27;,&#x27;)[0];}).join(&#x27; &amp; &#x27;)+&#x27; sit a 2nd time.&#x27;:&#x27; No one sits twice!&#x27;)+&#x27;&lt;/div&gt;&#x27;
+    +lgnd()+&#x27;&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Player&lt;/th&gt;&lt;th&gt;Position&lt;/th&gt;&lt;th style=&quot;width:54px;text-align:center&quot;&gt;Bench&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&#x27;
+    +ao.map(function(p){var pos=inn4[p]||&#x27;Bench&#x27;,cnt=bc[p]+(pos===&#x27;Bench&#x27;?1:0);
+      return &#x27;&lt;tr&gt;&lt;td&gt;&#x27;+esc(p)+&#x27;&lt;/td&gt;&lt;td&gt;&#x27;+chip(pos)+&#x27;&lt;/td&gt;&lt;td style=&quot;text-align:center&quot;&gt;&lt;span class=&quot;tly t&#x27;+cnt+&#x27;&quot;&gt;&#x27;+cnt+&#x27;&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&#x27;;}).join(&#x27;&#x27;)
+    +&#x27;&lt;/tbody&gt;&lt;/table&gt;&lt;div class=&quot;fn&quot;&gt;Bench count = total bench innings across all 4 innings&lt;/div&gt;&lt;/div&gt;&#x27;);
 
-  setH('t-sum','<div class="sg">'
-    +'<div class="sc"><div class="sl">Active</div><div class="sv">'+n+'</div><div class="ss">of '+roster.length+' players</div></div>'
-    +'<div class="sc"><div class="sl">Field spots</div><div class="sv">'+spots+'</div><div class="ss">per inning</div></div>'
-    +'<div class="sc"><div class="sl">Bench (3 inn)</div><div class="sv">'+(bpc>0?'0–1':'0')+'</div><div class="ss">innings on bench</div></div>'
-    +'<div class="sc"><div class="sl">Bench (4 inn)</div><div class="sv">'+(bpc>0?'1–2':'0')+'</div><div class="ss">if game goes 4</div></div>'
-    +'</div><div class="lnc"><div class="tscroll"><table><thead><tr><th>Player</th><th>Inn 1</th><th>Inn 2</th><th>Inn 3</th><th>Inn 4 ✦</th></tr></thead><tbody>'
-    +ao.map(function(p){var cells=[0,1,2].map(function(i){return '<td>'+chip(inn[i][p]||'Bench')+'</td>';}).join('');
-      return '<tr><td style="font-size:13px">'+esc(p)+'</td>'+cells+'<td style="opacity:.65">'+chip(inn4[p]||'Bench')+'</td></tr>';}).join('')
-    +'</tbody></table></div><div class="fn">Swipe to see all innings. ✦ Only if game goes to a 4th inning</div></div>');
+  setH(&#x27;t-sum&#x27;,&#x27;&lt;div class=&quot;sg&quot;&gt;&#x27;
+    +&#x27;&lt;div class=&quot;sc&quot;&gt;&lt;div class=&quot;sl&quot;&gt;Active&lt;/div&gt;&lt;div class=&quot;sv&quot;&gt;&#x27;+n+&#x27;&lt;/div&gt;&lt;div class=&quot;ss&quot;&gt;of &#x27;+roster.length+&#x27; players&lt;/div&gt;&lt;/div&gt;&#x27;
+    +&#x27;&lt;div class=&quot;sc&quot;&gt;&lt;div class=&quot;sl&quot;&gt;Field spots&lt;/div&gt;&lt;div class=&quot;sv&quot;&gt;&#x27;+spots+&#x27;&lt;/div&gt;&lt;div class=&quot;ss&quot;&gt;per inning&lt;/div&gt;&lt;/div&gt;&#x27;
+    +&#x27;&lt;div class=&quot;sc&quot;&gt;&lt;div class=&quot;sl&quot;&gt;Bench (3 inn)&lt;/div&gt;&lt;div class=&quot;sv&quot;&gt;&#x27;+(bpc&gt;0?&#x27;0–1&#x27;:&#x27;0&#x27;)+&#x27;&lt;/div&gt;&lt;div class=&quot;ss&quot;&gt;innings on bench&lt;/div&gt;&lt;/div&gt;&#x27;
+    +&#x27;&lt;div class=&quot;sc&quot;&gt;&lt;div class=&quot;sl&quot;&gt;Bench (4 inn)&lt;/div&gt;&lt;div class=&quot;sv&quot;&gt;&#x27;+(bpc&gt;0?&#x27;1–2&#x27;:&#x27;0&#x27;)+&#x27;&lt;/div&gt;&lt;div class=&quot;ss&quot;&gt;if game goes 4&lt;/div&gt;&lt;/div&gt;&#x27;
+    +&#x27;&lt;/div&gt;&lt;div class=&quot;lnc&quot;&gt;&lt;div class=&quot;tscroll&quot;&gt;&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Player&lt;/th&gt;&lt;th&gt;Inn 1&lt;/th&gt;&lt;th&gt;Inn 2&lt;/th&gt;&lt;th&gt;Inn 3&lt;/th&gt;&lt;th&gt;Inn 4 ✦&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&#x27;
+    +ao.map(function(p){var cells=[0,1,2].map(function(i){return &#x27;&lt;td&gt;&#x27;+chip(inn[i][p]||&#x27;Bench&#x27;)+&#x27;&lt;/td&gt;&#x27;;}).join(&#x27;&#x27;);
+      return &#x27;&lt;tr&gt;&lt;td style=&quot;font-size:13px&quot;&gt;&#x27;+esc(p)+&#x27;&lt;/td&gt;&#x27;+cells+&#x27;&lt;td style=&quot;opacity:.65&quot;&gt;&#x27;+chip(inn4[p]||&#x27;Bench&#x27;)+&#x27;&lt;/td&gt;&lt;/tr&gt;&#x27;;}).join(&#x27;&#x27;)
+    +&#x27;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;&lt;div class=&quot;fn&quot;&gt;Swipe to see all innings. ✦ Only if game goes to a 4th inning&lt;/div&gt;&lt;/div&gt;&#x27;);
 }
 
 /* ── LOCK ────────────────────────────────────── */
 function updateLockUI(){
-  var lb=el('lock-btn');
-  if(lb) lb.textContent=(locked?'🔒 Unlock':'🔓 Lock');
-  if(lb) lb.className='hbtn'+(locked?' gold':'');
-  ['shuf-bat','shuf-pos','shuf-both'].forEach(function(id){var b=el(id);if(b)b.disabled=locked;});
-  var ct=el('catch-tog');if(ct)ct.disabled=locked;
-  var sa=el('sel-all');if(sa)sa.disabled=locked;
+  var lb=el(&#x27;lock-btn&#x27;);
+  if(lb) lb.textContent=(locked?&#x27;🔒 Unlock&#x27;:&#x27;🔓 Lock&#x27;);
+  if(lb) lb.className=&#x27;hbtn&#x27;+(locked?&#x27; gold&#x27;:&#x27;&#x27;);
+  [&#x27;shuf-bat&#x27;,&#x27;shuf-pos&#x27;,&#x27;shuf-both&#x27;].forEach(function(id){var b=el(id);if(b)b.disabled=locked;});
+  var ct=el(&#x27;catch-tog&#x27;);if(ct)ct.disabled=locked;
+  var sa=el(&#x27;sel-all&#x27;);if(sa)sa.disabled=locked;
   var t=aTeam();var r=t?t.roster:[];
-  for(var i=0;i<r.length;i++){var cb=el('cb'+i);if(cb)cb.disabled=locked;}
-  var nb=el('nb-edit');if(nb)nb.disabled=locked;
+  for(var i=0;i&lt;r.length;i++){var cb=el(&#x27;cb&#x27;+i);if(cb)cb.disabled=locked;}
+  var nb=el(&#x27;nb-edit&#x27;);if(nb)nb.disabled=locked;
 }
 
 /* ── EVENT WIRING ────────────────────────────── */
 // Bottom nav
-el('nb-teams').addEventListener('click',function(){ renderTeams(); showScr('teams'); });
-el('nb-game' ).addEventListener('click',function(){ if(!aTeam()){renderTeams();showScr('teams');return;} showScr('game'); render(); });
-el('nb-edit' ).addEventListener('click',function(){ if(!aTeam()){renderTeams();showScr('teams');return;} openSettings(); showScr('settings'); });
+el(&#x27;nb-teams&#x27;).addEventListener(&#x27;click&#x27;,function(){ renderTeams(); showScr(&#x27;teams&#x27;); });
+el(&#x27;nb-game&#x27; ).addEventListener(&#x27;click&#x27;,function(){ if(!aTeam()){renderTeams();showScr(&#x27;teams&#x27;);return;} showScr(&#x27;game&#x27;); render(); });
+el(&#x27;nb-edit&#x27; ).addEventListener(&#x27;click&#x27;,function(){ if(!aTeam()){renderTeams();showScr(&#x27;teams&#x27;);return;} openSettings(); showScr(&#x27;settings&#x27;); });
 
 // Header lock
-el('lock-btn').addEventListener('click',function(){ locked=!locked; updateLockUI(); render(); });
+el(&#x27;lock-btn&#x27;).addEventListener(&#x27;click&#x27;,function(){ locked=!locked; updateLockUI(); render(); });
 
 // Teams screen
-el('new-team-btn').addEventListener('click', newTeam);
-el('del-yes').addEventListener('click', doDel);
-el('del-no' ).addEventListener('click', cancelDel);
+el(&#x27;new-team-btn&#x27;).addEventListener(&#x27;click&#x27;, newTeam);
+el(&#x27;del-yes&#x27;).addEventListener(&#x27;click&#x27;, doDel);
+el(&#x27;del-no&#x27; ).addEventListener(&#x27;click&#x27;, cancelDel);
 
 // Teams list delegation
-el('teams-wrap').addEventListener('click',function(e){
+el(&#x27;teams-wrap&#x27;).addEventListener(&#x27;click&#x27;,function(e){
   var btn=e.target;
-  if(!btn.getAttribute('data-action')) btn=btn.parentNode;
-  var action=btn.getAttribute('data-action');
-  var tid=btn.getAttribute('data-tid');
+  if(!btn.getAttribute(&#x27;data-action&#x27;)) btn=btn.parentNode;
+  var action=btn.getAttribute(&#x27;data-action&#x27;);
+  var tid=btn.getAttribute(&#x27;data-tid&#x27;);
   if(!action||!tid) return;
-  if(action==='load') loadTeam(tid);
-  if(action==='del')  askDel(tid);
+  if(action===&#x27;load&#x27;) loadTeam(tid);
+  if(action===&#x27;del&#x27;)  askDel(tid);
 });
 
 // Settings
-el('save-btn'  ).addEventListener('click',function(){ saveTeam(false); });
-el('saveas-btn').addEventListener('click',function(){ saveTeam(true);  });
-el('back-btn'  ).addEventListener('click',function(){ renderTeams(); showScr('teams'); });
-el('add-player-btn').addEventListener('click', addPlayer);
-el('new-player').addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); addPlayer(); } });
-el('csv-pick').addEventListener('click',function(){ el('csv-input').click(); });
-el('csv-input').addEventListener('change',function(){ handleCSV(this.files[0]); this.value=''; });
+el(&#x27;save-btn&#x27;  ).addEventListener(&#x27;click&#x27;,function(){ saveTeam(false); });
+el(&#x27;saveas-btn&#x27;).addEventListener(&#x27;click&#x27;,function(){ saveTeam(true);  });
+el(&#x27;back-btn&#x27;  ).addEventListener(&#x27;click&#x27;,function(){ renderTeams(); showScr(&#x27;teams&#x27;); });
+el(&#x27;add-player-btn&#x27;).addEventListener(&#x27;click&#x27;, addPlayer);
+el(&#x27;new-player&#x27;).addEventListener(&#x27;keydown&#x27;,function(e){ if(e.key===&#x27;Enter&#x27;){ e.preventDefault(); addPlayer(); } });
+el(&#x27;csv-pick&#x27;).addEventListener(&#x27;click&#x27;,function(){ el(&#x27;csv-input&#x27;).click(); });
+el(&#x27;csv-input&#x27;).addEventListener(&#x27;change&#x27;,function(){ handleCSV(this.files[0]); this.value=&#x27;&#x27;; });
 
 // Theme grid delegation
-el('theme-grid').addEventListener('click',function(e){
-  var tc=e.target; while(tc&&!tc.getAttribute('data-theme-id')) tc=tc.parentNode;
-  if(tc) selectTheme(tc.getAttribute('data-theme-id'));
+el(&#x27;theme-grid&#x27;).addEventListener(&#x27;click&#x27;,function(e){
+  var tc=e.target; while(tc&amp;&amp;!tc.getAttribute(&#x27;data-theme-id&#x27;)) tc=tc.parentNode;
+  if(tc) selectTheme(tc.getAttribute(&#x27;data-theme-id&#x27;));
 });
 
 // Roster editor delete delegation
-el('roster-ed').addEventListener('click',function(e){
+el(&#x27;roster-ed&#x27;).addEventListener(&#x27;click&#x27;,function(e){
   var btn=e.target;
-  if(btn.getAttribute('data-action')==='delplayer'){
-    var idx=parseInt(btn.getAttribute('data-idx'),10);
+  if(btn.getAttribute(&#x27;data-action&#x27;)===&#x27;delplayer&#x27;){
+    var idx=parseInt(btn.getAttribute(&#x27;data-idx&#x27;),10);
     delPlayer(idx);
   }
 });
 
 // Roster check-in delegation
-el('roster-list').addEventListener('click',function(e){
+el(&#x27;roster-list&#x27;).addEventListener(&#x27;click&#x27;,function(e){
   if(locked) return;
-  var row=e.target; while(row&&!row.getAttribute('data-idx')) row=row.parentNode;
+  var row=e.target; while(row&amp;&amp;!row.getAttribute(&#x27;data-idx&#x27;)) row=row.parentNode;
   if(!row) return;
-  var idx=parseInt(row.getAttribute('data-idx'),10);
-  if(e.target.tagName==='INPUT') syncRoster();
+  var idx=parseInt(row.getAttribute(&#x27;data-idx&#x27;),10);
+  if(e.target.tagName===&#x27;INPUT&#x27;) syncRoster();
   else togglePlayer(idx);
 });
 
 // Select all
-el('sarow').addEventListener('click',function(e){
-  if(e.target.id==='sel-all') syncRoster();
+el(&#x27;sarow&#x27;).addEventListener(&#x27;click&#x27;,function(e){
+  if(e.target.id===&#x27;sel-all&#x27;) syncRoster();
   else toggleAll();
 });
 
 // Catcher toggle
-el('catch-tog').addEventListener('change',function(){ if(!locked) render(); });
+el(&#x27;catch-tog&#x27;).addEventListener(&#x27;change&#x27;,function(){ if(!locked) render(); });
 
 // Shuffle buttons
-el('shuf-bat' ).addEventListener('click',function(){ if(locked)return; var p=getPresent(); batting =shuf(p.slice()); render(); });
-el('shuf-pos' ).addEventListener('click',function(){ if(locked)return; var p=getPresent(); posOrder=shuf(p.slice()); render(); });
-el('shuf-both').addEventListener('click',function(){ if(locked)return; var p=getPresent(); batting=shuf(p.slice()); posOrder=shuf(p.slice()); render(); });
+el(&#x27;shuf-bat&#x27; ).addEventListener(&#x27;click&#x27;,function(){ if(locked)return; var p=getPresent(); batting =shuf(p.slice()); render(); });
+el(&#x27;shuf-pos&#x27; ).addEventListener(&#x27;click&#x27;,function(){ if(locked)return; var p=getPresent(); posOrder=shuf(p.slice()); render(); });
+el(&#x27;shuf-both&#x27;).addEventListener(&#x27;click&#x27;,function(){ if(locked)return; var p=getPresent(); batting=shuf(p.slice()); posOrder=shuf(p.slice()); render(); });
 
 // Tab bar delegation
-el('t-bat').parentNode.querySelector('.tbar') &&
-document.querySelector('.tbar').addEventListener('click',function(e){
-  var btn=e.target; while(btn&&!btn.getAttribute('data-tab')) btn=btn.parentNode;
+el(&#x27;t-bat&#x27;).parentNode.querySelector(&#x27;.tbar&#x27;) &amp;&amp;
+document.querySelector(&#x27;.tbar&#x27;).addEventListener(&#x27;click&#x27;,function(e){
+  var btn=e.target; while(btn&amp;&amp;!btn.getAttribute(&#x27;data-tab&#x27;)) btn=btn.parentNode;
   if(!btn) return;
-  var tabId=btn.getAttribute('data-tab');
-  document.querySelectorAll('.ttb').forEach(function(b){b.className=b.className.replace(' on','');});
-  btn.className+=' on';
-  document.querySelectorAll('.tsec').forEach(function(s){s.className='tsec';});
-  var ts=el(tabId); if(ts) ts.className='tsec on';
-  btn.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+  var tabId=btn.getAttribute(&#x27;data-tab&#x27;);
+  document.querySelectorAll(&#x27;.ttb&#x27;).forEach(function(b){b.className=b.className.replace(&#x27; on&#x27;,&#x27;&#x27;);});
+  btn.className+=&#x27; on&#x27;;
+  document.querySelectorAll(&#x27;.tsec&#x27;).forEach(function(s){s.className=&#x27;tsec&#x27;;});
+  var ts=el(tabId); if(ts) ts.className=&#x27;tsec on&#x27;;
+  btn.scrollIntoView({behavior:&#x27;smooth&#x27;,block:&#x27;nearest&#x27;,inline:&#x27;center&#x27;});
 });
 
 /* ── INIT ────────────────────────────────────── */
-loadTeam('fc');
+loadTeam(&#x27;fc&#x27;);
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<script>
+function copyCode(){
+  var code = document.getElementById("code").textContent;
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(code).then(function(){
+      var btn = document.getElementById("copyBtn");
+      btn.textContent = "✓ Copied! Now paste into GitHub";
+      btn.className = "done";
+    });
+  } else {
+    var ta = document.createElement("textarea");
+    ta.value = code;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    ta.setSelectionRange(0, 99999);
+    document.execCommand("copy");
+    document.body.removeChild(ta);
+    var btn = document.getElementById("copyBtn");
+    btn.textContent = "✓ Copied! Now paste into GitHub";
+    btn.className = "done";
+  }
+}
 </script>
 </body>
 </html>
