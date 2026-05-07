@@ -334,7 +334,7 @@ tr:last-child td{border-bottom:none;}
   </div>
   <div class="pin-error" id="pin-error"></div>
   <button class="pin-submit" id="pin-submit-btn">Unlock</button>
-  <div class="pin-hint">Contact your coach for the passphrase</div>
+  <div class="pin-hint">Contact your coach for the passphrase<br><span style="font-size:10px;opacity:.6;">You'll stay logged in for 30 days</span></div>
 </div>
 
 <div class="body">
@@ -926,6 +926,10 @@ function tryPassphrase(){
   if(!val){if(err)err.textContent='Please enter the passphrase.';return;}
   hashPin(val,function(h){
     if(h===CORRECT_PIN_HASH){
+      try{
+        var expires = Date.now() + (30 * 24 * 60 * 60 * 1000); // 30 days
+        localStorage.setItem('gd_auth', JSON.stringify({ok:true,exp:expires}));
+      }catch(e){}
       var ov=el('pin-overlay');
       if(ov){ov.style.opacity='0';ov.style.transition='opacity .3s';setTimeout(function(){ov.style.display='none';},300);}
     } else {
@@ -956,17 +960,24 @@ if(pshow){
   });
 }
 
-// Auto-skip passphrase if already authenticated
+// Auto-skip passphrase if valid non-expired token exists
 try{
-  if(localStorage.getItem('gd_auth')==='1'){
-    var ov=el('pin-overlay');
-    if(ov)ov.style.display='none';
+  var _raw=localStorage.getItem('gd_auth');
+  if(_raw){
+    var _tok=JSON.parse(_raw);
+    if(_tok && _tok.ok && _tok.exp && Date.now() < _tok.exp){
+      var ov=el('pin-overlay');
+      if(ov)ov.style.display='none';
+    } else {
+      // Expired — clear it
+      localStorage.removeItem('gd_auth');
+    }
   }
 }catch(e){}
 
 // Sign out button
 el('signout-btn').addEventListener('click',function(){
-  try{localStorage.removeItem('gd_auth');}catch(e){}
+  try{localStorage.removeItem('gd_auth');}catch(e){}  // clears 30-day token
   var ov=el('pin-overlay');
   if(ov){
     ov.style.display='flex';
