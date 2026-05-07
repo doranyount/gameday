@@ -127,6 +127,16 @@ td{padding:11px 10px;font-size:14px;border-bottom:1px solid #f0f3f9;vertical-ali
 tr:last-child td{border-bottom:none;}
 .bno{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--pri);color:#fff;font-size:11px;font-weight:700;}
 .pos{display:inline-block;padding:3px 9px;border-radius:20px;font-size:12px;font-weight:600;white-space:nowrap;}
+.pos-edit{cursor:pointer;position:relative;}
+.pos-edit:hover{opacity:.85;box-shadow:0 0 0 2px #888;}
+.pos-manual::after{content:'✏';font-size:9px;margin-left:3px;opacity:.7;}
+.pos-popover{position:fixed;z-index:500;background:#fff;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.18);border:1px solid var(--brd);padding:6px;min-width:160px;}
+.pos-pop-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);padding:4px 8px 6px;border-bottom:1px solid var(--brd);margin-bottom:4px;}
+.pos-pop-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:14px;color:var(--txt);}
+.pos-pop-item:hover{background:var(--fnt);}
+.pos-pop-item.current{background:var(--fnt);font-weight:600;}
+.pos-pop-dot{width:9px;height:9px;border-radius:2px;flex-shrink:0;}
+.pos-pop-overlay{position:fixed;inset:0;z-index:499;}
 .pp{background:#eeedf8;color:#3c3480;}.pc{background:#fff3e0;color:#8a4500;}
 .pstar{font-weight:700;font-size:13px;padding:5px 12px;box-shadow:0 0 0 2.5px currentColor;letter-spacing:.01em;}
 .pi{background:#f5e6d3;color:#6b2d0e;}
@@ -322,6 +332,13 @@ tr:last-child td{border-bottom:none;}
 </div>
 
 <div id="print-sheet"></div>
+<!-- Position edit popover -->
+<div class="pos-pop-overlay" id="pop-overlay" style="display:none" onclick="closePopover()"></div>
+<div class="pos-popover" id="pos-popover" style="display:none">
+  <div class="pos-pop-title" id="pop-title">Change position</div>
+  <div id="pop-items"></div>
+</div>
+
 <div class="nav">
   <button class="nb on" id="nb-teams"><span class="nbi">&#x1F465;</span>Teams</button>
   <button class="nb" id="nb-game"><span class="nbi">&#x26BE;</span>Lineup</button>
@@ -335,6 +352,10 @@ var INF=['1st Base','2nd Base','3rd Base','Shortstop'];
 var OUT=['Left Field','Center Field','Right Field'];
 var POS=INF.concat(OUT);
 var activeId='fc',editTheme='navy',pendingDel=null,batting=[],posOrder=[],locked=false;
+var manualEdits=[{},{},{}]; // per-inning overrides: {playerName: position}
+var manualEdits4={}; // inning 4 overrides
+var currentInnings=null; // last computed innings
+var currentInn4=null;
 
 function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function fn(s){
@@ -350,10 +371,14 @@ function getTheme(id){for(var i=0;i<THEMES.length;i++)if(THEMES[i].id===id)retur
 function aTeam(){return getTeam(activeId);}
 function applyTheme(id){document.body.setAttribute('data-theme',id==='navy'?'':id);}
 function posC(p){return {Pitcher:'pp',Catcher:'pc','1st Base':'pi','2nd Base':'pi','3rd Base':'pi',Shortstop:'pi','Left Field':'po','Center Field':'po','Right Field':'po',Bench:'pb2'}[p]||'pi';}
-function chip(p){
-  if(p==='Pitcher') return '<span class="pos pp pstar">&#9968; Pitcher</span>';
-  if(p==='Catcher') return '<span class="pos pc pstar">&#x1F9E4; Catcher</span>';
-  return '<span class="pos '+posC(p)+'">'+p+'</span>';
+function chip(p, player, inningIdx, isManual){
+  var editAttr = (!locked && player !== undefined && inningIdx !== undefined)
+    ? ' data-player="'+esc(player)+'" data-inning="'+inningIdx+'" data-pos="'+esc(p)+'"' : '';
+  var editCls  = editAttr ? ' pos-edit' : '';
+  var manCls   = isManual ? ' pos-manual' : '';
+  if(p==='Pitcher') return '<span class="pos pp pstar'+editCls+manCls+'"'+editAttr+'>&#9968; Pitcher</span>';
+  if(p==='Catcher') return '<span class="pos pc pstar'+editCls+manCls+'"'+editAttr+'>&#x1F9E4; Catcher</span>';
+  return '<span class="pos '+posC(p)+editCls+manCls+'"'+editAttr+'>'+p+'</span>';
 }
 function lgnd(){return '<div class="lgd"><div class="lg"><div class="lgd2" style="background:#3c3480"></div>Pitcher</div><div class="lg"><div class="lgd2" style="background:#8a4500"></div>Catcher</div><div class="lg"><div class="lgd2" style="background:#1a4080"></div>Infield</div><div class="lg"><div class="lgd2" style="background:#1a5c2a"></div>Outfield</div></div>';}
 function el(id){return document.getElementById(id);}
@@ -617,15 +642,26 @@ function render(){
   if(n<4){var ids=['t-bat','t-i1','t-i2','t-i3','t-i4','t-sum'];for(var i=0;i<ids.length;i++)setH(ids[i],'<div class="emp">Check in at least 4 players to build a lineup.</div>');return;}
   var ab=batting.filter(function(p){return pres.indexOf(p)>=0;});
   var ao=posOrder.filter(function(p){return pres.indexOf(p)>=0;});
-  var inn=buildInnings(withC,ao),r4=build4(withC,ao,inn),inn4=r4.inn4,bc=r4.bc;
+  var inn=buildInnings(withC,ao);
+  // Apply manual edits to innings 0-2
+  for(var mi=0;mi<3;mi++){
+    for(var mp in manualEdits[mi]){
+      if(inn[mi][mp]!==undefined) inn[mi][mp]=manualEdits[mi][mp];
+    }
+  }
+  currentInnings=inn;
+  var r4=build4(withC,ao,inn),inn4=r4.inn4,bc=r4.bc;
+  // Apply manual edits to inning 4
+  for(var mp in manualEdits4){ if(inn4[mp]!==undefined) inn4[mp]=manualEdits4[mp]; }
+  currentInn4=inn4;
 
-  setH('t-bat','<div class="lnc"><div class="lnn">'+n+' players. All bat every inning. '+(bpc>0?bpc+' sit each inning.':'Everyone fields every inning.')+'</div>'+lgnd()+'<table><thead><tr><th>#</th><th>Player</th><th>Inn 1 Position</th></tr></thead><tbody>'+ab.map(function(p,i){return '<tr><td><span class="bno">'+(i+1)+'</span></td><td>'+fn(p)+'</td><td>'+chip(inn[0][p]||'Bench')+'</td></tr>';}).join('')+'</tbody></table></div>');
+  setH('t-bat','<div class="lnc"><div class="lnn">'+n+' players. All bat every inning. '+(bpc>0?bpc+' sit each inning.':'Everyone fields every inning.')+'</div>'+lgnd()+'<table><thead><tr><th>#</th><th>Player</th><th>Inn 1 Position</th></tr></thead><tbody>'+ab.map(function(p,i){var pos=inn[0][p]||'Bench';return '<tr><td><span class="bno">'+(i+1)+'</span></td><td>'+fn(p)+'</td><td>'+chip(pos,p,0,!!manualEdits[0][p])+'</td></tr>';}).join('')+'</tbody></table></div>');
 
   var notes=['Inning 1: '+spots+' field, '+bpc+' sit.'+(withC?' Player catcher in lineup.':' Coach catching.'),'Inning 2: bench group from inning 1 rotates in.','Inning 3: final rotation. Last bench group fields.'];
-  for(var i=0;i<3;i++){(function(x){setH('t-i'+(x+1),'<div class="lnc"><div class="lnn">'+notes[x]+'</div>'+lgnd()+'<table><thead><tr><th style=\"width:32px\">#</th><th>Player</th><th>Position</th></tr></thead><tbody>'+ab.map(function(p,idx){return '<tr><td><span class="bno">'+(idx+1)+'</span></td><td>'+fn(p)+'</td><td>'+chip(inn[x][p]||'Bench')+'</td></tr>';}).join('')+'</tbody></table></div>');})(i);}
+  for(var i=0;i<3;i++){(function(x){setH('t-i'+(x+1),'<div class="lnc"><div class="lnn">'+notes[x]+'</div>'+lgnd()+'<table><thead><tr><th style=\"width:32px\">#</th><th>Player</th><th>Position</th></tr></thead><tbody>'+ab.map(function(p,idx){var pos=inn[x][p]||'Bench';return '<tr><td><span class="bno">'+(idx+1)+'</span></td><td>'+fn(p)+'</td><td>'+chip(pos,p,x,!!manualEdits[x][p])+'</td></tr>';}).join('')+'</tbody></table></div>');})(i);}
 
   var ds=ao.filter(function(p){return bc[p]>=1&&inn4[p]==='Bench';});
-  setH('t-i4','<div class="lnc"><div class="lnn'+(ds.length?' w':'')+'">Inning 4: '+spots+' play, '+(n-spots)+' sit.'+(ds.length?' '+ds.map(function(p){return p.split(',')[0];}).join(' & ')+' sit a 2nd time.':' No one sits twice.')+'</div>'+lgnd()+'<table><thead><tr><th style=\"width:32px\">#</th><th>Player</th><th>Position</th><th>Bench</th></tr></thead><tbody>'+ab.map(function(p,idx){var pos=inn4[p]||'Bench',cnt=bc[p]+(pos==='Bench'?1:0);return '<tr><td><span class="bno">'+(idx+1)+'</span></td><td>'+fn(p)+'</td><td>'+chip(pos)+'</td><td style="text-align:center"><span class="tly t'+cnt+'">'+cnt+'</span></td></tr>';}).join('')+'</tbody></table><div class="fn">Bench count = total across all 4 innings</div></div>');
+  setH('t-i4','<div class="lnc"><div class="lnn'+(ds.length?' w':'')+'">Inning 4: '+spots+' play, '+(n-spots)+' sit.'+(ds.length?' '+ds.map(function(p){return p.split(',')[0];}).join(' & ')+' sit a 2nd time.':' No one sits twice.')+'</div>'+lgnd()+'<table><thead><tr><th style=\"width:32px\">#</th><th>Player</th><th>Position</th><th>Bench</th></tr></thead><tbody>'+ab.map(function(p,idx){var pos=inn4[p]||'Bench',cnt=bc[p]+(pos==='Bench'?1:0);return '<tr><td><span class="bno">'+(idx+1)+'</span></td><td>'+fn(p)+'</td><td>'+chip(pos,p,3,!!manualEdits4[p])+'</td><td style="text-align:center"><span class="tly t'+cnt+'">'+cnt+'</span></td></tr>';}).join('')+'</tbody></table><div class="fn">Bench count = total across all 4 innings</div></div>');
 
   var sh='<div class="sg"><div class="sc"><div class="sl">Active</div><div class="sv">'+n+'</div><div class="ss">of '+roster.length+' players</div></div><div class="sc"><div class="sl">Field spots</div><div class="sv">'+spots+'</div><div class="ss">per inning</div></div><div class="sc"><div class="sl">Bench 3 inn</div><div class="sv">'+(bpc>0?'0-1':'0')+'</div></div><div class="sc"><div class="sl">Bench 4 inn</div><div class="sv">'+(bpc>0?'1-2':'0')+'</div></div></div><div class="lnc">';
   for(var i=0;i<ao.length;i++){
@@ -674,9 +710,9 @@ el('new-player').addEventListener('keydown',function(e){if(e.key==='Enter'){e.pr
 el('csv-pick').addEventListener('click',function(){el('csv-input').click();});
 el('csv-input').addEventListener('change',function(){handleCSV(this.files[0]);this.value='';});
 el('catch-tog').addEventListener('change',function(){if(!locked)render();});
-el('shuf-bat').addEventListener('click',function(){if(locked)return;batting=shuf(getPresent().slice());render();});
-el('shuf-pos').addEventListener('click',function(){if(locked)return;posOrder=shuf(getPresent().slice());render();});
-el('shuf-both').addEventListener('click',function(){if(locked)return;var p=getPresent();batting=shuf(p.slice());posOrder=shuf(p.slice());render();});
+el('shuf-bat').addEventListener('click',function(){if(locked)return;batting=shuf(getPresent().slice());clearManualEdits();render();});
+el('shuf-pos').addEventListener('click',function(){if(locked)return;posOrder=shuf(getPresent().slice());clearManualEdits();render();});
+el('shuf-both').addEventListener('click',function(){if(locked)return;var p=getPresent();batting=shuf(p.slice());posOrder=shuf(p.slice());clearManualEdits();render();});
 el('teams-wrap').addEventListener('click',function(e){
   var btn=e.target;if(!btn.getAttribute('data-action'))btn=btn.parentNode;
   var action=btn.getAttribute('data-action'),tid=btn.getAttribute('data-tid');
@@ -848,6 +884,122 @@ function buildPrintSheet(){
 el('print-btn').addEventListener('click',function(){
   buildPrintSheet();
   window.print();
+});
+
+
+/* ── POSITION EDIT POPOVER ── */
+var ALL_POS_OPTS = ['Pitcher','Catcher','1st Base','2nd Base','3rd Base','Shortstop','Left Field','Center Field','Right Field','Bench'];
+var POS_COLORS = {
+  'Pitcher':'#3c3480','Catcher':'#8a4500',
+  '1st Base':'#6b2d0e','2nd Base':'#6b2d0e','3rd Base':'#6b2d0e','Shortstop':'#6b2d0e',
+  'Left Field':'#1a5c2a','Center Field':'#1a5c2a','Right Field':'#1a5c2a',
+  'Bench':'#888'
+};
+var activePopPlayer=null, activePopInning=null;
+
+function openPopover(player, inningIdx, currentPos, anchorEl) {
+  if(locked) return;
+  activePopPlayer=player;
+  activePopInning=inningIdx;
+
+  var withC = el('catch-tog').checked;
+  var title = el('pop-title');
+  if(title) title.textContent = fn(player);
+
+  var items = el('pop-items');
+  if(!items) return;
+  var h = '';
+  ALL_POS_OPTS.forEach(function(pos) {
+    // Hide Catcher option if coach catching
+    if(pos==='Catcher' && !withC) return;
+    var isCurrent = pos===currentPos;
+    var dot = POS_COLORS[pos]||'#888';
+    h += '<div class="pos-pop-item'+(isCurrent?' current':'')+'" data-newpos="'+esc(pos)+'">'
+      +'<div class="pos-pop-dot" style="background:'+dot+'"></div>'
+      +pos+(isCurrent?' ✓':'')+'</div>';
+  });
+  items.innerHTML = h;
+
+  // Position the popover near the tapped element
+  var pop = el('pos-popover');
+  if(!pop) return;
+  pop.style.display = 'block';
+  var rect = anchorEl.getBoundingClientRect();
+  var popH = 320, popW = 180;
+  var top = rect.bottom + 6;
+  var left = rect.left;
+  if(top + popH > window.innerHeight) top = rect.top - popH - 6;
+  if(left + popW > window.innerWidth) left = window.innerWidth - popW - 10;
+  if(left < 6) left = 6;
+  pop.style.top = top + 'px';
+  pop.style.left = left + 'px';
+
+  el('pop-overlay').style.display = 'block';
+}
+
+function closePopover() {
+  var pop = el('pos-popover');
+  if(pop) pop.style.display='none';
+  var ov = el('pop-overlay');
+  if(ov) ov.style.display='none';
+  activePopPlayer=null; activePopInning=null;
+}
+
+function applyPositionEdit(newPos) {
+  if(activePopPlayer===null || activePopInning===null) return;
+  var player = activePopPlayer;
+  var innIdx = activePopInning; // 0=inn1, 1=inn2, 2=inn3, 3=inn4
+  closePopover();
+
+  var edits = innIdx===3 ? manualEdits4 : manualEdits[innIdx];
+  var inn   = innIdx===3 ? currentInn4  : currentInnings[innIdx];
+  if(!inn) return;
+
+  var oldPos = inn[player];
+  if(newPos === oldPos) return; // no change
+
+  // Find if another player already has this position — if so swap
+  var swapPlayer = null;
+  for(var p in inn) {
+    if(p !== player && inn[p] === newPos) { swapPlayer = p; break; }
+  }
+
+  // Apply edit
+  if(innIdx===3) {
+    manualEdits4[player] = newPos;
+    if(swapPlayer) manualEdits4[swapPlayer] = oldPos;
+  } else {
+    manualEdits[innIdx][player] = newPos;
+    if(swapPlayer) manualEdits[innIdx][swapPlayer] = oldPos;
+  }
+
+  render();
+}
+
+// Clear manual edits when lineup is reshuffled
+function clearManualEdits() {
+  manualEdits = [{},{},{}];
+  manualEdits4 = {};
+}
+
+// Wire up popover item clicks
+document.addEventListener('click', function(e) {
+  // Handle position badge tap
+  var badge = e.target;
+  if(badge.classList && badge.classList.contains('pos-edit')) {
+    var player  = badge.getAttribute('data-player');
+    var inning  = parseInt(badge.getAttribute('data-inning'), 10);
+    var pos     = badge.getAttribute('data-pos');
+    if(player !== null && !isNaN(inning)) openPopover(player, inning, pos, badge);
+    return;
+  }
+  // Handle popover item selection
+  var item = e.target;
+  while(item && item !== document && !item.getAttribute('data-newpos')) item = item.parentNode;
+  if(item && item.getAttribute('data-newpos')) {
+    applyPositionEdit(item.getAttribute('data-newpos'));
+    return;
+  }
 });
 
 loadTeam('fc');
