@@ -128,7 +128,7 @@ tr:last-child td{border-bottom:none;}
 .bno{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--pri);color:#fff;font-size:11px;font-weight:700;}
 .pos{display:inline-block;padding:3px 9px;border-radius:20px;font-size:12px;font-weight:600;white-space:nowrap;}
 .pp{background:#eeedf8;color:#3c3480;}.pc{background:#fff3e0;color:#8a4500;}
-.pstar{font-weight:700;font-size:13px;padding:5px 12px;box-shadow:0 0 0 2px currentColor;}
+.pstar{font-weight:700;font-size:13px;padding:5px 12px;box-shadow:0 0 0 2.5px currentColor;letter-spacing:.01em;}
 .pi{background:#e3eef8;color:#0f2044;}.po{background:#e4f4ea;color:#1a5c2a;}
 .pb2{background:#edf0f7;color:#4a5a80;border:1px solid var(--brd);}
 .tly{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;font-size:12px;font-weight:700;}
@@ -322,7 +322,11 @@ function getTheme(id){for(var i=0;i<THEMES.length;i++)if(THEMES[i].id===id)retur
 function aTeam(){return getTeam(activeId);}
 function applyTheme(id){document.body.setAttribute('data-theme',id==='navy'?'':id);}
 function posC(p){return {Pitcher:'pp',Catcher:'pc','1st Base':'pi','2nd Base':'pi','3rd Base':'pi',Shortstop:'pi','Left Field':'po','Center Field':'po','Right Field':'po',Bench:'pb2'}[p]||'pi';}
-function chip(p){return '<span class="pos '+posC(p)+'">'+p+'</span>';}
+function chip(p){
+  if(p==='Pitcher') return '<span class="pos pp pstar">&#9968; Pitcher</span>';
+  if(p==='Catcher') return '<span class="pos pc pstar">&#x1F9E4; Catcher</span>';
+  return '<span class="pos '+posC(p)+'">'+p+'</span>';
+}
 function lgnd(){return '<div class="lgd"><div class="lg"><div class="lgd2" style="background:#3c3480"></div>Pitcher</div><div class="lg"><div class="lgd2" style="background:#8a4500"></div>Catcher</div><div class="lg"><div class="lgd2" style="background:#1a4080"></div>Infield</div><div class="lg"><div class="lgd2" style="background:#1a5c2a"></div>Outfield</div></div>';}
 function el(id){return document.getElementById(id);}
 function setH(id,v){var e=el(id);if(e)e.innerHTML=v;}
@@ -532,7 +536,7 @@ function render(){
   var sh='<div class="sg"><div class="sc"><div class="sl">Active</div><div class="sv">'+n+'</div><div class="ss">of '+roster.length+' players</div></div><div class="sc"><div class="sl">Field spots</div><div class="sv">'+spots+'</div><div class="ss">per inning</div></div><div class="sc"><div class="sl">Bench 3 inn</div><div class="sv">'+(bpc>0?'0-1':'0')+'</div></div><div class="sc"><div class="sl">Bench 4 inn</div><div class="sv">'+(bpc>0?'1-2':'0')+'</div></div></div><div class="lnc">';
   for(var i=0;i<ao.length;i++){
     var p=ao[i],r1=inn[0][p]||'Bench',r2=inn[1][p]||'Bench',r3=inn[2][p]||'Bench',r4p=inn4[p]||'Bench';
-    sh+='<div class="pcard"><div class="pname">'+esc(p)+'</div><div class="igrid"><div class="icell"><div class="ilbl">Inning 1</div>'+chip(r1)+'</div><div class="icell"><div class="ilbl">Inning 2</div>'+chip(r2)+'</div><div class="icell"><div class="ilbl">Inning 3</div>'+chip(r3)+'</div><div class="icell" style="opacity:.75"><div class="ilbl">Inning 4</div>'+chip(r4p)+'</div></div></div>';
+    sh+='<div class="pcard"><div class="pname">'+fn(p)+'</div><div class="igrid"><div class="icell"><div class="ilbl">Inning 1</div>'+chip(r1)+'</div><div class="icell"><div class="ilbl">Inning 2</div>'+chip(r2)+'</div><div class="icell"><div class="ilbl">Inning 3</div>'+chip(r3)+'</div><div class="icell" style="opacity:.75"><div class="ilbl">Inning 4</div>'+chip(r4p)+'</div></div></div>';
   }
   sh+='<div class="fn">Inning 4 only if game goes that far</div></div>';
   setH('t-sum',sh);
