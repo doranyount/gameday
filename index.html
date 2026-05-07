@@ -701,9 +701,9 @@ function render(){
   setH('t-i4','<div class="lnc"><div class="lnn'+(ds.length?' w':'')+'">Inning 4: '+spots+' play, '+(n-spots)+' sit.'+(ds.length?' '+ds.map(function(p){return p.split(',')[0];}).join(' & ')+' sit a 2nd time.':' No one sits twice.')+'</div>'+lgnd()+'<table><thead><tr><th style=\"width:32px\">#</th><th>Player</th><th>Position</th><th>Bench</th></tr></thead><tbody>'+ab.map(function(p,idx){var pos=inn4[p]||'Bench',cnt=bc[p]+(pos==='Bench'?1:0);return '<tr><td><span class="bno">'+(idx+1)+'</span></td><td>'+fn(p)+'</td><td>'+chip(pos,p,3,!!manualEdits4[p])+'</td><td style="text-align:center"><span class="tly t'+cnt+'">'+cnt+'</span></td></tr>';}).join('')+'</tbody></table><div class="fn">Bench count = total across all 4 innings</div></div>');
 
   var sh='<div class="sg"><div class="sc"><div class="sl">Active</div><div class="sv">'+n+'</div><div class="ss">of '+roster.length+' players</div></div><div class="sc"><div class="sl">Field spots</div><div class="sv">'+spots+'</div><div class="ss">per inning</div></div><div class="sc"><div class="sl">Bench 3 inn</div><div class="sv">'+(bpc>0?'0-1':'0')+'</div></div><div class="sc"><div class="sl">Bench 4 inn</div><div class="sv">'+(bpc>0?'1-2':'0')+'</div></div></div><div class="lnc">';
-  for(var i=0;i<ao.length;i++){
-    var p=ao[i],r1=inn[0][p]||'Bench',r2=inn[1][p]||'Bench',r3=inn[2][p]||'Bench',r4p=inn4[p]||'Bench';
-    sh+='<div class="pcard"><div class="pname">'+fn(p)+'</div><div class="igrid"><div class="icell"><div class="ilbl">Inning 1</div>'+chip(r1)+'</div><div class="icell"><div class="ilbl">Inning 2</div>'+chip(r2)+'</div><div class="icell"><div class="ilbl">Inning 3</div>'+chip(r3)+'</div><div class="icell" style="opacity:.75"><div class="ilbl">Inning 4</div>'+chip(r4p)+'</div></div></div>';
+  for(var i=0;i<ab.length;i++){
+    var p=ab[i],r1=inn[0][p]||'Bench',r2=inn[1][p]||'Bench',r3=inn[2][p]||'Bench',r4p=inn4[p]||'Bench';
+    sh+='<div class="pcard"><div class="pname"><span class="bno" style="margin-right:6px">'+(i+1)+'</span>'+fn(p)+'</div><div class="igrid"><div class="icell"><div class="ilbl">Inning 1</div>'+chip(r1)+'</div><div class="icell"><div class="ilbl">Inning 2</div>'+chip(r2)+'</div><div class="icell"><div class="ilbl">Inning 3</div>'+chip(r3)+'</div><div class="icell" style="opacity:.75"><div class="ilbl">Inning 4</div>'+chip(r4p)+'</div></div></div>';
   }
   sh+='<div class="fn">Inning 4 only if game goes that far</div></div>';
   setH('t-sum',sh);
@@ -984,41 +984,53 @@ function closePopover() {
   activePopPlayer=null; activePopInning=null;
 }
 
+function getEffectiveInning(innIdx) {
+  // Returns a complete player->position map with all manual edits applied
+  var base = {};
+  if(innIdx === 3) {
+    if(currentInn4) { for(var p in currentInn4) base[p] = currentInn4[p]; }
+    for(var p in manualEdits4) base[p] = manualEdits4[p];
+  } else {
+    if(currentInnings && currentInnings[innIdx]) {
+      for(var p in currentInnings[innIdx]) base[p] = currentInnings[innIdx][p];
+    }
+    if(manualEdits[innIdx]) {
+      for(var p in manualEdits[innIdx]) base[p] = manualEdits[innIdx][p];
+    }
+  }
+  return base;
+}
+
 function applyPositionEdit(newPos) {
   if(activePopPlayer===null || activePopInning===null) return;
   var player  = activePopPlayer;
   var innIdx  = activePopInning;
-  var oldPos  = activePopCurrentPos; // saved when popover opened
+  var oldPos  = activePopCurrentPos;
   closePopover();
 
   if(newPos === oldPos) return;
 
-  // Build the full effective position map for this inning right now
-  // so we can find who currently holds newPos
-  var effMap = {};
-  if(innIdx === 3) {
-    if(currentInn4) { for(var p in currentInn4) effMap[p] = currentInn4[p]; }
-    for(var p in manualEdits4) effMap[p] = manualEdits4[p];
-  } else {
-    if(currentInnings && currentInnings[innIdx]) {
-      for(var p in currentInnings[innIdx]) effMap[p] = currentInnings[innIdx][p];
-    }
-    for(var p in manualEdits[innIdx]) effMap[p] = manualEdits[innIdx][p];
-  }
+  // Get the complete current state of this inning
+  var effMap = getEffectiveInning(innIdx);
 
-  // Find who currently has newPos so we can swap them
+  // Find who currently has newPos
   var swapPlayer = null;
   for(var p in effMap) {
     if(p !== player && effMap[p] === newPos) { swapPlayer = p; break; }
   }
 
-  // Apply both edits atomically
+  // Do the swap in the effective map
+  effMap[player] = newPos;
+  if(swapPlayer) effMap[swapPlayer] = oldPos;
+
+  // Store the ENTIRE effective map as manual edits so render()
+  // can never produce a different result — this eliminates all race conditions
   if(innIdx === 3) {
-    manualEdits4[player] = newPos;
-    if(swapPlayer) manualEdits4[swapPlayer] = oldPos;
+    manualEdits4 = {};
+    for(var p in effMap) manualEdits4[p] = effMap[p];
   } else {
-    manualEdits[innIdx][player] = newPos;
-    if(swapPlayer) manualEdits[innIdx][swapPlayer] = oldPos;
+    manualEdits[innIdx] = {};
+    for(var p in effMap) manualEdits[innIdx][p] = effMap[p];
   }
 
   render();
