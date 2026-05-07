@@ -94,7 +94,7 @@ body{font-family:-apple-system,sans-serif;background:var(--pri);color:#fff;min-h
 .rn.ab{color:#bbb;text-decoration:line-through;}
 .cin{padding:12px 14px;display:flex;flex-direction:column;gap:12px;}
 .crow{display:flex;align-items:center;gap:10px;}
-.clbl{font-size:15px;font-weight:500;color:var(--txt);flex:1;}
+.clbl{font-size:15px;font-weight:500;color:var(--txt);}
 .mtag{padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;}
 .mton{background:var(--pri);color:#fff;}.mtof{background:var(--fnt);color:var(--mut);}
 .tog{position:relative;width:48px;height:28px;flex-shrink:0;}
@@ -289,10 +289,10 @@ tr:last-child td{border-bottom:none;}
   <div class="card">
     <div class="chd"><span class="ct">Lineup Controls</span></div>
     <div class="cin">
-      <div class="crow">
-        <span class="clbl">Player catching today?</span>
-        <label class="tog"><input type="checkbox" id="catch-tog"><span class="ttr"></span></label>
-        <span class="mtag mtof" id="mode-tag">Coach</span>
+      <div class="crow" style="display:inline-flex;background:var(--fnt);padding:8px 14px;border-radius:10px;width:100%;">
+        <span class="clbl" style="margin-right:auto;">Player catching today?</span>
+        <label class="tog" style="margin:0 10px;"><input type="checkbox" id="catch-tog" checked><span class="ttr"></span></label>
+        <span class="mtag mton" id="mode-tag">Player</span>
       </div>
       <div class="srow">
         <button class="sfb" id="shuf-bat"><span class="sfic">&#x1F500;</span>Batting</button>
