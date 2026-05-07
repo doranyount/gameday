@@ -199,9 +199,24 @@ tr:last-child td{border-bottom:none;}
 .gt-wrap{padding:12px 14px 0;}
 /* Top bar: inning + outs + runs */
 .gt-topbar{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;}
-.gt-stat{background:#fff;border-radius:var(--rad-sm);border:1px solid var(--brd);padding:10px 12px;text-align:center;}
-.gt-stat-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);margin-bottom:4px;}
+.gt-stat{background:#fff;border-radius:var(--rad-sm);border:1px solid var(--brd);padding:10px 12px;text-align:center;transition:background .3s,border-color .3s;}
+.gt-stat-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);margin-bottom:4px;transition:color .3s;}
 .gt-stat-val{font-size:28px;font-weight:800;color:var(--pri);line-height:1;}
+.gt-stat.alert-red{background:#fff0f0;border-color:#e74c3c;}
+.gt-stat.alert-red .gt-stat-lbl{color:#c0392b;}
+.gt-stat.alert-red .gt-stat-val{color:#c0392b;}
+.gt-stat.alert-green{background:#eafaf1;border-color:#27ae60;}
+.gt-stat.alert-green .gt-stat-lbl{color:#1a7a40;}
+.gt-stat.alert-green .gt-stat-val{color:#1a7a40;}
+.gt-alert-msg{font-size:11px;font-weight:800;margin-top:4px;letter-spacing:.03em;}
+/* Score board */
+.gt-scoreboard{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+.gt-score-card{background:#fff;border-radius:var(--rad-sm);border:1px solid var(--brd);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;}
+.gt-score-team{font-size:12px;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.05em;}
+.gt-score-num{font-size:32px;font-weight:800;color:var(--pri);line-height:1;}
+.gt-score-ctrl{display:flex;flex-direction:column;gap:4px;}
+.gt-score-card.us{border-color:var(--pri);background:var(--fnt);}
+.gt-score-card.us .gt-score-team{color:var(--pri);}
 .gt-stat-ctrl{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:4px;}
 .gt-minus,.gt-plus{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--brd);background:var(--off);color:var(--pri);font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;touch-action:manipulation;}
 .gt-minus:active,.gt-plus:active{background:var(--pri);color:#fff;}
@@ -1022,8 +1037,13 @@ function buildPrintHTML(){
     +'.pr-out{background:#e4f4ea;color:#1a5c2a;}'
     +'.pr-bench{background:#f5f5f5;color:#888;border:1px dashed #bbb;}'
     +'</style>'
-    +'<script>window.onload=function(){window.print();}<\/script>'
-    +'</head><body>'+body+'</body></html>';
+    +'<script><\/script>'
+    +'</head><body>'
+    +'<div style="text-align:center;padding:10px 0 14px;border-bottom:2px solid #000;margin-bottom:10px;">'
+    +'<button onclick="window.print()" style="padding:10px 28px;font-size:15px;font-weight:700;background:#0f2044;color:#fff;border:none;border-radius:8px;cursor:pointer;margin-right:10px;">&#x1F5A8; Print</button>'
+    +'<button onclick="window.close()" style="padding:10px 20px;font-size:15px;font-weight:700;background:#f0f0f0;color:#333;border:none;border-radius:8px;cursor:pointer;">Close</button>'
+    +'</div>'
+    +body+'</body></html>';
 }
 
 el('print-btn').addEventListener('click',function(){
@@ -1033,7 +1053,6 @@ el('print-btn').addEventListener('click',function(){
   pw.document.write(html);
   pw.document.close();
   pw.focus();
-  setTimeout(function(){ pw.print(); }, 400);
 });
 
 
@@ -1332,13 +1351,16 @@ function renderInningTabs() {
 /* ══ GAMETIME ══════════════════════════════════════════════ */
 var gt = {
   active: false,
-  inning: 1,       // 1-based
+  inning: 1,
   outs: 0,
-  runs: 0,         // runs this inning
-  batIdx: 0,       // index into active batting order (continuous)
-  innings: null,   // computed innings [0..3]
+  runs: 0,          // runs this inning (our team)
+  usScore: 0,       // total runs our team
+  themScore: 0,     // total runs other team
+  themInning: 0,    // their runs this inning
+  batIdx: 0,
+  innings: null,
   inn4: null,
-  ab: null,        // active batting order at game start
+  ab: null,
   totalInnings: 4
 };
 
@@ -1369,6 +1391,9 @@ function gtStart() {
   gt.inning = 1;
   gt.outs = 0;
   gt.runs = 0;
+  gt.usScore = 0;
+  gt.themScore = 0;
+  gt.themInning = 0;
   gt.batIdx = 0;
   renderGT();
 }
@@ -1397,13 +1422,20 @@ function gtChangeRuns(delta) {
   gt.runs = Math.max(0, Math.min(5, gt.runs + delta));
   renderGT();
 }
+function gtChangeThem(delta) {
+  gt.themInning = Math.max(0, gt.themInning + delta);
+  renderGT();
+}
 
 function gtNextInning() {
   if(gt.inning >= gt.totalInnings) return;
+  gt.usScore += gt.runs;
+  gt.themScore += gt.themInning;
   var oldInning = gt.inning;
   gt.inning++;
   gt.outs = 0;
   gt.runs = 0;
+  gt.themInning = 0;
   showTransition(oldInning, gt.inning);
 }
 
@@ -1496,28 +1528,60 @@ function renderGT() {
   var isLast = gt.inning >= gt.totalInnings;
   var html = '';
 
+  // ── Alert states ──
+  var outsAlert = gt.outs >= 3;
+  var runsAlert = gt.runs >= 5;
+
   // ── Top bar: Inning / Outs / Runs ──
   html += '<div class="gt-topbar">';
+
   html += '<div class="gt-stat"><div class="gt-stat-lbl">Inning</div>'
     +'<div class="gt-stat-val">'+gt.inning+'</div>'
     +'<div style="font-size:11px;color:var(--mut);margin-top:2px;">of '+gt.totalInnings+'</div></div>';
 
-  html += '<div class="gt-stat"><div class="gt-stat-lbl">Outs</div>'
+  html += '<div class="gt-stat'+(outsAlert?' alert-red':'')+'"><div class="gt-stat-lbl">Outs</div>'
     +'<div class="gt-outs-pips">'
     +'<div class="gt-pip'+(gt.outs>=1?' on':'')+'" data-gt-outs="1"></div>'
     +'<div class="gt-pip'+(gt.outs>=2?' on':'')+'" data-gt-outs="2"></div>'
     +'<div class="gt-pip'+(gt.outs>=3?' on':'')+'" data-gt-outs="3"></div>'
-    +'</div></div>';
+    +'</div>'
+    +(outsAlert?'<div class="gt-alert-msg" style="color:#c0392b;">3 OUTS — SWITCH!</div>':'')
+    +'</div>';
 
-  html += '<div class="gt-stat"><div class="gt-stat-lbl">Runs</div>'
+  html += '<div class="gt-stat'+(runsAlert?' alert-green':'')+'"><div class="gt-stat-lbl">Runs</div>'
     +'<div class="gt-stat-ctrl">'
     +'<button class="gt-minus" data-gt-runs="-1">−</button>'
     +'<span class="gt-stat-val" style="font-size:24px;">'+gt.runs+'</span>'
     +'<button class="gt-plus" data-gt-runs="1">+</button>'
     +'</div>'
-    +'<div style="font-size:10px;color:var(--mut);margin-top:2px;">this inning (max 5)</div>'
+    +(runsAlert?'<div class="gt-alert-msg" style="color:#1a7a40;">5 RUNS — SWITCH!</div>':'<div style="font-size:10px;color:var(--mut);margin-top:2px;">this inning</div>')
     +'</div>';
+
   html += '</div>';
+
+  // ── Scoreboard ──
+  var t = aTeam();
+  var teamName = t ? t.name : 'Us';
+  html += '<div class="gt-scoreboard">'
+    +'<div class="gt-score-card us">'
+      +'<div>'
+        +'<div class="gt-score-team">'+esc(teamName)+'</div>'
+        +'<div class="gt-score-num">'+(gt.usScore + gt.runs)+'</div>'
+        +'<div style="font-size:10px;color:var(--pri);margin-top:2px;">'+gt.runs+' this inning</div>'
+      +'</div>'
+    +'</div>'
+    +'<div class="gt-score-card">'
+      +'<div style="flex:1">'
+        +'<div class="gt-score-team">Opponents</div>'
+        +'<div class="gt-score-num">'+(gt.themScore + gt.themInning)+'</div>'
+        +'<div style="font-size:10px;color:var(--mut);margin-top:2px;">'+gt.themInning+' this inning</div>'
+      +'</div>'
+      +'<div class="gt-score-ctrl">'
+        +'<button class="gt-minus" data-gt-them="-1">−</button>'
+        +'<button class="gt-plus" data-gt-them="1">+</button>'
+      +'</div>'
+    +'</div>'
+    +'</div>';
 
   // ── Battery ──
   html += '<div class="gt-battery">'
@@ -1575,9 +1639,14 @@ document.addEventListener('click', function(e) {
     gtSetOuts(gt.outs === n ? n-1 : n);
     return;
   }
-  // Runs
+  // Runs (our team)
   if(e.target.getAttribute('data-gt-runs')) {
     gtChangeRuns(parseInt(e.target.getAttribute('data-gt-runs'),10));
+    return;
+  }
+  // Runs (opponents)
+  if(e.target.getAttribute('data-gt-them')) {
+    gtChangeThem(parseInt(e.target.getAttribute('data-gt-them'),10));
     return;
   }
   // Advance batter
@@ -1586,7 +1655,16 @@ document.addEventListener('click', function(e) {
   if(e.target.getAttribute('data-gt-action') === 'next') { gtNextInning(); return; }
   // End game
   if(e.target.getAttribute('data-gt-action') === 'end') {
-    el('gt-content').innerHTML = '<div class="gt-inactive" style="font-size:20px;font-weight:700;color:var(--pri)">🏆 Great game, Fisher Cats!</div>';
+    var t2=aTeam();
+    var finalUs = gt.usScore + gt.runs;
+    var finalThem = gt.themScore + gt.themInning;
+    var result = finalUs > finalThem ? '🏆 WIN!' : finalUs < finalThem ? '💪 Good effort!' : '🤝 Tie game!';
+    el('gt-content').innerHTML = '<div class="gt-inactive" style="text-align:center;padding:32px 20px;">'
+      +'<div style="font-size:28px;font-weight:800;margin-bottom:8px;">'+result+'</div>'
+      +'<div style="font-size:20px;font-weight:700;color:var(--pri);margin-bottom:4px;">'+(t2?t2.name:'Us')+': '+finalUs+'</div>'
+      +'<div style="font-size:20px;font-weight:700;color:var(--muted);">Opponents: '+finalThem+'</div>'
+      +'<div style="font-size:13px;color:var(--mut);margin-top:16px;">Great game!</div>'
+      +'</div>';
     return;
   }
 });
