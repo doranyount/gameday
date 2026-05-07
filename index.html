@@ -193,12 +193,12 @@ tr:last-child td{border-bottom:none;}
 /* ── PRINT ── */
 #print-sheet{display:none;}
 @page{
-  size:letter landscape;
-  margin:0.4in;
+  size:auto;
+  margin:0.3in;
 }
 @media print{
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
-  html,body{background:#fff !important;width:100%;height:100%;}
+  html,body{background:#fff !important;}
   body > *{display:none !important;}
   #print-sheet{
     display:block !important;
@@ -207,16 +207,18 @@ tr:last-child td{border-bottom:none;}
     background:#fff;
     width:100%;
     transform-origin:top left;
+    position:absolute;
+    top:0;left:0;
   }
   .pr-header{text-align:center;border-bottom:2px solid #000;padding-bottom:6px;margin-bottom:10px;}
   .pr-title{font-size:18px;font-weight:800;letter-spacing:-.3px;}
   .pr-sub{font-size:11px;color:#555;margin-top:2px;}
-  .pr-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;}
+  .pr-grid{display:grid;grid-template-columns:0.85fr 1fr 1fr 1fr;gap:8px;align-items:start;}
   .pr-section{break-inside:avoid;}
   .pr-section-title{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;background:#000 !important;color:#fff !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:4px 8px;margin-bottom:0;}
   .pr-table{width:100%;border-collapse:collapse;font-size:10px;}
-  .pr-table th{padding:3px 6px;text-align:left;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #000;color:#333;}
-  .pr-table td{padding:3px 6px;border-bottom:.5px solid #ddd;vertical-align:middle;}
+  .pr-table th{padding:2px 5px;text-align:left;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid #000;color:#333;}
+  .pr-table td{padding:2px 5px;border-bottom:.5px solid #eee;vertical-align:middle;}
   .pr-table tr:last-child td{border-bottom:none;}
   .pr-num{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;background:#000 !important;color:#fff !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-size:9px;font-weight:700;}
   .pr-pos{display:inline-block;padding:1px 5px;border-radius:8px;font-size:10px;font-weight:600;}
@@ -934,7 +936,49 @@ function buildPrintSheet(){
 
 el('print-btn').addEventListener('click',function(){
   buildPrintSheet();
-  window.print();
+
+  // Auto-scale the print sheet to fit one landscape page
+  // We do this by measuring the content, computing a scale factor,
+  // and applying it via CSS transform before printing
+  var sheet = el('print-sheet');
+  if(!sheet){ window.print(); return; }
+
+  // Temporarily show sheet to measure it
+  sheet.style.display = 'block';
+  sheet.style.transform = 'none';
+  sheet.style.width = '9.4in'; // landscape letter minus margins
+
+  // Small delay so browser can lay out the content before measuring
+  setTimeout(function(){
+    var contentH = sheet.scrollHeight;
+    var contentW = sheet.scrollWidth;
+
+    // Target: landscape letter = 10in x 7.4in (at 96dpi = 960 x 710px approx)
+    // Use window to estimate available print area
+    var targetW = 9.4 * 96;  // ~902px
+    var targetH = 6.8 * 96;  // ~653px (7in minus margins)
+
+    var scaleX = targetW / contentW;
+    var scaleY = targetH / contentH;
+    var scale  = Math.min(scaleX, scaleY, 1); // never upscale
+
+    sheet.style.transform = 'scale('+scale+')';
+    sheet.style.transformOrigin = 'top left';
+    sheet.style.width = (contentW)+'px';
+
+    // Also set a wrapper height so page knows the scaled size
+    sheet.style.height = (contentH * scale)+'px';
+
+    window.print();
+
+    // Restore after print dialog closes
+    setTimeout(function(){
+      sheet.style.display = '';
+      sheet.style.transform = '';
+      sheet.style.width = '';
+      sheet.style.height = '';
+    }, 1000);
+  }, 150);
 });
 
 
