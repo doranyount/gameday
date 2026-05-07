@@ -621,10 +621,10 @@ function render(){
   setH('t-bat','<div class="lnc"><div class="lnn">'+n+' players. All bat every inning. '+(bpc>0?bpc+' sit each inning.':'Everyone fields every inning.')+'</div>'+lgnd()+'<table><thead><tr><th>#</th><th>Player</th><th>Inn 1 Position</th></tr></thead><tbody>'+ab.map(function(p,i){return '<tr><td><span class="bno">'+(i+1)+'</span></td><td>'+fn(p)+'</td><td>'+chip(inn[0][p]||'Bench')+'</td></tr>';}).join('')+'</tbody></table></div>');
 
   var notes=['Inning 1: '+spots+' field, '+bpc+' sit.'+(withC?' Player catcher in lineup.':' Coach catching.'),'Inning 2: bench group from inning 1 rotates in.','Inning 3: final rotation. Last bench group fields.'];
-  for(var i=0;i<3;i++){(function(x){setH('t-i'+(x+1),'<div class="lnc"><div class="lnn">'+notes[x]+'</div>'+lgnd()+'<table><thead><tr><th>Player</th><th>Position</th></tr></thead><tbody>'+ao.map(function(p){return '<tr><td>'+fn(p)+'</td><td>'+chip(inn[x][p]||'Bench')+'</td></tr>';}).join('')+'</tbody></table></div>');})(i);}
+  for(var i=0;i<3;i++){(function(x){setH('t-i'+(x+1),'<div class="lnc"><div class="lnn">'+notes[x]+'</div>'+lgnd()+'<table><thead><tr><th style=\"width:32px\">#</th><th>Player</th><th>Position</th></tr></thead><tbody>'+ab.map(function(p,idx){return '<tr><td><span class="bno">'+(idx+1)+'</span></td><td>'+fn(p)+'</td><td>'+chip(inn[x][p]||'Bench')+'</td></tr>';}).join('')+'</tbody></table></div>');})(i);}
 
   var ds=ao.filter(function(p){return bc[p]>=1&&inn4[p]==='Bench';});
-  setH('t-i4','<div class="lnc"><div class="lnn'+(ds.length?' w':'')+'">Inning 4: '+spots+' play, '+(n-spots)+' sit.'+(ds.length?' '+ds.map(function(p){return p.split(',')[0];}).join(' & ')+' sit a 2nd time.':' No one sits twice.')+'</div>'+lgnd()+'<table><thead><tr><th>Player</th><th>Position</th><th>Bench</th></tr></thead><tbody>'+ao.map(function(p){var pos=inn4[p]||'Bench',cnt=bc[p]+(pos==='Bench'?1:0);return '<tr><td>'+fn(p)+'</td><td>'+chip(pos)+'</td><td style="text-align:center"><span class="tly t'+cnt+'">'+cnt+'</span></td></tr>';}).join('')+'</tbody></table><div class="fn">Bench count = total across all 4 innings</div></div>');
+  setH('t-i4','<div class="lnc"><div class="lnn'+(ds.length?' w':'')+'">Inning 4: '+spots+' play, '+(n-spots)+' sit.'+(ds.length?' '+ds.map(function(p){return p.split(',')[0];}).join(' & ')+' sit a 2nd time.':' No one sits twice.')+'</div>'+lgnd()+'<table><thead><tr><th style=\"width:32px\">#</th><th>Player</th><th>Position</th><th>Bench</th></tr></thead><tbody>'+ab.map(function(p,idx){var pos=inn4[p]||'Bench',cnt=bc[p]+(pos==='Bench'?1:0);return '<tr><td><span class="bno">'+(idx+1)+'</span></td><td>'+fn(p)+'</td><td>'+chip(pos)+'</td><td style="text-align:center"><span class="tly t'+cnt+'">'+cnt+'</span></td></tr>';}).join('')+'</tbody></table><div class="fn">Bench count = total across all 4 innings</div></div>');
 
   var sh='<div class="sg"><div class="sc"><div class="sl">Active</div><div class="sv">'+n+'</div><div class="ss">of '+roster.length+' players</div></div><div class="sc"><div class="sl">Field spots</div><div class="sv">'+spots+'</div><div class="ss">per inning</div></div><div class="sc"><div class="sl">Bench 3 inn</div><div class="sv">'+(bpc>0?'0-1':'0')+'</div></div><div class="sc"><div class="sl">Bench 4 inn</div><div class="sv">'+(bpc>0?'1-2':'0')+'</div></div></div><div class="lnc">';
   for(var i=0;i<ao.length;i++){
@@ -824,16 +824,16 @@ function buildPrintSheet(){
   for(var i=0;i<3;i++){
     (function(x){
       h+='<div class="pr-section"><div class="pr-section-title">'+innLabels[x]+'</div>'
-        +'<table class="pr-table"><thead><tr><th>Player</th><th>Position</th></tr></thead><tbody>'
-        +ao.map(function(p){return '<tr><td>'+fn(p)+'</td><td>'+posPrint(inn[x][p]||'Bench')+'</td></tr>';}).join('')
+        +'<table class="pr-table"><thead><tr><th>#</th><th>Player</th><th>Position</th></tr></thead><tbody>'
+        +ab.map(function(p,idx){return '<tr><td><span class="pr-num">'+(idx+1)+'</span></td><td>'+fn(p)+'</td><td>'+posPrint(inn[x][p]||'Bench')+'</td></tr>';}).join('')
         +'</tbody></table></div>';
     })(i);
   }
 
   // Inning 4
   h+='<div class="pr-section"><div class="pr-section-title">Inning 4 (if needed)</div>'
-    +'<table class="pr-table"><thead><tr><th>Player</th><th>Position</th></tr></thead><tbody>'
-    +ao.map(function(p){return '<tr><td>'+fn(p)+'</td><td>'+posPrint(inn4[p]||'Bench')+'</td></tr>';}).join('')
+    +'<table class="pr-table"><thead><tr><th>#</th><th>Player</th><th>Position</th></tr></thead><tbody>'
+    +ab.map(function(p,idx){return '<tr><td><span class="pr-num">'+(idx+1)+'</span></td><td>'+fn(p)+'</td><td>'+posPrint(inn4[p]||'Bench')+'</td></tr>';}).join('')
     +'</tbody></table></div>';
 
   h+='</div>'; // end pr-grid
