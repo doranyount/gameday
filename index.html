@@ -162,6 +162,31 @@ tr:last-child td{border-bottom:none;}
 .pin-submit{width:100%;max-width:300px;padding:14px;border-radius:12px;border:none;background:var(--acc);color:var(--pri);font-size:16px;font-weight:700;cursor:pointer;touch-action:manipulation;margin-bottom:8px;}
 .pin-submit:active{opacity:.85;}
 .pin-hint{font-size:12px;color:rgba(255,255,255,.3);margin-top:12px;text-align:center;}
+
+/* ── PRINT ── */
+#print-sheet{display:none;}
+@media print{
+  body > *{display:none !important;}
+  #print-sheet{display:block !important;font-family:-apple-system,sans-serif;color:#000;padding:0;margin:0;}
+  .pr-header{text-align:center;border-bottom:2px solid #000;padding-bottom:8px;margin-bottom:14px;}
+  .pr-title{font-size:22px;font-weight:800;letter-spacing:-.3px;}
+  .pr-sub{font-size:13px;color:#555;margin-top:2px;}
+  .pr-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .pr-section{break-inside:avoid;}
+  .pr-section-title{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;background:#0f2044;color:#fff;padding:5px 10px;margin-bottom:0;}
+  .pr-table{width:100%;border-collapse:collapse;font-size:12px;}
+  .pr-table th{padding:5px 8px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;border-bottom:1.5px solid #000;color:#333;}
+  .pr-table td{padding:5px 8px;border-bottom:.5px solid #ddd;vertical-align:middle;}
+  .pr-table tr:last-child td{border-bottom:none;}
+  .pr-num{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:#0f2044;color:#fff;font-size:10px;font-weight:700;}
+  .pr-pos{display:inline-block;padding:1px 7px;border-radius:10px;font-size:11px;font-weight:600;}
+  .pr-p{background:#eeedf8;color:#3c3480;font-weight:800;border:1.5px solid #3c3480;}
+  .pr-c{background:#fff3e0;color:#8a4500;font-weight:800;border:1.5px solid #8a4500;}
+  .pr-inf{background:#e3eef8;color:#0f2044;}
+  .pr-out{background:#e4f4ea;color:#1a5c2a;}
+  .pr-bench{background:#f2f2f2;color:#555;}
+  .pr-footer{text-align:center;font-size:10px;color:#999;margin-top:14px;border-top:1px solid #ddd;padding-top:6px;}
+}
 </style>
 </head>
 <body data-theme="">
@@ -174,6 +199,8 @@ tr:last-child td{border-bottom:none;}
       <div class="hdr-sub" id="hdr-sub">Select a team</div>
     </div>
   </div>
+  <button class="hbtn" id="signout-btn" style="display:none">🚪 Sign out</button>
+  <button class="hbtn" id="print-btn" style="display:none">🖨 Print</button>
   <button class="hbtn" id="lock-btn" style="display:none">🔓 Lock</button>
 </div>
 
@@ -247,7 +274,6 @@ tr:last-child td{border-bottom:none;}
     <button class="sbtn sbtn-s" id="saveas-btn">Save as new team</button>
   </div>
   <button class="sbtn sbtn-s" id="back-btn" style="width:100%;margin-bottom:12px">Back to teams</button>
-  <button class="sbtn" id="signout-btn" style="width:100%;margin-bottom:12px;background:#fff0f0;color:#c0392b;border:1.5px solid #ffcccc;">Sign out (lock app)</button>
 </div>
 
 <div class="scr" id="scr-game">
@@ -294,6 +320,7 @@ tr:last-child td{border-bottom:none;}
 
 </div>
 
+<div id="print-sheet"></div>
 <div class="nav">
   <button class="nb on" id="nb-teams"><span class="nbi">&#x1F465;</span>Teams</button>
   <button class="nb" id="nb-game"><span class="nbi">&#x26BE;</span>Lineup</button>
@@ -339,6 +366,8 @@ function showScr(name){
   var m={teams:'nb-teams',game:'nb-game',settings:'nb-edit'};
   if(m[name]){var e=el(m[name]);if(e)e.className='nb on';}
   var lb=el('lock-btn');if(lb)lb.style.display=name==='game'?'flex':'none';
+  var pb=el('print-btn');if(pb)pb.style.display=name==='game'?'flex':'none';
+  var so=el('signout-btn');if(so)so.style.display=name==='teams'?'flex':'none';
   window.scrollTo(0,0);
 }
 
@@ -676,22 +705,85 @@ try{
 }catch(e){}
 
 // Sign out button
-var so=el('signout-btn');
-if(so){
-  so.addEventListener('click',function(){
-    try{localStorage.removeItem('gd_auth');}catch(e){}
-    var ov=el('pin-overlay');
-    if(ov){
-      ov.style.display='flex';
-      ov.style.opacity='1';
-      var inp=el('pin-text-input');
-      if(inp){inp.value='';}
-      var err=el('pin-error');
-      if(err)err.textContent='';
-    }
-    renderTeams();showScr('teams');
-  });
+el('signout-btn').addEventListener('click',function(){
+  try{localStorage.removeItem('gd_auth');}catch(e){}
+  var ov=el('pin-overlay');
+  if(ov){
+    ov.style.display='flex';
+    ov.style.opacity='1';
+    var inp=el('pin-text-input');
+    if(inp)inp.value='';
+    var err=el('pin-error');
+    if(err)err.textContent='';
+  }
+});
+
+
+/* ── PRINT ── */
+function posPrint(p){
+  if(p==='Pitcher') return '<span class="pr-pos pr-p">&#9968; Pitcher</span>';
+  if(p==='Catcher') return '<span class="pr-pos pr-c">&#x1F9E4; Catcher</span>';
+  var m={
+    '1st Base':'pr-inf','2nd Base':'pr-inf','3rd Base':'pr-inf','Shortstop':'pr-inf',
+    'Left Field':'pr-out','Center Field':'pr-out','Right Field':'pr-out','Bench':'pr-bench'
+  };
+  return '<span class="pr-pos '+(m[p]||'pr-inf')+'">'+p+'</span>';
 }
+
+function buildPrintSheet(){
+  var t=aTeam();if(!t)return;
+  var withC=el('catch-tog').checked;
+  var pres=getPresent(),n=pres.length;
+  if(n<4)return;
+  var ab=batting.filter(function(p){return pres.indexOf(p)>=0;});
+  var ao=posOrder.filter(function(p){return pres.indexOf(p)>=0;});
+  var inn=buildInnings(withC,ao);
+  var r4=build4(withC,ao,inn);var inn4=r4.inn4,bc=r4.bc;
+  var now=new Date();
+  var dateStr=now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+
+  var h='<div class="pr-header">'
+    +'<div class="pr-title">&#x26BE; '+esc(t.name)+' &mdash; Game Day Lineup</div>'
+    +'<div class="pr-sub">'+dateStr+' &nbsp;&bull;&nbsp; '+(withC?'Player catching':'Coach catching')+'</div>'
+    +'</div>';
+
+  h+='<div class="pr-grid">';
+
+  // Batting order
+  h+='<div class="pr-section"><div class="pr-section-title">Batting Order</div>'
+    +'<table class="pr-table"><thead><tr><th>#</th><th>Player</th></tr></thead><tbody>'
+    +ab.map(function(p,i){return '<tr><td><span class="pr-num">'+(i+1)+'</span></td><td>'+fn(p)+'</td></tr>';}).join('')
+    +'</tbody></table></div>';
+
+  // Innings 1-3
+  var innLabels=['Inning 1','Inning 2','Inning 3'];
+  for(var i=0;i<3;i++){
+    (function(x){
+      h+='<div class="pr-section"><div class="pr-section-title">'+innLabels[x]+'</div>'
+        +'<table class="pr-table"><thead><tr><th>Player</th><th>Position</th></tr></thead><tbody>'
+        +ao.map(function(p){return '<tr><td>'+fn(p)+'</td><td>'+posPrint(inn[x][p]||'Bench')+'</td></tr>';}).join('')
+        +'</tbody></table></div>';
+    })(i);
+  }
+
+  // Inning 4
+  h+='<div class="pr-section"><div class="pr-section-title">Inning 4 (if needed)</div>'
+    +'<table class="pr-table"><thead><tr><th>Player</th><th>Position</th></tr></thead><tbody>'
+    +ao.map(function(p){return '<tr><td>'+fn(p)+'</td><td>'+posPrint(inn4[p]||'Bench')+'</td></tr>';}).join('')
+    +'</tbody></table></div>';
+
+  h+='</div>'; // end pr-grid
+
+  h+='<div class="pr-footer">Printed from GameDay &bull; '+n+' active players</div>';
+
+  var sheet=el('print-sheet');
+  if(sheet)sheet.innerHTML=h;
+}
+
+el('print-btn').addEventListener('click',function(){
+  buildPrintSheet();
+  window.print();
+});
 
 loadTeam('fc');
 </script>
