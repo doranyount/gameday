@@ -233,19 +233,23 @@ tr:last-child td{border-bottom:none;}
 /* At bat / On deck / In hole */
 .gt-batting{background:#fff;border-radius:var(--rad);border:1px solid var(--brd);overflow:hidden;margin-bottom:12px;}
 .gt-bat-hdr{padding:8px 14px;background:var(--pri);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#fff;display:flex;align-items:center;justify-content:space-between;}
-.gt-batter-row{display:flex;align-items:center;gap:12px;padding:10px 14px;border-bottom:1px solid #f0f0f0;}
+.gt-batter-row{display:flex;align-items:center;gap:12px;padding:11px 14px;border-bottom:1px solid rgba(0,0,0,.06);}
 .gt-batter-row:last-child{border-bottom:none;}
-.gt-batter-role{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;width:60px;flex-shrink:0;}
+.gt-batter-row.row-up{background:#eef2ff;border-left:4px solid var(--pri);}
+.gt-batter-row.row-deck{background:#fffbea;border-left:4px solid var(--acc);}
+.gt-batter-row.row-hole{background:#fff;border-left:4px solid #e0e0e0;opacity:.75;}
+.gt-batter-role{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;width:70px;flex-shrink:0;}
 .role-up{color:var(--pri);}
-.role-deck{color:var(--muted);}
+.role-deck{color:#8a6200;}
 .role-hole{color:#bbb;}
-.gt-batter-num{width:26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+.gt-batter-num{width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
 .num-up{background:var(--pri);color:#fff;}
-.num-deck{background:var(--fnt);color:var(--pri);}
-.num-hole{background:#f0f0f0;color:#999;}
-.gt-batter-name{flex:1;font-size:15px;font-weight:500;color:var(--txt);}
-.gt-batter-name.up{font-weight:700;}
-.gt-batter-name.hole{color:#bbb;}
+.num-deck{background:var(--acc);color:var(--pri);}
+.num-hole{background:#e8e8e8;color:#999;}
+.gt-batter-name{flex:1;font-size:16px;font-weight:500;color:var(--txt);}
+.gt-batter-name.up{font-weight:800;font-size:17px;}
+.gt-batter-name.deck{font-weight:600;color:#4a3800;}
+.gt-batter-name.hole{color:#aaa;font-size:14px;}
 .gt-advance-btn{padding:10px 16px;border-radius:var(--rad-sm);border:none;background:var(--pri);color:#fff;font-size:14px;font-weight:700;cursor:pointer;touch-action:manipulation;white-space:nowrap;}
 .gt-advance-btn:active{opacity:.8;}
 /* Fielding */
@@ -276,6 +280,33 @@ tr:last-child td{border-bottom:none;}
 .gt-trans-go{width:100%;padding:16px;border-radius:var(--rad);border:none;background:var(--acc);color:var(--pri);font-size:18px;font-weight:800;cursor:pointer;margin-top:auto;padding-top:20px;touch-action:manipulation;}
 .gt-inactive{padding:40px 20px;text-align:center;color:var(--mut);font-size:15px;background:#fff;border-radius:var(--rad);border:1px solid var(--brd);}
 .nb-gt-dot{width:6px;height:6px;border-radius:50%;background:var(--acc);position:absolute;top:6px;right:22px;}
+
+/* ── GT SETTINGS ── */
+.gt-settings{background:#fff;border-radius:var(--rad);border:1px solid var(--brd);overflow:hidden;margin-bottom:12px;}
+.gt-settings-hdr{padding:10px 14px;background:var(--pri);display:flex;align-items:center;justify-content:space-between;}
+.gt-settings-title{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#fff;}
+.gt-settings-toggle{font-size:12px;color:rgba(255,255,255,.7);cursor:pointer;padding:2px 8px;border:1px solid rgba(255,255,255,.3);border-radius:10px;background:transparent;}
+.gt-settings-body{padding:12px 14px;display:flex;flex-direction:column;gap:12px;}
+.gt-settings-row{display:flex;align-items:center;gap:10px;}
+.gt-settings-lbl{font-size:14px;font-weight:500;color:var(--txt);flex:1;}
+.gt-settings-sub{font-size:11px;color:var(--mut);}
+.gt-settings-ctrl{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.gt-settings-val{font-size:18px;font-weight:700;color:var(--pri);min-width:28px;text-align:center;}
+.gt-start-btn{width:100%;padding:16px;border-radius:var(--rad);border:none;background:var(--pri);color:#fff;font-size:17px;font-weight:800;cursor:pointer;margin-bottom:12px;touch-action:manipulation;}
+.gt-start-btn:active{opacity:.85;}
+
+/* ── GT SETTINGS ── */
+.gt-settings{background:#fff;border-radius:var(--rad);border:1px solid var(--brd);overflow:hidden;margin-bottom:12px;}
+.gt-settings-hdr{padding:10px 14px;background:var(--pri);display:flex;align-items:center;justify-content:space-between;}
+.gt-settings-title{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#fff;}
+.gt-settings-body{padding:12px 14px;display:flex;flex-direction:column;gap:12px;}
+.gt-settings-row{display:flex;align-items:center;gap:10px;}
+.gt-settings-lbl{font-size:14px;font-weight:500;color:var(--txt);flex:1;}
+.gt-settings-sub{font-size:11px;color:var(--mut);}
+.gt-settings-ctrl{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.gt-settings-val{font-size:18px;font-weight:700;color:var(--pri);min-width:28px;text-align:center;}
+.gt-start-btn{width:100%;padding:16px;border-radius:var(--rad);border:none;background:var(--pri);color:#fff;font-size:17px;font-weight:800;cursor:pointer;margin-bottom:12px;touch-action:manipulation;}
+.gt-start-btn:active{opacity:.85;}
 </style>
 </head>
 <body data-theme="">
@@ -810,7 +841,7 @@ function switchTab(tabId){
 }
 
 el('nb-teams').addEventListener('click',function(){renderTeams();showScr('teams');});
-el('nb-gt').addEventListener('click',function(){if(!locked){alert('Lock the lineup first to start GameTime!');return;}if(!gt.active)gtStart();showScr('gt');renderGT();});
+el('nb-gt').addEventListener('click',function(){if(!locked){alert('Lock the lineup first to start GameTime!');return;}showScr('gt');renderGT();});
 el('nb-game').addEventListener('click',function(){if(!aTeam()){renderTeams();showScr('teams');return;}showScr('game');render();});
 el('nb-edit').addEventListener('click',function(){if(!aTeam()){renderTeams();showScr('teams');return;}openSettings();showScr('settings');});
 el('lock-btn').addEventListener('click',function(){
@@ -1349,6 +1380,12 @@ function renderInningTabs() {
 
 
 /* ══ GAMETIME ══════════════════════════════════════════════ */
+var gtSettings = {
+  innings:  4,   // number of innings
+  maxRuns:  5,   // max runs per inning (0 = unlimited)
+  maxOuts:  3    // outs to end a half-inning
+};
+
 var gt = {
   active: false,
   inning: 1,
@@ -1361,7 +1398,7 @@ var gt = {
   innings: null,
   inn4: null,
   ab: null,
-  totalInnings: 4
+  totalInnings: gtSettings.innings
 };
 
 function gtGetInning(n) {
@@ -1387,6 +1424,9 @@ function gtStart() {
   gt.inn4 = r4.inn4;
   for(var mp in manualEdits4){ if(gt.inn4[mp]!==undefined) gt.inn4[mp]=manualEdits4[mp]; }
 
+  gt.totalInnings = gtSettings.innings;
+  gt.totalInnings = gtSettings.innings;
+  gt.totalInnings = gtSettings.innings;
   gt.active = true;
   gt.inning = 1;
   gt.outs = 0;
@@ -1419,7 +1459,7 @@ function gtSetOuts(n) {
 }
 
 function gtChangeRuns(delta) {
-  gt.runs = Math.max(0, Math.min(5, gt.runs + delta));
+  gt.runs = Math.max(0, gtSettings.maxRuns > 0 ? Math.min(gtSettings.maxRuns, gt.runs + delta) : gt.runs + delta);
   renderGT();
 }
 function gtChangeThem(delta) {
@@ -1502,11 +1542,44 @@ function renderGT() {
   var content = el('gt-content');
   if(!content) return;
 
-  if(!locked || !gt.active) {
-    content.innerHTML = '<div class="gt-inactive">'
-      +(locked ? '⏱ GameTime is ready! Loading lineup...' : '🔒 Lock the lineup in the Lineup tab to start GameTime.')
-      +'</div>';
-    if(locked && !gt.active) gtStart();
+  if(!locked) {
+    content.innerHTML = '<div class="gt-inactive">🔒 Lock the lineup in the Lineup tab to start GameTime.</div>';
+    return;
+  }
+
+  if(!gt.active) {
+    // Show settings + start button
+    var t0 = aTeam();
+    var sh = '<div class="gt-settings">'
+      +'<div class="gt-settings-hdr"><span class="gt-settings-title">&#x23F1; Game Settings</span></div>'
+      +'<div class="gt-settings-body">'
+      +'<div class="gt-settings-row">'
+        +'<div><div class="gt-settings-lbl">Innings</div></div>'
+        +'<div class="gt-settings-ctrl">'
+          +'<button class="gt-minus" data-gt-set="innings" data-gt-set-delta="-1">−</button>'
+          +'<span class="gt-settings-val" id="gts-innings">'+gtSettings.innings+'</span>'
+          +'<button class="gt-plus" data-gt-set="innings" data-gt-set-delta="1">+</button>'
+        +'</div>'
+      +'</div>'
+      +'<div class="gt-settings-row">'
+        +'<div><div class="gt-settings-lbl">Max runs per inning</div><div class="gt-settings-sub">Set to 0 for unlimited</div></div>'
+        +'<div class="gt-settings-ctrl">'
+          +'<button class="gt-minus" data-gt-set="maxRuns" data-gt-set-delta="-1">−</button>'
+          +'<span class="gt-settings-val" id="gts-maxRuns">'+(gtSettings.maxRuns===0?'∞':gtSettings.maxRuns)+'</span>'
+          +'<button class="gt-plus" data-gt-set="maxRuns" data-gt-set-delta="1">+</button>'
+        +'</div>'
+      +'</div>'
+      +'<div class="gt-settings-row">'
+        +'<div><div class="gt-settings-lbl">Outs per inning</div></div>'
+        +'<div class="gt-settings-ctrl">'
+          +'<button class="gt-minus" data-gt-set="maxOuts" data-gt-set-delta="-1">−</button>'
+          +'<span class="gt-settings-val" id="gts-maxOuts">'+gtSettings.maxOuts+'</span>'
+          +'<button class="gt-plus" data-gt-set="maxOuts" data-gt-set-delta="1">+</button>'
+        +'</div>'
+      +'</div>'
+      +'</div></div>';
+    sh += '<button class="gt-start-btn" data-gt-action="start">&#x26BE; Start Game!</button>';
+    content.innerHTML = sh;
     return;
   }
 
@@ -1529,8 +1602,8 @@ function renderGT() {
   var html = '';
 
   // ── Alert states ──
-  var outsAlert = gt.outs >= 3;
-  var runsAlert = gt.runs >= 5;
+  var outsAlert = gt.outs >= gtSettings.maxOuts;
+  var runsAlert = gtSettings.maxRuns > 0 && gt.runs >= gtSettings.maxRuns;
 
   // ── Top bar: Inning / Outs / Runs ──
   html += '<div class="gt-topbar">';
@@ -1539,13 +1612,13 @@ function renderGT() {
     +'<div class="gt-stat-val">'+gt.inning+'</div>'
     +'<div style="font-size:11px;color:var(--mut);margin-top:2px;">of '+gt.totalInnings+'</div></div>';
 
+  var pipHtml = '';
+  for(var oi=1;oi<=gtSettings.maxOuts;oi++){
+    pipHtml += '<div class="gt-pip'+(gt.outs>=oi?' on':'')+'" data-gt-outs="'+oi+'"></div>';
+  }
   html += '<div class="gt-stat'+(outsAlert?' alert-red':'')+'"><div class="gt-stat-lbl">Outs</div>'
-    +'<div class="gt-outs-pips">'
-    +'<div class="gt-pip'+(gt.outs>=1?' on':'')+'" data-gt-outs="1"></div>'
-    +'<div class="gt-pip'+(gt.outs>=2?' on':'')+'" data-gt-outs="2"></div>'
-    +'<div class="gt-pip'+(gt.outs>=3?' on':'')+'" data-gt-outs="3"></div>'
-    +'</div>'
-    +(outsAlert?'<div class="gt-alert-msg" style="color:#c0392b;">3 OUTS — SWITCH!</div>':'')
+    +'<div class="gt-outs-pips">'+pipHtml+'</div>'
+    +(outsAlert?'<div class="gt-alert-msg" style="color:#c0392b;">'+gtSettings.maxOuts+' OUTS — SWITCH!</div>':'')
     +'</div>';
 
   html += '<div class="gt-stat'+(runsAlert?' alert-green':'')+'"><div class="gt-stat-lbl">Runs</div>'
@@ -1554,7 +1627,7 @@ function renderGT() {
     +'<span class="gt-stat-val" style="font-size:24px;">'+gt.runs+'</span>'
     +'<button class="gt-plus" data-gt-runs="1">+</button>'
     +'</div>'
-    +(runsAlert?'<div class="gt-alert-msg" style="color:#1a7a40;">5 RUNS — SWITCH!</div>':'<div style="font-size:10px;color:var(--mut);margin-top:2px;">this inning</div>')
+    +(runsAlert?'<div class="gt-alert-msg" style="color:#1a7a40;">'+gtSettings.maxRuns+' RUNS — SWITCH!</div>':'<div style="font-size:10px;color:var(--mut);margin-top:2px;">'+(gtSettings.maxRuns>0?'max '+gtSettings.maxRuns:'unlimited')+'</div>')
     +'</div>';
 
   html += '</div>';
@@ -1600,13 +1673,15 @@ function renderGT() {
     +'<div class="gt-bat-hdr"><span>Batting</span>'
     +'<button class="gt-advance-btn" data-gt-action="advance">Next batter →</button>'
     +'</div>';
+  var rowClasses  = ['row-up','row-deck','row-hole'];
+  var rowIcons    = ['🏏 ','⏳ ','👀 '];
   for(var i=0;i<3;i++){
     var bname = batters[i];
     var bidx = (gt.batIdx+i) % gt.ab.length;
-    html += '<div class="gt-batter-row">'
+    html += '<div class="gt-batter-row '+rowClasses[i]+'">'
       +'<span class="gt-batter-role '+roleClasses[i]+'">'+batRoles[i]+'</span>'
       +'<span class="gt-batter-num '+numClasses[i]+'">'+(bidx+1)+'</span>'
-      +'<span class="gt-batter-name '+batClasses[i]+'">'+bname+'</span>'
+      +'<span class="gt-batter-name '+batClasses[i]+'">'+rowIcons[i]+fn(bname)+'</span>'
       +'</div>';
   }
   html += '</div>';
@@ -1649,6 +1724,20 @@ document.addEventListener('click', function(e) {
     gtChangeThem(parseInt(e.target.getAttribute('data-gt-them'),10));
     return;
   }
+  // Settings adjustments (pre-game)
+  if(e.target.getAttribute('data-gt-set')) {
+    var key = e.target.getAttribute('data-gt-set');
+    var delta = parseInt(e.target.getAttribute('data-gt-set-delta'),10);
+    if(key==='innings')  gtSettings.innings  = Math.max(1, Math.min(9, gtSettings.innings + delta));
+    if(key==='maxRuns')  gtSettings.maxRuns  = Math.max(0, Math.min(20, gtSettings.maxRuns + delta));
+    if(key==='maxOuts')  gtSettings.maxOuts  = Math.max(1, Math.min(9, gtSettings.maxOuts + delta));
+    var innEl = el('gts-innings');  if(innEl) innEl.textContent = gtSettings.innings;
+    var runEl = el('gts-maxRuns'); if(runEl) runEl.textContent = gtSettings.maxRuns===0?'∞':gtSettings.maxRuns;
+    var outEl = el('gts-maxOuts'); if(outEl) outEl.textContent = gtSettings.maxOuts;
+    return;
+  }
+  // Start game
+  if(e.target.getAttribute('data-gt-action') === 'start') { gtStart(); renderGT(); return; }
   // Advance batter
   if(e.target.getAttribute('data-gt-action') === 'advance') { gtAdvanceBatter(); return; }
   // Next inning
