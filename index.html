@@ -7,6 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="GameDay">
 <title>GameDay</title>
+<meta name="gd-version" content="1.0.0">
 <style>
 :root{--pri:#0f2044;--mid:#1a3060;--lit:#243d78;--fnt:#e8ecf5;--acc:#e8b800;--acb:#fff8dc;--off:#f4f6fb;--brd:#d0d8ec;--txt:#0f2044;--mut:#4a5a80;}
 [data-theme=red]   {--pri:#8b0000;--mid:#a00000;--lit:#b50000;--fnt:#fdecea;--brd:#f0cece;--txt:#5a0000;--mut:#8a4a4a;}
@@ -307,10 +308,19 @@ tr:last-child td{border-bottom:none;}
 .gt-settings-val{font-size:18px;font-weight:700;color:var(--pri);min-width:28px;text-align:center;}
 .gt-start-btn{width:100%;padding:16px;border-radius:var(--rad);border:none;background:var(--pri);color:#fff;font-size:17px;font-weight:800;cursor:pointer;margin-bottom:12px;touch-action:manipulation;}
 .gt-start-btn:active{opacity:.85;}
+
+/* ── UPDATE BANNER ── */
+.update-banner{position:fixed;top:0;left:0;right:0;z-index:9998;background:#1a7a40;color:#fff;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;transform:translateY(-100%);transition:transform .35s ease;box-shadow:0 2px 12px rgba(0,0,0,.2);}
+.update-banner.visible{transform:translateY(0);}
+.update-msg{font-size:13px;font-weight:600;line-height:1.3;}
+.update-btn{padding:7px 14px;border-radius:20px;border:1.5px solid rgba(255,255,255,.6);background:transparent;color:#fff;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;touch-action:manipulation;}
+.update-btn:active{background:rgba(255,255,255,.2);}
+.update-dismiss{background:transparent;border:none;color:rgba(255,255,255,.6);font-size:20px;cursor:pointer;padding:0 4px;flex-shrink:0;touch-action:manipulation;}
 </style>
 </head>
 <body data-theme="">
 
+<div class="update-banner" id="update-banner"><span class="update-msg">&#x1F4E6; A new version of GameDay is available!</span><button class="update-btn" onclick="doUpdate()">Refresh</button><button class="update-dismiss" onclick="dismissUpdate()" aria-label="Dismiss">&#x00D7;</button></div>
 <div class="hdr">
   <div class="hdr-l">
     <div class="hdr-logo">⚾</div>
@@ -1774,6 +1784,44 @@ document.addEventListener('click', function(e) {
 
 // Transition go button
 el('gtt-go').addEventListener('click', gtCloseTransition);
+
+
+/* ── VERSION CHECK ── */
+var GD_VERSION = '1.0.0';
+var GD_URL = 'https://doranyount.github.io/gameday/index.html';
+
+function doUpdate(){
+  window.location.reload(true);
+}
+function dismissUpdate(){
+  var b=el('update-banner');
+  if(b)b.className='update-banner';
+  // Remember dismissed for this version
+  try{sessionStorage.setItem('gd_dismissed_ver', GD_VERSION);}catch(e){}
+}
+
+function checkForUpdate(){
+  // Don't check if already dismissed this session
+  try{
+    if(sessionStorage.getItem('gd_dismissed_ver')===GD_VERSION) return;
+  }catch(e){}
+
+  // Fetch live page with cache-busting
+  var url = GD_URL + '?_=' + Date.now();
+  fetch(url, {cache:'no-store'})
+    .then(function(res){ return res.text(); })
+    .then(function(html){
+      var match = html.match(/<meta name="gd-version" content="([^"]+)"/);
+      if(match && match[1] && match[1] !== GD_VERSION){
+        var b=el('update-banner');
+        if(b)b.className='update-banner visible';
+      }
+    })
+    .catch(function(){}); // silently fail if offline
+}
+
+// Check after a short delay so it doesn't block app load
+setTimeout(checkForUpdate, 3000);
 
 loadTeam('fc');
 </script>
