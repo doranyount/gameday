@@ -194,6 +194,73 @@ tr:last-child td{border-bottom:none;}
 #print-sheet{display:none;}
 /* Print sheet hidden on screen */
 #print-sheet{display:none;}
+
+/* ══ GAMETIME ══════════════════════════════════════════════ */
+.gt-wrap{padding:12px 14px 0;}
+/* Top bar: inning + outs + runs */
+.gt-topbar{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;}
+.gt-stat{background:#fff;border-radius:var(--rad-sm);border:1px solid var(--brd);padding:10px 12px;text-align:center;}
+.gt-stat-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);margin-bottom:4px;}
+.gt-stat-val{font-size:28px;font-weight:800;color:var(--pri);line-height:1;}
+.gt-stat-ctrl{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:4px;}
+.gt-minus,.gt-plus{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--brd);background:var(--off);color:var(--pri);font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;touch-action:manipulation;}
+.gt-minus:active,.gt-plus:active{background:var(--pri);color:#fff;}
+/* Outs pips */
+.gt-outs-pips{display:flex;gap:6px;justify-content:center;margin-top:6px;}
+.gt-pip{width:14px;height:14px;border-radius:50%;border:2px solid var(--brd);background:transparent;cursor:pointer;touch-action:manipulation;}
+.gt-pip.on{background:var(--acc);border-color:var(--acc);}
+/* Battery */
+.gt-battery{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+.gt-role{background:#fff;border-radius:var(--rad-sm);border:1px solid var(--brd);padding:10px 14px;}
+.gt-role-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);margin-bottom:4px;}
+.gt-role-name{font-size:17px;font-weight:700;color:var(--pri);line-height:1.2;}
+.gt-role-badge{display:inline-block;margin-top:5px;}
+/* At bat / On deck / In hole */
+.gt-batting{background:#fff;border-radius:var(--rad);border:1px solid var(--brd);overflow:hidden;margin-bottom:12px;}
+.gt-bat-hdr{padding:8px 14px;background:var(--pri);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#fff;display:flex;align-items:center;justify-content:space-between;}
+.gt-batter-row{display:flex;align-items:center;gap:12px;padding:10px 14px;border-bottom:1px solid #f0f0f0;}
+.gt-batter-row:last-child{border-bottom:none;}
+.gt-batter-role{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;width:60px;flex-shrink:0;}
+.role-up{color:var(--pri);}
+.role-deck{color:var(--muted);}
+.role-hole{color:#bbb;}
+.gt-batter-num{width:26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+.num-up{background:var(--pri);color:#fff;}
+.num-deck{background:var(--fnt);color:var(--pri);}
+.num-hole{background:#f0f0f0;color:#999;}
+.gt-batter-name{flex:1;font-size:15px;font-weight:500;color:var(--txt);}
+.gt-batter-name.up{font-weight:700;}
+.gt-batter-name.hole{color:#bbb;}
+.gt-advance-btn{padding:10px 16px;border-radius:var(--rad-sm);border:none;background:var(--pri);color:#fff;font-size:14px;font-weight:700;cursor:pointer;touch-action:manipulation;white-space:nowrap;}
+.gt-advance-btn:active{opacity:.8;}
+/* Fielding */
+.gt-field{background:#fff;border-radius:var(--rad);border:1px solid var(--brd);overflow:hidden;margin-bottom:12px;}
+.gt-field-hdr{padding:8px 14px;background:var(--pri-mid);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#fff;}
+.gt-field-row{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid #f0f0f0;font-size:14px;}
+.gt-field-row:last-child{border-bottom:none;}
+.gt-field-name{color:var(--txt);font-weight:500;}
+/* Next inning button */
+.gt-next-btn{width:100%;padding:16px;border-radius:var(--rad);border:none;background:var(--acc);color:var(--pri);font-size:17px;font-weight:800;cursor:pointer;margin-bottom:14px;touch-action:manipulation;}
+.gt-next-btn:active{opacity:.85;}
+.gt-next-btn:disabled{opacity:.35;cursor:default;}
+/* Transition overlay */
+.gt-transition{position:fixed;inset:0;background:var(--pri);z-index:400;display:flex;flex-direction:column;padding:24px 20px;overflow-y:auto;}
+.gt-trans-title{font-size:22px;font-weight:800;color:#fff;text-align:center;margin-bottom:4px;}
+.gt-trans-sub{font-size:14px;color:rgba(255,255,255,.6);text-align:center;margin-bottom:20px;}
+.gt-trans-section{margin-bottom:16px;}
+.gt-trans-lbl{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,.5);margin-bottom:8px;}
+.gt-trans-battery{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.gt-trans-role{background:rgba(255,255,255,.1);border-radius:10px;padding:12px 14px;}
+.gt-trans-role-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.5);margin-bottom:4px;}
+.gt-trans-role-name{font-size:18px;font-weight:800;color:#fff;}
+.gt-trans-changes{display:flex;flex-direction:column;gap:6px;}
+.gt-trans-row{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.08);border-radius:8px;padding:8px 12px;}
+.gt-trans-arrow{font-size:12px;color:rgba(255,255,255,.4);}
+.gt-trans-player{font-size:14px;font-weight:600;color:#fff;flex:1;}
+.gt-trans-pos{font-size:12px;}
+.gt-trans-go{width:100%;padding:16px;border-radius:var(--rad);border:none;background:var(--acc);color:var(--pri);font-size:18px;font-weight:800;cursor:pointer;margin-top:auto;padding-top:20px;touch-action:manipulation;}
+.gt-inactive{padding:40px 20px;text-align:center;color:var(--mut);font-size:15px;background:#fff;border-radius:var(--rad);border:1px solid var(--brd);}
+.nb-gt-dot{width:6px;height:6px;border-radius:50%;background:var(--acc);position:absolute;top:6px;right:22px;}
 </style>
 </head>
 <body data-theme="">
@@ -325,6 +392,11 @@ tr:last-child td{border-bottom:none;}
   <div id="t-sum" class="tsec"></div>
 </div>
 
+<!-- GameTime screen -->
+<div class="scr" id="scr-gt">
+  <div class="gt-wrap" id="gt-content"></div>
+</div>
+
 </div>
 
 <div id="print-sheet"></div>
@@ -335,10 +407,19 @@ tr:last-child td{border-bottom:none;}
   <div id="pop-items"></div>
 </div>
 
+<div class="gt-transition" id="gt-transition" style="display:none">
+  <div class="gt-trans-title" id="gtt-title"></div>
+  <div class="gt-trans-sub" id="gtt-sub"></div>
+  <div class="gt-trans-battery" id="gtt-battery"></div>
+  <div class="gt-trans-section"><div class="gt-trans-lbl">Fielding changes</div><div class="gt-trans-changes" id="gtt-changes"></div></div>
+  <button class="gt-trans-go" id="gtt-go">Let's play! &#x26BE;</button>
+</div>
+
 <div class="nav">
   <button class="nb on" id="nb-teams"><span class="nbi">&#x1F465;</span>Teams</button>
   <button class="nb" id="nb-game"><span class="nbi">&#x26BE;</span>Lineup</button>
   <button class="nb" id="nb-edit"><span class="nbi">&#x2699;&#xFE0F;</span>Edit Team</button>
+  <button class="nb" id="nb-gt" style="position:relative"><span class="nbi">&#x23F1;</span>GameTime</button>
 </div>
 
 <script>
@@ -381,11 +462,11 @@ function el(id){return document.getElementById(id);}
 function setH(id,v){var e=el(id);if(e)e.innerHTML=v;}
 
 function showScr(name){
-  var ss=['teams','settings','game'];
+  var ss=['teams','settings','game','gt'];
   for(var i=0;i<ss.length;i++){var e=el('scr-'+ss[i]);if(e)e.className='scr'+(ss[i]===name?' on':'');}
-  var nb=['nb-teams','nb-game','nb-edit'];
+  var nb=['nb-teams','nb-game','nb-edit','nb-gt'];
   for(var i=0;i<nb.length;i++){var e=el(nb[i]);if(e)e.className='nb';}
-  var m={teams:'nb-teams',game:'nb-game',settings:'nb-edit'};
+  var m={teams:'nb-teams',game:'nb-game',settings:'nb-edit',gt:'nb-gt'};
   if(m[name]){var e=el(m[name]);if(e)e.className='nb on';}
   var lb=el('lock-btn');if(lb)lb.style.display=name==='game'?'flex':'none';
   var pb=el('print-btn');if(pb)pb.style.display=name==='game'?'flex':'none';
@@ -714,9 +795,23 @@ function switchTab(tabId){
 }
 
 el('nb-teams').addEventListener('click',function(){renderTeams();showScr('teams');});
+el('nb-gt').addEventListener('click',function(){if(!locked){alert('Lock the lineup first to start GameTime!');return;}if(!gt.active)gtStart();showScr('gt');renderGT();});
 el('nb-game').addEventListener('click',function(){if(!aTeam()){renderTeams();showScr('teams');return;}showScr('game');render();});
 el('nb-edit').addEventListener('click',function(){if(!aTeam()){renderTeams();showScr('teams');return;}openSettings();showScr('settings');});
-el('lock-btn').addEventListener('click',function(){locked=!locked;updateLockUI();render();});
+el('lock-btn').addEventListener('click',function(){
+  locked=!locked;
+  updateLockUI();
+  render();
+  // When locked, prep GT and show the dot indicator on the tab
+  var dot=el('nb-gt-dot');
+  if(locked){
+    gt.active=false; // will init fresh when entering GT
+    if(!dot){var d=document.createElement('div');d.id='nb-gt-dot';d.className='nb-gt-dot';el('nb-gt').appendChild(d);}
+  } else {
+    gt.active=false;
+    if(dot) dot.parentNode.removeChild(dot);
+  }
+});
 el('new-team-btn').addEventListener('click',newTeam);
 el('del-yes').addEventListener('click',doDel);
 el('del-no').addEventListener('click',cancelDel);
@@ -1232,6 +1327,272 @@ function renderInningTabs() {
     +ab.map(function(p,idx){var pos=rs.inn4[p]||'Bench',cnt=rs.bc[p]+(pos==='Bench'?1:0);return '<tr><td><span class="bno">'+(idx+1)+'</span></td><td>'+fn(p)+'</td><td>'+chip(pos,p,3,!!manualEdits4[p])+'</td><td style="text-align:center"><span class="tly t'+cnt+'">'+cnt+'</span></td></tr>';}).join('')
     +'</tbody></table><div class="fn">Bench count = total across all 4 innings</div></div>');
 }
+
+
+/* ══ GAMETIME ══════════════════════════════════════════════ */
+var gt = {
+  active: false,
+  inning: 1,       // 1-based
+  outs: 0,
+  runs: 0,         // runs this inning
+  batIdx: 0,       // index into active batting order (continuous)
+  innings: null,   // computed innings [0..3]
+  inn4: null,
+  ab: null,        // active batting order at game start
+  totalInnings: 4
+};
+
+function gtGetInning(n) {
+  // n is 1-based, clamp to available innings
+  var idx = Math.min(n-1, 3);
+  if(idx === 3) return gt.inn4 || {};
+  return (gt.innings && gt.innings[idx]) ? gt.innings[idx] : {};
+}
+
+function gtStart() {
+  // Build the innings from current lineup state
+  var withC = el('catch-tog').checked;
+  var pres = getPresent();
+  if(pres.length < 4) return;
+
+  gt.ab = batting.filter(function(p){ return pres.indexOf(p)>=0; });
+  var ao = posOrder.filter(function(p){ return pres.indexOf(p)>=0; });
+  var inn = buildInnings(withC, ao);
+  // Apply manual edits
+  for(var mi=0;mi<3;mi++){ for(var mp in manualEdits[mi]){ if(inn[mi][mp]!==undefined) inn[mi][mp]=manualEdits[mi][mp]; }}
+  gt.innings = inn;
+  var r4 = build4(withC, ao, inn);
+  gt.inn4 = r4.inn4;
+  for(var mp in manualEdits4){ if(gt.inn4[mp]!==undefined) gt.inn4[mp]=manualEdits4[mp]; }
+
+  gt.active = true;
+  gt.inning = 1;
+  gt.outs = 0;
+  gt.runs = 0;
+  gt.batIdx = 0;
+  renderGT();
+}
+
+function gtBatters() {
+  // Returns [up, onDeck, inHole] player names
+  var n = gt.ab.length;
+  return [
+    gt.ab[gt.batIdx % n],
+    gt.ab[(gt.batIdx+1) % n],
+    gt.ab[(gt.batIdx+2) % n]
+  ];
+}
+
+function gtAdvanceBatter() {
+  gt.batIdx++;
+  renderGT();
+}
+
+function gtSetOuts(n) {
+  gt.outs = n;
+  renderGT();
+}
+
+function gtChangeRuns(delta) {
+  gt.runs = Math.max(0, Math.min(5, gt.runs + delta));
+  renderGT();
+}
+
+function gtNextInning() {
+  if(gt.inning >= gt.totalInnings) return;
+  var oldInning = gt.inning;
+  gt.inning++;
+  gt.outs = 0;
+  gt.runs = 0;
+  showTransition(oldInning, gt.inning);
+}
+
+function showTransition(fromInning, toInning) {
+  var fromInn = gtGetInning(fromInning);
+  var toInn   = gtGetInning(toInning);
+
+  // Battery for new inning
+  var newPitcher='—', newCatcher='—';
+  for(var p in toInn){ if(toInn[p]==='Pitcher') newPitcher=fn(p); if(toInn[p]==='Catcher') newCatcher=fn(p); }
+
+  var title = el('gtt-title');
+  if(title) title.textContent = 'Inning '+toInning+' — Take the Field!';
+  var sub = el('gtt-sub');
+  if(sub) sub.textContent = 'Get your players in position';
+
+  // Battery callout
+  var bat = el('gtt-battery');
+  if(bat) bat.innerHTML =
+    '<div class="gt-trans-role"><div class="gt-trans-role-lbl">⚾ Pitcher</div><div class="gt-trans-role-name">'+newPitcher+'</div></div>'
+    +'<div class="gt-trans-role"><div class="gt-trans-role-lbl">🥎 Catcher</div><div class="gt-trans-role-name">'+newCatcher+'</div></div>';
+
+  // Compute changes — who moved in/out/changed position
+  var changes = el('gtt-changes');
+  if(changes) {
+    var rows = [];
+    // Players coming ON field (were bench, now fielding)
+    for(var p in toInn) {
+      if(toInn[p] !== 'Bench') {
+        var wasPos = fromInn[p] || 'Bench';
+        var nowPos = toInn[p];
+        if(wasPos === 'Bench') {
+          rows.push('<div class="gt-trans-row"><span class="gt-trans-player">'+fn(p)+'</span><span class="gt-trans-arrow">→</span><span class="gt-trans-pos">'+chipSimple(nowPos)+'</span></div>');
+        } else if(wasPos !== nowPos) {
+          rows.push('<div class="gt-trans-row"><span class="gt-trans-player">'+fn(p)+'</span><span class="gt-trans-arrow">'+chipSimple(wasPos)+' → </span><span class="gt-trans-pos">'+chipSimple(nowPos)+'</span></div>');
+        }
+      }
+    }
+    // Players going TO bench
+    for(var p in toInn) {
+      if(toInn[p] === 'Bench' && fromInn[p] !== 'Bench') {
+        rows.push('<div class="gt-trans-row" style="opacity:.6"><span class="gt-trans-player">'+fn(p)+'</span><span class="gt-trans-arrow">→</span><span class="gt-trans-pos" style="color:#aaa">Bench</span></div>');
+      }
+    }
+    changes.innerHTML = rows.length ? rows.join('') : '<div style="color:rgba(255,255,255,.5);font-size:13px;padding:8px 0">Same lineup as last inning</div>';
+  }
+
+  var ov = el('gt-transition');
+  if(ov) ov.style.display = 'flex';
+}
+
+function chipSimple(pos) {
+  var cls = {Pitcher:'pp pstar',Catcher:'pc pstar','1st Base':'pi','2nd Base':'pi','3rd Base':'pi',Shortstop:'pi','Left Field':'po','Center Field':'po','Right Field':'po',Bench:'pb2'}[pos]||'pi';
+  return '<span class="pos '+cls+'" style="font-size:11px;padding:2px 7px;">'+pos+'</span>';
+}
+
+function gtCloseTransition() {
+  var ov = el('gt-transition');
+  if(ov) ov.style.display = 'none';
+  renderGT();
+}
+
+function renderGT() {
+  var content = el('gt-content');
+  if(!content) return;
+
+  if(!locked || !gt.active) {
+    content.innerHTML = '<div class="gt-inactive">'
+      +(locked ? '⏱ GameTime is ready! Loading lineup...' : '🔒 Lock the lineup in the Lineup tab to start GameTime.')
+      +'</div>';
+    if(locked && !gt.active) gtStart();
+    return;
+  }
+
+  var inn = gtGetInning(gt.inning);
+  var batters = gtBatters();
+  var pitcher='—', catcher='—';
+  for(var p in inn){ if(inn[p]==='Pitcher') pitcher=fn(p); if(inn[p]==='Catcher') catcher=fn(p); }
+
+  var benched = [];
+  for(var p in inn){ if(inn[p]==='Bench') benched.push(fn(p)); }
+
+  var fielding = [];
+  for(var p in inn){ if(inn[p]!=='Bench') fielding.push({name:fn(p),pos:inn[p]}); }
+  fielding.sort(function(a,b){
+    var order={Pitcher:0,Catcher:1,'1st Base':2,'2nd Base':3,'3rd Base':4,Shortstop:5,'Left Field':6,'Center Field':7,'Right Field':8};
+    return (order[a.pos]||9)-(order[b.pos]||9);
+  });
+
+  var isLast = gt.inning >= gt.totalInnings;
+  var html = '';
+
+  // ── Top bar: Inning / Outs / Runs ──
+  html += '<div class="gt-topbar">';
+  html += '<div class="gt-stat"><div class="gt-stat-lbl">Inning</div>'
+    +'<div class="gt-stat-val">'+gt.inning+'</div>'
+    +'<div style="font-size:11px;color:var(--mut);margin-top:2px;">of '+gt.totalInnings+'</div></div>';
+
+  html += '<div class="gt-stat"><div class="gt-stat-lbl">Outs</div>'
+    +'<div class="gt-outs-pips">'
+    +'<div class="gt-pip'+(gt.outs>=1?' on':'')+'" data-gt-outs="1"></div>'
+    +'<div class="gt-pip'+(gt.outs>=2?' on':'')+'" data-gt-outs="2"></div>'
+    +'<div class="gt-pip'+(gt.outs>=3?' on':'')+'" data-gt-outs="3"></div>'
+    +'</div></div>';
+
+  html += '<div class="gt-stat"><div class="gt-stat-lbl">Runs</div>'
+    +'<div class="gt-stat-ctrl">'
+    +'<button class="gt-minus" data-gt-runs="-1">−</button>'
+    +'<span class="gt-stat-val" style="font-size:24px;">'+gt.runs+'</span>'
+    +'<button class="gt-plus" data-gt-runs="1">+</button>'
+    +'</div>'
+    +'<div style="font-size:10px;color:var(--mut);margin-top:2px;">this inning (max 5)</div>'
+    +'</div>';
+  html += '</div>';
+
+  // ── Battery ──
+  html += '<div class="gt-battery">'
+    +'<div class="gt-role"><div class="gt-role-lbl">⚾ Pitcher</div><div class="gt-role-name">'+pitcher+'</div>'
+    +'<div class="gt-role-badge">'+chipSimple('Pitcher')+'</div></div>'
+    +'<div class="gt-role"><div class="gt-role-lbl">🥎 Catcher</div><div class="gt-role-name">'+(catcher==='—'?'Coach':catcher)+'</div>'
+    +(catcher!=='—'?'<div class="gt-role-badge">'+chipSimple('Catcher')+'</div>':'')
+    +'</div></div>';
+
+  // ── Batting ──
+  var batRoles = ['UP TO BAT','ON DECK','IN THE HOLE'];
+  var batClasses = ['up','deck','hole'];
+  var numClasses = ['num-up','num-deck','num-hole'];
+  var roleClasses = ['role-up','role-deck','role-hole'];
+  html += '<div class="gt-batting">'
+    +'<div class="gt-bat-hdr"><span>Batting</span>'
+    +'<button class="gt-advance-btn" data-gt-action="advance">Next batter →</button>'
+    +'</div>';
+  for(var i=0;i<3;i++){
+    var bname = batters[i];
+    var bidx = (gt.batIdx+i) % gt.ab.length;
+    html += '<div class="gt-batter-row">'
+      +'<span class="gt-batter-role '+roleClasses[i]+'">'+batRoles[i]+'</span>'
+      +'<span class="gt-batter-num '+numClasses[i]+'">'+(bidx+1)+'</span>'
+      +'<span class="gt-batter-name '+batClasses[i]+'">'+bname+'</span>'
+      +'</div>';
+  }
+  html += '</div>';
+
+  // ── Field positions ──
+  html += '<div class="gt-field"><div class="gt-field-hdr">Inning '+gt.inning+' Field</div>';
+  fielding.forEach(function(f){
+    html += '<div class="gt-field-row"><span class="gt-field-name">'+f.name+'</span>'+chipSimple(f.pos)+'</div>';
+  });
+  if(benched.length){
+    html += '<div class="gt-field-row" style="opacity:.5"><span class="gt-field-name">Bench: '+benched.join(', ')+'</span></div>';
+  }
+  html += '</div>';
+
+  // ── Next inning / End game ──
+  if(!isLast){
+    html += '<button class="gt-next-btn" data-gt-action="next">Next Inning →</button>';
+  } else {
+    html += '<button class="gt-next-btn" style="background:#1a5c2a" data-gt-action="end">🏆 Game Over!</button>';
+  }
+
+  content.innerHTML = html;
+}
+
+// GameTime event delegation
+document.addEventListener('click', function(e) {
+  // Outs pips
+  if(e.target.getAttribute('data-gt-outs')) {
+    var n = parseInt(e.target.getAttribute('data-gt-outs'),10);
+    gtSetOuts(gt.outs === n ? n-1 : n);
+    return;
+  }
+  // Runs
+  if(e.target.getAttribute('data-gt-runs')) {
+    gtChangeRuns(parseInt(e.target.getAttribute('data-gt-runs'),10));
+    return;
+  }
+  // Advance batter
+  if(e.target.getAttribute('data-gt-action') === 'advance') { gtAdvanceBatter(); return; }
+  // Next inning
+  if(e.target.getAttribute('data-gt-action') === 'next') { gtNextInning(); return; }
+  // End game
+  if(e.target.getAttribute('data-gt-action') === 'end') {
+    el('gt-content').innerHTML = '<div class="gt-inactive" style="font-size:20px;font-weight:700;color:var(--pri)">🏆 Great game, Fisher Cats!</div>';
+    return;
+  }
+});
+
+// Transition go button
+el('gtt-go').addEventListener('click', gtCloseTransition);
 
 loadTeam('fc');
 </script>
