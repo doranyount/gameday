@@ -517,29 +517,93 @@ function toggleAll(){
   var sa=el('sel-all');if(sa){sa.checked=!allOn;sa.indeterminate=false;}syncRoster();
 }
 
-function buildInnings(withC,pres){
-  var n=pres.length,spots=Math.min(withC?9:8,n),bpc=n-spots,r=[{},{},{}];if(n<2)return r;
-  for(var i=0;i<3;i++){
-    var st=(i*bpc)%n;for(var j=0;j<bpc;j++)r[i][pres[(st+j)%n]]='Bench';
-    var pi=(i*3)%n,ptch=pres[pi];if(r[i][ptch])ptch=pres[(pi+1)%n];if(!r[i][ptch])r[i][ptch]='Pitcher';
-    if(withC&&spots>=2){var ci=(i*3+2)%n,att=0,cat=pres[ci];while((r[i][cat]||cat===ptch)&&att<n){att++;cat=pres[(ci+att)%n];}if(!r[i][cat])r[i][cat]='Catcher';}
-    var rem=pres.filter(function(p){return !r[i][p];}),pool=shuf(POS).slice(0,rem.length);
-    for(var k=0;k<rem.length;k++)r[i][rem[k]]=pool[k]||'Left Field';
+function assignPositions(fielders, withC) {
+  // fielders = players who are NOT on bench this inning
+  // Returns a map of player -> position with no duplicates guaranteed
+  var result = {};
+  var remaining = fielders.slice();
+
+  // Always assign pitcher first from remaining fielders
+  result[remaining[0]] = 'Pitcher';
+  remaining = remaining.slice(1);
+
+  // Assign catcher if using player catcher and we have enough
+  if (withC && remaining.length > 0) {
+    result[remaining[0]] = 'Catcher';
+    remaining = remaining.slice(1);
+  }
+
+  // Build a pool of field positions - exactly enough for remaining players
+  // Rotate through INF and OUT to ensure good mix across innings
+  var fieldPool = [];
+  var infCopy = INF.slice();
+  var outCopy = OUT.slice();
+  // Interleave infield and outfield
+  while(fieldPool.length < remaining.length) {
+    if(infCopy.length > 0) fieldPool.push(infCopy.shift());
+    if(fieldPool.length < remaining.length && outCopy.length > 0) fieldPool.push(outCopy.shift());
+  }
+  // Shuffle the pool so positions vary each game
+  fieldPool = shuf(fieldPool);
+
+  // Assign remaining players to field positions - one each, no duplicates
+  for(var k = 0; k < remaining.length; k++) {
+    result[remaining[k]] = fieldPool[k] || 'Left Field';
+  }
+
+  return result;
+}
+
+function buildInnings(withC, pres) {
+  var n = pres.length;
+  var spots = Math.min(withC ? 9 : 8, n);
+  var bpc = n - spots;
+  var r = [{}, {}, {}];
+  if (n < 2) return r;
+
+  for (var i = 0; i < 3; i++) {
+    // Assign bench players - rotate group each inning
+    var benchStart = (i * bpc) % n;
+    var benched = [];
+    for (var j = 0; j < bpc; j++) {
+      var bp = pres[(benchStart + j) % n];
+      r[i][bp] = 'Bench';
+      benched.push(bp);
+    }
+
+    // Fielders = everyone not on bench, rotate pitcher slot each inning
+    var fielders = pres.filter(function(p) { return r[i][p] !== 'Bench'; });
+    // Rotate who bats first (and thus who pitches) each inning
+    var offset = (i * 3) % fielders.length;
+    var rotated = fielders.slice(offset).concat(fielders.slice(0, offset));
+
+    // Assign positions with no duplicates
+    var assigned = assignPositions(rotated, withC);
+    for (var p in assigned) {
+      r[i][p] = assigned[p];
+    }
   }
   return r;
 }
 
-function build4(withC,pres,inn){
-  var n=pres.length;if(n<2)return{inn4:{},bc:{}};
-  var spots=Math.min(withC?9:8,n),bc={};
-  pres.forEach(function(p){bc[p]=[0,1,2].filter(function(i){return inn[i][p]==='Bench';}).length;});
-  var sorted=pres.slice().sort(function(a,b){return bc[b]-bc[a];}),benched=sorted.slice(spots),field=sorted.slice(0,spots),inn4={};
-  benched.forEach(function(p){inn4[p]='Bench';});
-  var ptch=field[0];inn4[ptch]='Pitcher';
-  if(withC&&field.length>=2){var cat=field[1];if(!inn4[cat])inn4[cat]='Catcher';}
-  var rem=field.filter(function(p){return !inn4[p];}),pool=shuf(POS).slice(0,rem.length);
-  rem.forEach(function(p,j){inn4[p]=pool[j]||'Left Field';});
-  return{inn4:inn4,bc:bc};
+function build4(withC, pres, inn) {
+  var n = pres.length;
+  if (n < 2) return { inn4: {}, bc: {} };
+  var spots = Math.min(withC ? 9 : 8, n);
+  var bc = {};
+  pres.forEach(function(p) {
+    bc[p] = [0,1,2].filter(function(i) { return inn[i][p] === 'Bench'; }).length;
+  });
+  // Priority: players who sat most get field time
+  var sorted = pres.slice().sort(function(a, b) { return bc[b] - bc[a]; });
+  var benched = sorted.slice(spots);
+  var fielders = sorted.slice(0, spots);
+  var inn4 = {};
+  benched.forEach(function(p) { inn4[p] = 'Bench'; });
+  // Use same no-duplicate assignment
+  var assigned = assignPositions(fielders, withC);
+  for (var p in assigned) { inn4[p] = assigned[p]; }
+  return { inn4: inn4, bc: bc };
 }
 
 function render(){
