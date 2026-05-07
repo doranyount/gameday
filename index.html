@@ -128,6 +128,7 @@ tr:last-child td{border-bottom:none;}
 .bno{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--pri);color:#fff;font-size:11px;font-weight:700;}
 .pos{display:inline-block;padding:3px 9px;border-radius:20px;font-size:12px;font-weight:600;white-space:nowrap;}
 .pp{background:#eeedf8;color:#3c3480;}.pc{background:#fff3e0;color:#8a4500;}
+.pstar{font-weight:700;font-size:13px;padding:5px 12px;box-shadow:0 0 0 2px currentColor;}
 .pi{background:#e3eef8;color:#0f2044;}.po{background:#e4f4ea;color:#1a5c2a;}
 .pb2{background:#edf0f7;color:#4a5a80;border:1px solid var(--brd);}
 .tly{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;font-size:12px;font-weight:700;}
@@ -308,6 +309,12 @@ var POS=INF.concat(OUT);
 var activeId='fc',editTheme='navy',pendingDel=null,batting=[],posOrder=[],locked=false;
 
 function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function fn(s){
+  // Convert "Last, First" to "First Last", leave unchanged if no comma
+  var parts=(s||'').split(',');
+  if(parts.length>=2) return parts[1].trim()+' '+parts[0].trim();
+  return s||'';
+}
 function uid(){return 'T'+Date.now();}
 function shuf(a){var b=a.slice();for(var i=b.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=b[i];b[i]=b[j];b[j]=t;}return b;}
 function getTeam(id){for(var i=0;i<TEAMS.length;i++)if(TEAMS[i].id===id)return TEAMS[i];return null;}
@@ -446,7 +453,7 @@ function saveTeam(asNew){
 
 function buildRosterList(){
   var t=aTeam(),roster=t?t.roster:[],h='';
-  for(var i=0;i<roster.length;i++){h+='<div class="ritem" data-idx="'+i+'"><input type="checkbox" id="cb'+i+'" checked><span class="rn" id="rn'+i+'">'+esc(roster[i])+'</span></div>';}
+  for(var i=0;i<roster.length;i++){h+='<div class="ritem" data-idx="'+i+'"><input type="checkbox" id="cb'+i+'" checked><span class="rn" id="rn'+i+'">'+fn(roster[i])+'</span></div>';}
   var rl=el('roster-list');if(rl)rl.innerHTML=h;
   var sa=el('sel-all');if(sa){sa.checked=true;sa.indeterminate=false;}
 }
@@ -514,13 +521,13 @@ function render(){
   var ao=posOrder.filter(function(p){return pres.indexOf(p)>=0;});
   var inn=buildInnings(withC,ao),r4=build4(withC,ao,inn),inn4=r4.inn4,bc=r4.bc;
 
-  setH('t-bat','<div class="lnc"><div class="lnn">'+n+' players. All bat every inning. '+(bpc>0?bpc+' sit each inning.':'Everyone fields every inning.')+'</div>'+lgnd()+'<table><thead><tr><th>#</th><th>Player</th><th>Inn 1 Position</th></tr></thead><tbody>'+ab.map(function(p,i){return '<tr><td><span class="bno">'+(i+1)+'</span></td><td>'+esc(p)+'</td><td>'+chip(inn[0][p]||'Bench')+'</td></tr>';}).join('')+'</tbody></table></div>');
+  setH('t-bat','<div class="lnc"><div class="lnn">'+n+' players. All bat every inning. '+(bpc>0?bpc+' sit each inning.':'Everyone fields every inning.')+'</div>'+lgnd()+'<table><thead><tr><th>#</th><th>Player</th><th>Inn 1 Position</th></tr></thead><tbody>'+ab.map(function(p,i){return '<tr><td><span class="bno">'+(i+1)+'</span></td><td>'+fn(p)+'</td><td>'+chip(inn[0][p]||'Bench')+'</td></tr>';}).join('')+'</tbody></table></div>');
 
   var notes=['Inning 1: '+spots+' field, '+bpc+' sit.'+(withC?' Player catcher in lineup.':' Coach catching.'),'Inning 2: bench group from inning 1 rotates in.','Inning 3: final rotation. Last bench group fields.'];
-  for(var i=0;i<3;i++){(function(x){setH('t-i'+(x+1),'<div class="lnc"><div class="lnn">'+notes[x]+'</div>'+lgnd()+'<table><thead><tr><th>Player</th><th>Position</th></tr></thead><tbody>'+ao.map(function(p){return '<tr><td>'+esc(p)+'</td><td>'+chip(inn[x][p]||'Bench')+'</td></tr>';}).join('')+'</tbody></table></div>');})(i);}
+  for(var i=0;i<3;i++){(function(x){setH('t-i'+(x+1),'<div class="lnc"><div class="lnn">'+notes[x]+'</div>'+lgnd()+'<table><thead><tr><th>Player</th><th>Position</th></tr></thead><tbody>'+ao.map(function(p){return '<tr><td>'+fn(p)+'</td><td>'+chip(inn[x][p]||'Bench')+'</td></tr>';}).join('')+'</tbody></table></div>');})(i);}
 
   var ds=ao.filter(function(p){return bc[p]>=1&&inn4[p]==='Bench';});
-  setH('t-i4','<div class="lnc"><div class="lnn'+(ds.length?' w':'')+'">Inning 4: '+spots+' play, '+(n-spots)+' sit.'+(ds.length?' '+ds.map(function(p){return p.split(',')[0];}).join(' & ')+' sit a 2nd time.':' No one sits twice.')+'</div>'+lgnd()+'<table><thead><tr><th>Player</th><th>Position</th><th>Bench</th></tr></thead><tbody>'+ao.map(function(p){var pos=inn4[p]||'Bench',cnt=bc[p]+(pos==='Bench'?1:0);return '<tr><td>'+esc(p)+'</td><td>'+chip(pos)+'</td><td style="text-align:center"><span class="tly t'+cnt+'">'+cnt+'</span></td></tr>';}).join('')+'</tbody></table><div class="fn">Bench count = total across all 4 innings</div></div>');
+  setH('t-i4','<div class="lnc"><div class="lnn'+(ds.length?' w':'')+'">Inning 4: '+spots+' play, '+(n-spots)+' sit.'+(ds.length?' '+ds.map(function(p){return p.split(',')[0];}).join(' & ')+' sit a 2nd time.':' No one sits twice.')+'</div>'+lgnd()+'<table><thead><tr><th>Player</th><th>Position</th><th>Bench</th></tr></thead><tbody>'+ao.map(function(p){var pos=inn4[p]||'Bench',cnt=bc[p]+(pos==='Bench'?1:0);return '<tr><td>'+fn(p)+'</td><td>'+chip(pos)+'</td><td style="text-align:center"><span class="tly t'+cnt+'">'+cnt+'</span></td></tr>';}).join('')+'</tbody></table><div class="fn">Bench count = total across all 4 innings</div></div>');
 
   var sh='<div class="sg"><div class="sc"><div class="sl">Active</div><div class="sv">'+n+'</div><div class="ss">of '+roster.length+' players</div></div><div class="sc"><div class="sl">Field spots</div><div class="sv">'+spots+'</div><div class="ss">per inning</div></div><div class="sc"><div class="sl">Bench 3 inn</div><div class="sv">'+(bpc>0?'0-1':'0')+'</div></div><div class="sc"><div class="sl">Bench 4 inn</div><div class="sv">'+(bpc>0?'1-2':'0')+'</div></div></div><div class="lnc">';
   for(var i=0;i<ao.length;i++){
