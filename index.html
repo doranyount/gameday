@@ -1487,6 +1487,9 @@ function gtNextInning() {
   gt.outs = 0;
   gt.runs = 0;
   gt.themInning = 0;
+  // Advance past the batter who was "up" when the inning ended
+  // so the next inning picks up with the following batter
+  gt.batIdx++;
   showTransition(oldInning, gt.inning);
 }
 
