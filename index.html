@@ -126,6 +126,21 @@ th{padding:9px 10px;text-align:left;font-size:11px;font-weight:700;text-transfor
 td{padding:11px 10px;font-size:14px;border-bottom:1px solid #f0f3f9;vertical-align:middle;color:var(--txt);}
 tr:last-child td{border-bottom:none;}
 .bno{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--pri);color:#fff;font-size:11px;font-weight:700;}
+
+/* ── DRAG TO REORDER ── */
+.drag-list{list-style:none;margin:0;padding:0;}
+.drag-item{display:flex;align-items:center;gap:0;background:#fff;border-bottom:1px solid #f0f3f9;touch-action:none;transition:box-shadow .15s,opacity .15s;}
+.drag-item:last-child{border-bottom:none;}
+.drag-item.dragging{opacity:.5;box-shadow:0 4px 16px rgba(0,0,0,.15);background:#f8f8f8;border-radius:8px;z-index:50;}
+.drag-item.drag-over{border-top:2.5px solid var(--pri);}
+.drag-handle{padding:12px 10px 12px 14px;color:#bbb;font-size:18px;cursor:grab;touch-action:none;flex-shrink:0;line-height:1;-webkit-user-select:none;user-select:none;}
+.drag-handle:active{cursor:grabbing;}
+.drag-num{padding:12px 4px;flex-shrink:0;}
+.drag-name{flex:1;padding:12px 8px;font-size:15px;color:var(--txt);}
+.drag-pos{padding:12px 14px 12px 0;flex-shrink:0;}
+.drag-note{font-size:12px;color:var(--mut);padding:8px 14px;font-style:italic;}
+.drag-hint{font-size:12px;color:var(--mut);padding:6px 14px 10px;text-align:center;}
+
 .pos{display:inline-block;padding:3px 9px;border-radius:20px;font-size:12px;font-weight:600;white-space:nowrap;}
 .pos-edit{cursor:pointer;position:relative;}
 .pos-edit:hover{opacity:.85;box-shadow:0 0 0 2px #888;}
@@ -655,7 +670,27 @@ function render(){
   for(var mp in manualEdits4){ if(inn4[mp]!==undefined) inn4[mp]=manualEdits4[mp]; }
   currentInn4=inn4;
 
-  setH('t-bat','<div class="lnc"><div class="lnn">'+n+' players. All bat every inning. '+(bpc>0?bpc+' sit each inning.':'Everyone fields every inning.')+'</div>'+lgnd()+'<table><thead><tr><th>#</th><th>Player</th><th>Inn 1 Position</th></tr></thead><tbody>'+ab.map(function(p,i){var pos=inn[0][p]||'Bench';return '<tr><td><span class="bno">'+(i+1)+'</span></td><td>'+fn(p)+'</td><td>'+chip(pos,p,0,!!manualEdits[0][p])+'</td></tr>';}).join('')+'</tbody></table></div>');
+  var batHtml='<div class="lnc"><div class="lnn">'+n+' players. All bat every inning. '+(bpc>0?bpc+' sit each inning.':'Everyone fields every inning.')+'</div>'+lgnd();
+  if(!locked){
+    batHtml+='<ul class="drag-list" id="drag-batting">';
+    batHtml+=ab.map(function(p,i){
+      var pos=inn[0][p]||'Bench';
+      return '<li class="drag-item" data-player="'+esc(p)+'">'
+        +'<span class="drag-handle" title="Drag to reorder">&#9776;</span>'
+        +'<span class="drag-num"><span class="bno">'+(i+1)+'</span></span>'
+        +'<span class="drag-name">'+fn(p)+'</span>'
+        +'<span class="drag-pos">'+chip(pos,p,0,!!manualEdits[0][p])+'</span>'
+        +'</li>';
+    }).join('');
+    batHtml+='</ul><div class="drag-hint">&#9776; Drag to reorder batting order</div>';
+  } else {
+    batHtml+='<table><thead><tr><th>#</th><th>Player</th><th>Inn 1 Position</th></tr></thead><tbody>';
+    batHtml+=ab.map(function(p,i){var pos=inn[0][p]||'Bench';return '<tr><td><span class="bno">'+(i+1)+'</span></td><td>'+fn(p)+'</td><td>'+chip(pos,p,0,!!manualEdits[0][p])+'</td></tr>';}).join('');
+    batHtml+='</tbody></table>';
+  }
+  batHtml+='</div>';
+  setH('t-bat', batHtml);
+  if(!locked) initDragList();
 
   var notes=['Inning 1: '+spots+' field, '+bpc+' sit.'+(withC?' Player catcher in lineup.':' Coach catching.'),'Inning 2: bench group from inning 1 rotates in.','Inning 3: final rotation. Last bench group fields.'];
   for(var i=0;i<3;i++){(function(x){setH('t-i'+(x+1),'<div class="lnc"><div class="lnn">'+notes[x]+'</div>'+lgnd()+'<table><thead><tr><th style=\"width:32px\">#</th><th>Player</th><th>Position</th></tr></thead><tbody>'+ab.map(function(p,idx){var pos=inn[x][p]||'Bench';return '<tr><td><span class="bno">'+(idx+1)+'</span></td><td>'+fn(p)+'</td><td>'+chip(pos,p,x,!!manualEdits[x][p])+'</td></tr>';}).join('')+'</tbody></table></div>');})(i);}
@@ -1001,6 +1036,134 @@ document.addEventListener('click', function(e) {
     return;
   }
 });
+
+
+/* ── DRAG TO REORDER BATTING ── */
+var dragSrc = null;
+var dragList = null;
+
+function initDragList() {
+  var list = el('drag-batting');
+  if(!list) return;
+  dragList = list;
+  var items = list.querySelectorAll('.drag-item');
+
+  for(var i=0; i<items.length; i++) {
+    setupDragItem(items[i]);
+  }
+}
+
+function setupDragItem(item) {
+  // ── Desktop drag ──
+  item.setAttribute('draggable','true');
+
+  item.addEventListener('dragstart', function(e) {
+    dragSrc = this;
+    this.classList.add('dragging');
+    if(e.dataTransfer) e.dataTransfer.effectAllowed='move';
+  });
+  item.addEventListener('dragend', function() {
+    this.classList.remove('dragging');
+    if(dragList) {
+      var items = dragList.querySelectorAll('.drag-item');
+      for(var i=0;i<items.length;i++) items[i].classList.remove('drag-over');
+    }
+    commitBattingOrder();
+  });
+  item.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    if(e.dataTransfer) e.dataTransfer.dropEffect='move';
+    if(dragSrc && dragSrc !== this) {
+      var items = dragList.querySelectorAll('.drag-item');
+      for(var i=0;i<items.length;i++) items[i].classList.remove('drag-over');
+      this.classList.add('drag-over');
+    }
+  });
+  item.addEventListener('drop', function(e) {
+    e.preventDefault();
+    if(dragSrc && dragSrc !== this) {
+      var list = dragList;
+      var items = Array.prototype.slice.call(list.querySelectorAll('.drag-item'));
+      var srcIdx  = items.indexOf(dragSrc);
+      var destIdx = items.indexOf(this);
+      if(srcIdx < destIdx) list.insertBefore(dragSrc, this.nextSibling);
+      else list.insertBefore(dragSrc, this);
+    }
+  });
+
+  // ── Mobile touch drag ──
+  var handle = item.querySelector('.drag-handle');
+  if(!handle) return;
+
+  var startY, startScrollY, touchItem, placeholder;
+
+  handle.addEventListener('touchstart', function(e) {
+    if(locked) return;
+    e.preventDefault();
+    touchItem = item;
+    startY = e.touches[0].clientY;
+    startScrollY = window.scrollY;
+    touchItem.classList.add('dragging');
+    placeholder = document.createElement('li');
+    placeholder.className = 'drag-item';
+    placeholder.style.cssText = 'height:'+touchItem.offsetHeight+'px;background:#f0f0f0;opacity:.5;';
+    touchItem.parentNode.insertBefore(placeholder, touchItem.nextSibling);
+  }, {passive:false});
+
+  handle.addEventListener('touchmove', function(e) {
+    if(!touchItem) return;
+    e.preventDefault();
+    var y = e.touches[0].clientY;
+    var delta = y - startY;
+    touchItem.style.position = 'relative';
+    touchItem.style.zIndex = '100';
+    touchItem.style.transform = 'translateY('+delta+'px)';
+
+    // Find element at touch point
+    touchItem.style.pointerEvents = 'none';
+    var below = document.elementFromPoint(e.touches[0].clientX, y);
+    touchItem.style.pointerEvents = '';
+    if(!below) return;
+    var target = below.closest ? below.closest('.drag-item') : null;
+    if(target && target !== touchItem && target !== placeholder && dragList.contains(target)) {
+      var items = Array.prototype.slice.call(dragList.querySelectorAll('.drag-item:not(.dragging)'));
+      var targetIdx = items.indexOf(target);
+      var srcIdx = Array.prototype.slice.call(dragList.children).indexOf(touchItem);
+      if(targetIdx > srcIdx) dragList.insertBefore(placeholder, target.nextSibling);
+      else dragList.insertBefore(placeholder, target);
+    }
+  }, {passive:false});
+
+  handle.addEventListener('touchend', function() {
+    if(!touchItem) return;
+    touchItem.style.position = '';
+    touchItem.style.zIndex = '';
+    touchItem.style.transform = '';
+    touchItem.classList.remove('dragging');
+    if(placeholder && placeholder.parentNode) {
+      dragList.insertBefore(touchItem, placeholder);
+      placeholder.parentNode.removeChild(placeholder);
+    }
+    touchItem = null; placeholder = null;
+    commitBattingOrder();
+  });
+}
+
+function commitBattingOrder() {
+  if(!dragList) return;
+  var items = dragList.querySelectorAll('.drag-item');
+  var newOrder = [];
+  for(var i=0;i<items.length;i++) {
+    var p = items[i].getAttribute('data-player');
+    if(p) newOrder.push(p);
+  }
+  // Update batting array preserving any players not currently shown (absent)
+  var absent = batting.filter(function(p){ return newOrder.indexOf(p)<0; });
+  batting = newOrder.concat(absent);
+  // Re-render just the batting numbers without full re-render
+  var nums = dragList.querySelectorAll('.bno');
+  for(var i=0;i<nums.length;i++) nums[i].textContent = i+1;
+}
 
 loadTeam('fc');
 </script>
