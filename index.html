@@ -694,6 +694,8 @@ function render(){
 
   var notes=['Inning 1: '+spots+' field, '+bpc+' sit.'+(withC?' Player catcher in lineup.':' Coach catching.'),'Inning 2: bench group from inning 1 rotates in.','Inning 3: final rotation. Last bench group fields.'];
   for(var i=0;i<3;i++){(function(x){setH('t-i'+(x+1),'<div class="lnc"><div class="lnn">'+notes[x]+'</div>'+lgnd()+'<table><thead><tr><th style=\"width:32px\">#</th><th>Player</th><th>Position</th></tr></thead><tbody>'+ab.map(function(p,idx){var pos=inn[x][p]||'Bench';return '<tr><td><span class="bno">'+(idx+1)+'</span></td><td>'+fn(p)+'</td><td>'+chip(pos,p,x,!!manualEdits[x][p])+'</td></tr>';}).join('')+'</tbody></table></div>');})(i);}
+  // Store refs for renderInningTabs
+  window._lastRenderState={ab:ab,inn:inn,inn4:inn4,bc:bc,spots:spots,bpc:bpc,withC:withC,ao:ao};
 
   var ds=ao.filter(function(p){return bc[p]>=1&&inn4[p]==='Bench';});
   setH('t-i4','<div class="lnc"><div class="lnn'+(ds.length?' w':'')+'">Inning 4: '+spots+' play, '+(n-spots)+' sit.'+(ds.length?' '+ds.map(function(p){return p.split(',')[0];}).join(' & ')+' sit a 2nd time.':' No one sits twice.')+'</div>'+lgnd()+'<table><thead><tr><th style=\"width:32px\">#</th><th>Player</th><th>Position</th><th>Bench</th></tr></thead><tbody>'+ab.map(function(p,idx){var pos=inn4[p]||'Bench',cnt=bc[p]+(pos==='Bench'?1:0);return '<tr><td><span class="bno">'+(idx+1)+'</span></td><td>'+fn(p)+'</td><td>'+chip(pos,p,3,!!manualEdits4[p])+'</td><td style="text-align:center"><span class="tly t'+cnt+'">'+cnt+'</span></td></tr>';}).join('')+'</tbody></table><div class="fn">Bench count = total across all 4 innings</div></div>');
@@ -932,10 +934,12 @@ var POS_COLORS = {
 };
 var activePopPlayer=null, activePopInning=null;
 
+var activePopCurrentPos = null;
 function openPopover(player, inningIdx, currentPos, anchorEl) {
   if(locked) return;
   activePopPlayer=player;
   activePopInning=inningIdx;
+  activePopCurrentPos=currentPos;
 
   var withC = el('catch-tog').checked;
   var title = el('pop-title');
@@ -982,25 +986,34 @@ function closePopover() {
 
 function applyPositionEdit(newPos) {
   if(activePopPlayer===null || activePopInning===null) return;
-  var player = activePopPlayer;
-  var innIdx = activePopInning; // 0=inn1, 1=inn2, 2=inn3, 3=inn4
+  var player  = activePopPlayer;
+  var innIdx  = activePopInning;
+  var oldPos  = activePopCurrentPos; // saved when popover opened
   closePopover();
 
-  var edits = innIdx===3 ? manualEdits4 : manualEdits[innIdx];
-  var inn   = innIdx===3 ? currentInn4  : currentInnings[innIdx];
-  if(!inn) return;
+  if(newPos === oldPos) return;
 
-  var oldPos = inn[player];
-  if(newPos === oldPos) return; // no change
-
-  // Find if another player already has this position — if so swap
-  var swapPlayer = null;
-  for(var p in inn) {
-    if(p !== player && inn[p] === newPos) { swapPlayer = p; break; }
+  // Build the full effective position map for this inning right now
+  // so we can find who currently holds newPos
+  var effMap = {};
+  if(innIdx === 3) {
+    if(currentInn4) { for(var p in currentInn4) effMap[p] = currentInn4[p]; }
+    for(var p in manualEdits4) effMap[p] = manualEdits4[p];
+  } else {
+    if(currentInnings && currentInnings[innIdx]) {
+      for(var p in currentInnings[innIdx]) effMap[p] = currentInnings[innIdx][p];
+    }
+    for(var p in manualEdits[innIdx]) effMap[p] = manualEdits[innIdx][p];
   }
 
-  // Apply edit
-  if(innIdx===3) {
+  // Find who currently has newPos so we can swap them
+  var swapPlayer = null;
+  for(var p in effMap) {
+    if(p !== player && effMap[p] === newPos) { swapPlayer = p; break; }
+  }
+
+  // Apply both edits atomically
+  if(innIdx === 3) {
     manualEdits4[player] = newPos;
     if(swapPlayer) manualEdits4[swapPlayer] = oldPos;
   } else {
@@ -1157,12 +1170,37 @@ function commitBattingOrder() {
     var p = items[i].getAttribute('data-player');
     if(p) newOrder.push(p);
   }
-  // Update batting array preserving any players not currently shown (absent)
+  // Update batting array preserving absent players at end
   var absent = batting.filter(function(p){ return newOrder.indexOf(p)<0; });
   batting = newOrder.concat(absent);
-  // Re-render just the batting numbers without full re-render
+  // Re-render inning tabs to reflect new batting order (position stays, order changes)
+  renderInningTabs();
+  // Update batting numbers in place without destroying drag list
   var nums = dragList.querySelectorAll('.bno');
   for(var i=0;i<nums.length;i++) nums[i].textContent = i+1;
+}
+
+
+function renderInningTabs() {
+  // Re-render just the inning tabs using latest batting order + stored positions
+  var rs = window._lastRenderState;
+  if(!rs) return;
+  var ab = batting.filter(function(p){ return rs.ab.indexOf(p)>=0; });
+  var notes=['Inning 1: '+rs.spots+' field, '+rs.bpc+' sit.'+(rs.withC?' Player catcher in lineup.':' Coach catching.'),'Inning 2: bench group from inning 1 rotates in.','Inning 3: final rotation. Last bench group fields.'];
+  for(var i=0;i<3;i++){
+    (function(x){
+      setH('t-i'+(x+1),'<div class="lnc"><div class="lnn">'+notes[x]+'</div>'+lgnd()
+        +'<table><thead><tr><th style="width:32px">#</th><th>Player</th><th>Position</th></tr></thead><tbody>'
+        +ab.map(function(p,idx){var pos=rs.inn[x][p]||'Bench';return '<tr><td><span class="bno">'+(idx+1)+'</span></td><td>'+fn(p)+'</td><td>'+chip(pos,p,x,!!manualEdits[x][p])+'</td></tr>';}).join('')
+        +'</tbody></table></div>');
+    })(i);
+  }
+  // Inning 4
+  var ds=rs.ao.filter(function(p){return rs.bc[p]>=1&&rs.inn4[p]==='Bench';});
+  setH('t-i4','<div class="lnc"><div class="lnn'+(ds.length?' w':'')+'">Inning 4: '+rs.spots+' play, '+(ab.length > rs.spots ? ab.length-rs.spots : 0)+' sit.'+(ds.length?' '+ds.map(function(p){return p.split(',')[0];}).join(' & ')+' sit a 2nd time.':' No one sits twice.')+'</div>'+lgnd()
+    +'<table><thead><tr><th style="width:32px">#</th><th>Player</th><th>Position</th><th>Bench</th></tr></thead><tbody>'
+    +ab.map(function(p,idx){var pos=rs.inn4[p]||'Bench',cnt=rs.bc[p]+(pos==='Bench'?1:0);return '<tr><td><span class="bno">'+(idx+1)+'</span></td><td>'+fn(p)+'</td><td>'+chip(pos,p,3,!!manualEdits4[p])+'</td><td style="text-align:center"><span class="tly t'+cnt+'">'+cnt+'</span></td></tr>';}).join('')
+    +'</tbody></table><div class="fn">Bench count = total across all 4 innings</div></div>');
 }
 
 loadTeam('fc');
