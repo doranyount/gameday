@@ -50,6 +50,7 @@ body{font-family:-apple-system,sans-serif;background:var(--pri);color:#fff;min-h
 .tbtn{padding:7px 13px;border-radius:14px;border:none;font-size:13px;font-weight:600;cursor:pointer;}
 .tbtn-l{background:var(--pri);color:#fff;}
 .tbtn-d{background:#fff0f0;color:#c0392b;border:1.5px solid #ffcccc;}
+.tbtn-e{background:var(--fnt);color:var(--pri);border:1.5px solid var(--brd);}
 .abadge{font-size:11px;font-weight:700;color:var(--pri);background:var(--fnt);border:1px solid var(--lit);padding:3px 8px;border-radius:9px;white-space:nowrap;}
 .ntbtn{width:100%;padding:14px;border-radius:12px;border:2px dashed var(--brd);background:transparent;color:var(--mut);font-size:15px;font-weight:600;cursor:pointer;margin-bottom:10px;}
 .notr{padding:28px 16px;text-align:center;color:var(--mut);font-size:15px;}
@@ -334,7 +335,8 @@ tr:last-child td{border-bottom:none;}
 /* ══ CLICKER ══════════════════════════════════════════════════ */
 .clicker-wrap{padding:14px;display:flex;flex-direction:column;gap:12px;}
 .clicker-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:480px;margin:0 auto;}
-.clicker-card{background:#fff;border-radius:16px;border:2px solid var(--brd);overflow:hidden;display:flex;flex-direction:column;box-shadow:0 2px 8px rgba(0,0,0,.06);max-height:220px;}
+.clicker-card{background:#fff;border-radius:16px;border:2px solid var(--brd);overflow:hidden;display:flex;flex-direction:column;box-shadow:0 2px 8px rgba(0,0,0,.06);max-height:220px;-webkit-user-select:none;user-select:none;touch-action:manipulation;}
+.clicker-card:active{filter:brightness(.94);transform:scale(.98);}
 .clicker-card.balls  {border-color:#2E8B57;}
 .clicker-card.strikes{border-color:#c0392b;}
 .clicker-card.outs   {border-color:#e67e22;}
@@ -367,6 +369,9 @@ tr:last-child td{border-bottom:none;}
 .clicker-reset-all{flex:1;padding:13px;border-radius:var(--rad);border:none;background:#c0392b;color:#fff;font-size:14px;font-weight:700;cursor:pointer;touch-action:manipulation;}
 .clicker-reset-all:active{opacity:.85;}
 .clicker-hint{font-size:11px;color:var(--mut);text-align:center;}
+.clicker-undo{width:100%;padding:11px;border-radius:var(--rad-sm);border:1.5px solid var(--brd);background:#fff;color:var(--txt);font-size:14px;font-weight:700;cursor:pointer;touch-action:manipulation;display:flex;align-items:center;justify-content:center;gap:6px;}
+.clicker-undo:active{background:var(--pri-faint);}
+.clicker-undo:disabled{opacity:.3;cursor:default;}
 </style>
 </head>
 <body data-theme="">
@@ -511,37 +516,38 @@ tr:last-child td{border-bottom:none;}
 <div class="scr" id="scr-clicker">
   <div class="clicker-wrap">
     <div class="clicker-grid">
-      <div class="clicker-card balls">
+      <div class="clicker-card balls" data-ck="balls" style="cursor:pointer;">
         <div class="clicker-label">Balls</div>
         <div class="clicker-num" id="ck-balls">0</div>
         <div class="clicker-pips" id="ck-balls-pips"></div>
-        <button class="clicker-btn" id="ck-balls-btn" data-ck="balls">TAP TO ADD</button>
+        <div class="clicker-btn" id="ck-balls-btn">TAP TO ADD</div>
       </div>
-      <div class="clicker-card strikes">
+      <div class="clicker-card strikes" data-ck="strikes" style="cursor:pointer;">
         <div class="clicker-label">Strikes</div>
         <div class="clicker-num" id="ck-strikes">0</div>
         <div class="clicker-pips" id="ck-strikes-pips"></div>
-        <button class="clicker-btn" id="ck-strikes-btn" data-ck="strikes">TAP TO ADD</button>
+        <div class="clicker-btn" id="ck-strikes-btn">TAP TO ADD</div>
       </div>
-      <div class="clicker-card outs">
+      <div class="clicker-card outs" data-ck="outs" style="cursor:pointer;">
         <div class="clicker-label">Outs</div>
         <div class="clicker-num" id="ck-outs">0</div>
         <div class="clicker-pips" id="ck-outs-pips"></div>
-        <button class="clicker-btn" id="ck-outs-btn" data-ck="outs">TAP TO ADD</button>
+        <div class="clicker-btn" id="ck-outs-btn">TAP TO ADD</div>
       </div>
-      <div class="clicker-card inning">
+      <div class="clicker-card inning" data-ck="inning" style="cursor:pointer;">
         <div class="clicker-label">Inning</div>
         <div class="clicker-num" id="ck-inning">1</div>
         <div class="clicker-pips"></div>
-        <button class="clicker-btn" id="ck-inning-btn" data-ck="inning">NEXT INNING</button>
+        <div class="clicker-btn" id="ck-inning-btn">NEXT INNING</div>
       </div>
     </div>
+    <button class="clicker-undo" id="ck-undo-btn" data-ck-undo="1" disabled>&#x21A9; Undo last tap</button>
     <div class="clicker-reset-row">
       <button class="clicker-reset" data-ck-reset="pitch">Reset Pitch</button>
       <button class="clicker-reset" data-ck-reset="batter">New Batter</button>
       <button class="clicker-reset-all" data-ck-reset="all">Reset All</button>
     </div>
-    <div class="clicker-hint">Tap to increment &bull; Tap Reset to clear balls/strikes</div>
+    <div class="clicker-hint">Tap any panel to increment &bull; Undo reverses last tap</div>
   </div>
 </div>
 
@@ -564,7 +570,6 @@ tr:last-child td{border-bottom:none;}
 <div class="nav">
   <button class="nb on" id="nb-teams"><span class="nbi">&#x1F465;</span>Teams</button>
   <button class="nb" id="nb-game"><span class="nbi">&#x26BE;</span>Lineup</button>
-  <button class="nb" id="nb-edit"><span class="nbi">&#x2699;&#xFE0F;</span>Edit Team</button>
   <button class="nb" id="nb-gt" style="position:relative"><span class="nbi">&#x23F1;</span>GameTime</button>
   <button class="nb" id="nb-clicker"><span class="nbi">&#x1F4CB;</span>Clicker</button>
 </div>
@@ -611,9 +616,9 @@ function setH(id,v){var e=el(id);if(e)e.innerHTML=v;}
 function showScr(name){
   var ss=['teams','settings','game','gt','clicker'];
   for(var i=0;i<ss.length;i++){var e=el('scr-'+ss[i]);if(e)e.className='scr'+(ss[i]===name?' on':'');}
-  var nb=['nb-teams','nb-game','nb-edit','nb-gt','nb-clicker'];
+  var nb=['nb-teams','nb-game','nb-gt','nb-clicker'];
   for(var i=0;i<nb.length;i++){var e=el(nb[i]);if(e)e.className='nb';}
-  var m={teams:'nb-teams',game:'nb-game',settings:'nb-edit',gt:'nb-gt',clicker:'nb-clicker'};
+  var m={teams:'nb-teams',game:'nb-game',gt:'nb-gt',clicker:'nb-clicker'};
   if(m[name]){var e=el(m[name]);if(e)e.className='nb on';}
   var lb=el('lock-btn');if(lb)lb.style.display=name==='game'?'flex':'none';
   var pb=el('print-btn');if(pb)pb.style.display=name==='game'?'flex':'none';
@@ -628,7 +633,7 @@ function renderTeams(){
   var h='';
   for(var i=0;i<TEAMS.length;i++){
     var t=TEAMS[i],th=getTheme(t.theme),isAct=t.id===activeId;
-    h+='<div class="trow"><div class="tsw" style="background:'+th.bg+';color:#fff;font-size:11px;font-weight:700">'+th.lbl[0]+'</div><div class="ti"><div class="tn">'+esc(t.name)+'</div><div class="tm">'+t.roster.length+' players &middot; '+th.lbl+'</div></div><div class="tbs">'+(isAct?'<span class="abadge">Active</span>':'<button class="tbtn tbtn-l" data-action="load" data-tid="'+t.id+'">Load</button>')+'<button class="tbtn tbtn-d" data-action="del" data-tid="'+t.id+'">X</button></div></div>';
+    h+='<div class="trow"><div class="tsw" style="background:'+th.bg+';color:#fff;font-size:11px;font-weight:700">'+th.lbl[0]+'</div><div class="ti"><div class="tn">'+esc(t.name)+'</div><div class="tm">'+t.roster.length+' players &middot; '+th.lbl+'</div></div><div class="tbs">'+(isAct?'<span class="abadge">Active</span>':'<button class="tbtn tbtn-l" data-action="load" data-tid="'+t.id+'">Load</button>')+'<button class="tbtn tbtn-e" data-action="edit" data-tid="'+t.id+'">&#9998;</button><button class="tbtn tbtn-d" data-action="del" data-tid="'+t.id+'">&#x2715;</button></div></div>';
   }
   wrap.innerHTML=h;
 }
@@ -924,7 +929,6 @@ function updateLockUI(){
   var ct=el('catch-tog');if(ct)ct.disabled=locked;
   var sa=el('sel-all');if(sa)sa.disabled=locked;
   var t=aTeam(),r=t?t.roster:[];for(var i=0;i<r.length;i++){var cb=el('cb'+i);if(cb)cb.disabled=locked;}
-  var nb=el('nb-edit');if(nb)nb.disabled=locked;
 }
 
 function switchTab(tabId){
@@ -944,7 +948,6 @@ function switchTab(tabId){
 el('nb-teams').addEventListener('click',function(){renderTeams();showScr('teams');});
 el('nb-gt').addEventListener('click',function(){if(!locked){alert('Lock the lineup first to start GameTime!');return;}showScr('gt');renderGT();});
 el('nb-game').addEventListener('click',function(){if(!aTeam()){renderTeams();showScr('teams');return;}showScr('game');render();});
-el('nb-edit').addEventListener('click',function(){if(!aTeam()){renderTeams();showScr('teams');return;}openSettings();showScr('settings');});
 el('lock-btn').addEventListener('click',function(){
   locked=!locked;
   updateLockUI();
@@ -977,7 +980,15 @@ el('teams-wrap').addEventListener('click',function(e){
   var btn=e.target;if(!btn.getAttribute('data-action'))btn=btn.parentNode;
   var action=btn.getAttribute('data-action'),tid=btn.getAttribute('data-tid');
   if(!action||!tid)return;
-  if(action==='load')loadTeam(tid);else if(action==='del')askDel(tid);
+  if(action==='load')loadTeam(tid);
+  else if(action==='del')askDel(tid);
+  else if(action==='edit'){
+    // Set as active and open settings
+    activeId=tid;
+    var t=getTeam(tid);
+    if(t){applyTheme(t.theme);el('hdr-sub').textContent=t.name;}
+    openSettings();showScr('settings');
+  }
 });
 el('theme-grid').addEventListener('click',function(e){
   var tc=e.target;while(tc&&tc!==this&&!tc.getAttribute('data-theme-id'))tc=tc.parentNode;
@@ -2011,7 +2022,9 @@ setTimeout(checkForUpdate, 3000);
 
 /* ══ CLICKER ══════════════════════════════════════════════════ */
 var ck = { balls:0, strikes:0, outs:0, inning:1 };
+var ckHistory = []; // stack of previous states for undo
 var CK_MAX = { balls:4, strikes:3, outs:3, inning:99 };
+var CK_ALERT = { balls:3, strikes:2, outs:2 }; // show alert on this value before auto-advance
 
 function ckPips(id, val, max, cls) {
   var wrap = el(id);
@@ -2032,17 +2045,24 @@ function ckRender() {
   ckPips('ck-strikes-pips', ck.strikes, CK_MAX.strikes, 'strikes');
   ckPips('ck-outs-pips',    ck.outs,    CK_MAX.outs,    'outs');
 
-  // Flash max state on button
+  // Show alert state when at max display value (3B, 2S, 2O)
   ['balls','strikes','outs'].forEach(function(k){
     var btn = el('ck-'+k+'-btn');
     if(!btn) return;
-    var isMax = ck[k] >= CK_MAX[k]-1;
-    btn.className = 'clicker-btn' + (isMax ? ' clicker-max' : '');
-    btn.textContent = isMax ? (k==='balls'?'WALK!':k==='strikes'?'STRIKE OUT!':'3 OUTS!') : 'TAP TO ADD';
+    var atAlert = ck[k] >= CK_ALERT[k];
+    btn.className = 'clicker-btn' + (atAlert ? ' clicker-max' : '');
+    btn.textContent = atAlert
+      ? (k==='balls'?'TAP = WALK!':k==='strikes'?'TAP = STRIKE OUT!':'TAP = 3 OUTS!')
+      : 'TAP TO ADD';
   });
+  var undoBtn = el('ck-undo-btn');
+  if(undoBtn) undoBtn.disabled = (ckHistory.length === 0);
+
 }
 
 function ckTap(key) {
+  // Save state for undo (keep last 1 action only)
+  ckHistory = [{balls:ck.balls, strikes:ck.strikes, outs:ck.outs, inning:ck.inning}];
   if(key === 'inning') {
     ck.inning++;
     ck.balls = 0; ck.strikes = 0; ck.outs = 0;
@@ -2065,16 +2085,29 @@ function ckTap(key) {
 }
 
 function ckReset(type) {
+  ckHistory = [];
   if(type === 'pitch')  { ck.balls=0; ck.strikes=0; }
   if(type === 'batter') { ck.balls=0; ck.strikes=0; }
   if(type === 'all')    { ck.balls=0; ck.strikes=0; ck.outs=0; ck.inning=1; }
   ckRender();
 }
 
+function ckUndo() {
+  if(!ckHistory.length) return;
+  var prev = ckHistory.pop();
+  ck.balls=prev.balls; ck.strikes=prev.strikes;
+  ck.outs=prev.outs; ck.inning=prev.inning;
+  ckRender();
+}
+
 // Wire up clicker events
 document.addEventListener('click', function(e) {
-  var ckKey = e.target.getAttribute('data-ck');
-  if(ckKey) { ckTap(ckKey); return; }
+  var ckEl = e.target;
+  while(ckEl && ckEl !== document && !ckEl.getAttribute('data-ck') && !ckEl.getAttribute('data-ck-reset')) {
+    ckEl = ckEl.parentNode;
+  }
+  var ckKey = ckEl ? ckEl.getAttribute('data-ck') : null;
+  if(ckKey && !e.target.getAttribute('data-ck-reset')) { ckTap(ckKey); return; }
   var ckRst = e.target.getAttribute('data-ck-reset');
   if(ckRst) { ckReset(ckRst); return; }
 });
