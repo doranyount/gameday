@@ -330,6 +330,43 @@ tr:last-child td{border-bottom:none;}
 .catcher-go{background:#e8f8ee;color:#1a5c2a;border:1px solid #5cb87a;}
 .catcher-batting{background:#fdecea;color:#721c24;border:1px solid #e57373;}
 .catcher-status-icon{font-size:18px;flex-shrink:0;}
+
+/* ══ CLICKER ══════════════════════════════════════════════════ */
+.clicker-wrap{padding:14px;display:flex;flex-direction:column;gap:12px;}
+.clicker-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.clicker-card{background:#fff;border-radius:16px;border:2px solid var(--brd);overflow:hidden;display:flex;flex-direction:column;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.clicker-card.balls  {border-color:#2E8B57;}
+.clicker-card.strikes{border-color:#c0392b;}
+.clicker-card.outs   {border-color:#e67e22;}
+.clicker-card.inning {border-color:var(--pri);}
+.clicker-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;padding:8px 14px 0;text-align:center;}
+.balls   .clicker-label{color:#2E8B57;}
+.strikes .clicker-label{color:#c0392b;}
+.outs    .clicker-label{color:#e67e22;}
+.inning  .clicker-label{color:var(--pri);}
+.clicker-num{font-size:72px;font-weight:900;text-align:center;line-height:1;padding:8px 14px;letter-spacing:-2px;}
+.balls   .clicker-num{color:#2E8B57;}
+.strikes .clicker-num{color:#c0392b;}
+.outs    .clicker-num{color:#e67e22;}
+.inning  .clicker-num{color:var(--pri);}
+.clicker-btn{width:100%;padding:16px;border:none;border-top:1.5px solid var(--brd);font-size:15px;font-weight:700;cursor:pointer;touch-action:manipulation;-webkit-user-select:none;user-select:none;letter-spacing:.02em;}
+.balls   .clicker-btn{background:#f0faf4;color:#2E8B57;}
+.strikes .clicker-btn{background:#fdf0f0;color:#c0392b;}
+.outs    .clicker-btn{background:#fef6ed;color:#e67e22;}
+.inning  .clicker-btn{background:var(--fnt);color:var(--pri);}
+.clicker-btn:active{filter:brightness(.92);}
+.clicker-max{background:#c0392b!important;color:#fff!important;}
+.clicker-pips{display:flex;gap:6px;justify-content:center;padding:4px 0 8px;}
+.clicker-pip{width:12px;height:12px;border-radius:50%;border:2px solid var(--brd);background:transparent;}
+.clicker-pip.on.balls  {background:#2E8B57;border-color:#2E8B57;}
+.clicker-pip.on.strikes{background:#c0392b;border-color:#c0392b;}
+.clicker-pip.on.outs   {background:#e67e22;border-color:#e67e22;}
+.clicker-reset-row{display:flex;gap:8px;}
+.clicker-reset{flex:1;padding:13px;border-radius:var(--rad);border:1.5px solid var(--brd);background:#fff;color:var(--mut);font-size:14px;font-weight:700;cursor:pointer;touch-action:manipulation;}
+.clicker-reset:active{background:var(--pri-faint);}
+.clicker-reset-all{flex:1;padding:13px;border-radius:var(--rad);border:none;background:#c0392b;color:#fff;font-size:14px;font-weight:700;cursor:pointer;touch-action:manipulation;}
+.clicker-reset-all:active{opacity:.85;}
+.clicker-hint{font-size:11px;color:var(--mut);text-align:center;}
 </style>
 </head>
 <body data-theme="">
@@ -469,6 +506,45 @@ tr:last-child td{border-bottom:none;}
 
 </div>
 
+
+<!-- Clicker screen -->
+<div class="scr" id="scr-clicker">
+  <div class="clicker-wrap">
+    <div class="clicker-grid">
+      <div class="clicker-card balls">
+        <div class="clicker-label">Balls</div>
+        <div class="clicker-num" id="ck-balls">0</div>
+        <div class="clicker-pips" id="ck-balls-pips"></div>
+        <button class="clicker-btn" id="ck-balls-btn" data-ck="balls">TAP TO ADD</button>
+      </div>
+      <div class="clicker-card strikes">
+        <div class="clicker-label">Strikes</div>
+        <div class="clicker-num" id="ck-strikes">0</div>
+        <div class="clicker-pips" id="ck-strikes-pips"></div>
+        <button class="clicker-btn" id="ck-strikes-btn" data-ck="strikes">TAP TO ADD</button>
+      </div>
+      <div class="clicker-card outs">
+        <div class="clicker-label">Outs</div>
+        <div class="clicker-num" id="ck-outs">0</div>
+        <div class="clicker-pips" id="ck-outs-pips"></div>
+        <button class="clicker-btn" id="ck-outs-btn" data-ck="outs">TAP TO ADD</button>
+      </div>
+      <div class="clicker-card inning">
+        <div class="clicker-label">Inning</div>
+        <div class="clicker-num" id="ck-inning">1</div>
+        <div class="clicker-pips"></div>
+        <button class="clicker-btn" id="ck-inning-btn" data-ck="inning">NEXT INNING</button>
+      </div>
+    </div>
+    <div class="clicker-reset-row">
+      <button class="clicker-reset" data-ck-reset="pitch">Reset Pitch</button>
+      <button class="clicker-reset" data-ck-reset="batter">New Batter</button>
+      <button class="clicker-reset-all" data-ck-reset="all">Reset All</button>
+    </div>
+    <div class="clicker-hint">Tap to increment &bull; Tap Reset to clear balls/strikes</div>
+  </div>
+</div>
+
 <div id="print-sheet"></div>
 <!-- Position edit popover -->
 <div class="pos-pop-overlay" id="pop-overlay" style="display:none" onclick="closePopover()"></div>
@@ -490,6 +566,7 @@ tr:last-child td{border-bottom:none;}
   <button class="nb" id="nb-game"><span class="nbi">&#x26BE;</span>Lineup</button>
   <button class="nb" id="nb-edit"><span class="nbi">&#x2699;&#xFE0F;</span>Edit Team</button>
   <button class="nb" id="nb-gt" style="position:relative"><span class="nbi">&#x23F1;</span>GameTime</button>
+  <button class="nb" id="nb-clicker"><span class="nbi">&#x1F4CB;</span>Clicker</button>
 </div>
 
 <script>
@@ -532,11 +609,11 @@ function el(id){return document.getElementById(id);}
 function setH(id,v){var e=el(id);if(e)e.innerHTML=v;}
 
 function showScr(name){
-  var ss=['teams','settings','game','gt'];
+  var ss=['teams','settings','game','gt','clicker'];
   for(var i=0;i<ss.length;i++){var e=el('scr-'+ss[i]);if(e)e.className='scr'+(ss[i]===name?' on':'');}
-  var nb=['nb-teams','nb-game','nb-edit','nb-gt'];
+  var nb=['nb-teams','nb-game','nb-edit','nb-gt','nb-clicker'];
   for(var i=0;i<nb.length;i++){var e=el(nb[i]);if(e)e.className='nb';}
-  var m={teams:'nb-teams',game:'nb-game',settings:'nb-edit',gt:'nb-gt'};
+  var m={teams:'nb-teams',game:'nb-game',settings:'nb-edit',gt:'nb-gt',clicker:'nb-clicker'};
   if(m[name]){var e=el(m[name]);if(e)e.className='nb on';}
   var lb=el('lock-btn');if(lb)lb.style.display=name==='game'?'flex':'none';
   var pb=el('print-btn');if(pb)pb.style.display=name==='game'?'flex':'none';
@@ -1930,6 +2007,82 @@ function checkForUpdate(){
 
 // Check after a short delay so it doesn't block app load
 setTimeout(checkForUpdate, 3000);
+
+
+/* ══ CLICKER ══════════════════════════════════════════════════ */
+var ck = { balls:0, strikes:0, outs:0, inning:1 };
+var CK_MAX = { balls:4, strikes:3, outs:3, inning:99 };
+
+function ckPips(id, val, max, cls) {
+  var wrap = el(id);
+  if(!wrap) return;
+  var h = '';
+  for(var i=1;i<max;i++) h += '<div class="clicker-pip'+(val>=i?' on '+cls:''+'')+'"></div>';
+  wrap.innerHTML = h;
+}
+
+function ckRender() {
+  // Update numbers
+  ['balls','strikes','outs','inning'].forEach(function(k){
+    var e = el('ck-'+k); if(e) e.textContent = ck[k];
+  });
+
+  // Pips
+  ckPips('ck-balls-pips',   ck.balls,   CK_MAX.balls,   'balls');
+  ckPips('ck-strikes-pips', ck.strikes, CK_MAX.strikes, 'strikes');
+  ckPips('ck-outs-pips',    ck.outs,    CK_MAX.outs,    'outs');
+
+  // Flash max state on button
+  ['balls','strikes','outs'].forEach(function(k){
+    var btn = el('ck-'+k+'-btn');
+    if(!btn) return;
+    var isMax = ck[k] >= CK_MAX[k]-1;
+    btn.className = 'clicker-btn' + (isMax ? ' clicker-max' : '');
+    btn.textContent = isMax ? (k==='balls'?'WALK!':k==='strikes'?'STRIKE OUT!':'3 OUTS!') : 'TAP TO ADD';
+  });
+}
+
+function ckTap(key) {
+  if(key === 'inning') {
+    ck.inning++;
+    ck.balls = 0; ck.strikes = 0; ck.outs = 0;
+  } else {
+    ck[key]++;
+    if(key === 'balls' && ck.balls >= CK_MAX.balls) {
+      // Walk - reset balls and strikes
+      setTimeout(function(){ ck.balls=0; ck.strikes=0; ckRender(); }, 600);
+    }
+    if(key === 'strikes' && ck.strikes >= CK_MAX.strikes) {
+      // Strike out - reset for next batter
+      setTimeout(function(){ ck.balls=0; ck.strikes=0; ckRender(); }, 600);
+    }
+    if(key === 'outs' && ck.outs >= CK_MAX.outs) {
+      // 3 outs - reset all count, advance inning
+      setTimeout(function(){ ck.balls=0; ck.strikes=0; ck.outs=0; ck.inning++; ckRender(); }, 800);
+    }
+  }
+  ckRender();
+}
+
+function ckReset(type) {
+  if(type === 'pitch')  { ck.balls=0; ck.strikes=0; }
+  if(type === 'batter') { ck.balls=0; ck.strikes=0; }
+  if(type === 'all')    { ck.balls=0; ck.strikes=0; ck.outs=0; ck.inning=1; }
+  ckRender();
+}
+
+// Wire up clicker events
+document.addEventListener('click', function(e) {
+  var ckKey = e.target.getAttribute('data-ck');
+  if(ckKey) { ckTap(ckKey); return; }
+  var ckRst = e.target.getAttribute('data-ck-reset');
+  if(ckRst) { ckReset(ckRst); return; }
+});
+
+el('nb-clicker').addEventListener('click', function(){
+  ckRender();
+  showScr('clicker');
+});
 
 loadTeam('fc');
 </script>
