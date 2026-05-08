@@ -319,7 +319,7 @@ tr:last-child td{border-bottom:none;}
 
 /* ── NEXT INNING PREVIEW ── */
 .gt-preview{background:#fff;border-radius:var(--rad);border:1px solid var(--brd);overflow:hidden;margin-bottom:12px;}
-.gt-preview-hdr{padding:7px 14px;background:var(--pri-mid);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#fff;}
+.gt-preview-hdr{padding:8px 14px;background:var(--pri-mid);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#fff;border-left:4px solid var(--acc);}
 .gt-preview-body{padding:10px 14px;display:flex;flex-direction:column;gap:8px;}
 .gt-preview-battery{display:flex;gap:16px;flex-wrap:wrap;}
 .gt-preview-role{display:flex;align-items:center;gap:6px;font-size:13px;}
@@ -1874,7 +1874,7 @@ function renderGT() {
     var isAway = gtSettings.homeAway === 'away';
 
     html += '<div class="gt-preview">'
-      +'<div class="gt-preview-hdr">Next Inning '+(gt.inning+1)+' Preview</div>'
+      +'<div class="gt-preview-hdr">&#x1F52D; Coming Up — Inning '+(gt.inning+1)+' Battery Preview</div>'
       +'<div class="gt-preview-body">'
       +'<div class="gt-preview-battery">'
         +'<div class="gt-preview-role"><span class="gt-preview-role-lbl">⚾ PITCHER</span>&nbsp;<span class="gt-preview-role-name">'+nb.pitcher+'</span></div>'
