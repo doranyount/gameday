@@ -333,8 +333,8 @@ tr:last-child td{border-bottom:none;}
 
 /* ══ CLICKER ══════════════════════════════════════════════════ */
 .clicker-wrap{padding:14px;display:flex;flex-direction:column;gap:12px;}
-.clicker-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-.clicker-card{background:#fff;border-radius:16px;border:2px solid var(--brd);overflow:hidden;display:flex;flex-direction:column;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.clicker-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:480px;margin:0 auto;}
+.clicker-card{background:#fff;border-radius:16px;border:2px solid var(--brd);overflow:hidden;display:flex;flex-direction:column;box-shadow:0 2px 8px rgba(0,0,0,.06);max-height:220px;}
 .clicker-card.balls  {border-color:#2E8B57;}
 .clicker-card.strikes{border-color:#c0392b;}
 .clicker-card.outs   {border-color:#e67e22;}
@@ -344,7 +344,7 @@ tr:last-child td{border-bottom:none;}
 .strikes .clicker-label{color:#c0392b;}
 .outs    .clicker-label{color:#e67e22;}
 .inning  .clicker-label{color:var(--pri);}
-.clicker-num{font-size:72px;font-weight:900;text-align:center;line-height:1;padding:8px 14px;letter-spacing:-2px;}
+.clicker-num{font-size:72px;font-weight:900;text-align:center;line-height:1;padding:8px 14px;letter-spacing:-2px;flex:1;}
 .balls   .clicker-num{color:#2E8B57;}
 .strikes .clicker-num{color:#c0392b;}
 .outs    .clicker-num{color:#e67e22;}
