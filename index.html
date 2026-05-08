@@ -28,6 +28,7 @@ body{font-family:-apple-system,sans-serif;background:var(--pri);color:#fff;min-h
 .hbtn.gold{background:var(--acc);border-color:var(--acc);color:var(--pri);}
 .body{background:var(--off);border-radius:18px 18px 0 0;padding:14px;min-height:calc(100vh - 58px);}
 .scr{display:none;}.scr.on{display:block;}
+#scr-clicker.on{position:fixed;top:58px;left:0;right:0;bottom:56px;overflow:hidden;display:flex;flex-direction:column;background:var(--off);z-index:10;}
 .nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--brd);display:flex;padding-bottom:env(safe-area-inset-bottom,0px);z-index:100;}
 .nb{flex:1;padding:8px 0 6px;border:none;background:transparent;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;color:var(--mut);font-size:10px;font-weight:600;}
 .nb.on{color:var(--pri);}
@@ -213,7 +214,9 @@ tr:last-child td{border-bottom:none;}
 .gt-stat.alert-green .gt-stat-val{color:#1a7a40;}
 .gt-alert-msg{font-size:11px;font-weight:800;margin-top:4px;letter-spacing:.03em;}
 /* Score board */
-.gt-scoreboard{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+.gt-scoreboard{display:grid;grid-template-columns:1fr auto 1fr;gap:4px;margin-bottom:12px;align-items:center;}
+.gt-score-at{display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--mut);gap:2px;padding:0 2px;}
+.gt-score-ha{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);}
 .gt-score-card{background:#fff;border-radius:var(--rad-sm);border:1px solid var(--brd);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;}
 .gt-score-team{font-size:12px;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.05em;}
 .gt-score-num{font-size:32px;font-weight:800;color:var(--pri);line-height:1;}
@@ -334,7 +337,7 @@ tr:last-child td{border-bottom:none;}
 .catcher-status-icon{font-size:18px;flex-shrink:0;}
 
 /* ══ CLICKER ══════════════════════════════════════════════════ */
-.clicker-wrap{padding:12px 12px 0;display:flex;flex-direction:column;gap:8px;height:calc(100svh - 58px - 56px);overflow:hidden;box-sizing:border-box;}
+.clicker-wrap{padding:12px;display:flex;flex-direction:column;gap:8px;flex:1;overflow:hidden;box-sizing:border-box;}
 .clicker-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;max-width:480px;margin:0 auto;flex:1;min-height:0;}
 .clicker-card{background:#fff;border-radius:16px;border:2px solid var(--brd);overflow:hidden;display:flex;flex-direction:column;box-shadow:0 2px 8px rgba(0,0,0,.06);-webkit-user-select:none;user-select:none;touch-action:manipulation;min-height:0;}
 .clicker-card:active{filter:brightness(.94);transform:scale(.98);}
@@ -393,6 +396,22 @@ tr:last-child td{border-bottom:none;}
 .about-row-val a{color:var(--pri);text-decoration:none;}
 .about-close{width:calc(100% - 32px);margin:16px 16px 8px;padding:14px;border-radius:12px;border:none;background:var(--pri);color:#fff;font-size:16px;font-weight:700;cursor:pointer;touch-action:manipulation;}
 .about-update-btn{width:calc(100% - 32px);margin:0 16px 4px;padding:12px;border-radius:12px;border:1.5px solid var(--brd);background:#fff;color:var(--txt);font-size:14px;font-weight:600;cursor:pointer;touch-action:manipulation;}
+
+/* ── THUMBWHEEL ── */
+.clicker-card-inner{display:flex;flex:1;min-height:0;}
+.clicker-main{display:flex;flex-direction:column;flex:1;min-height:0;}
+.clicker-wheel{width:36px;background:rgba(0,0,0,.04);border-left:1px solid var(--brd);display:flex;flex-direction:column;flex-shrink:0;cursor:ns-resize;-webkit-user-select:none;user-select:none;touch-action:none;}
+.clicker-wheel-up,.clicker-wheel-dn{flex:1;display:flex;align-items:center;justify-content:center;font-size:18px;color:rgba(0,0,0,.25);font-weight:700;transition:background .1s;}
+.clicker-wheel-up:active,.clicker-wheel-dn:active{background:rgba(0,0,0,.08);}
+.balls    .clicker-wheel{border-color:#2E8B57;background:#f0faf4;}
+.strikes  .clicker-wheel{border-color:#c0392b;background:#fdf0f0;}
+.outs     .clicker-wheel{border-color:#e67e22;background:#fef6ed;}
+.inning   .clicker-wheel{border-color:var(--pri);background:var(--fnt);}
+.balls    .clicker-wheel-up,.balls    .clicker-wheel-dn{color:#2E8B57;}
+.strikes  .clicker-wheel-up,.strikes  .clicker-wheel-dn{color:#c0392b;}
+.outs     .clicker-wheel-up,.outs     .clicker-wheel-dn{color:#e67e22;}
+.inning   .clicker-wheel-up,.inning   .clicker-wheel-dn{color:var(--pri);}
+.wheel-divider{height:1px;background:var(--brd);margin:0;}
 </style>
 </head>
 <body data-theme="">
@@ -559,28 +578,64 @@ tr:last-child td{border-bottom:none;}
 <div class="scr" id="scr-clicker">
   <div class="clicker-wrap">
     <div class="clicker-grid">
-      <div class="clicker-card balls" data-ck="balls" style="cursor:pointer;">
+<div class="clicker-card balls" data-ck="balls" style="cursor:pointer;">
         <div class="clicker-label">Balls</div>
-        <div class="clicker-num" id="ck-balls">0</div>
-        <div class="clicker-pips" id="ck-balls-pips"></div>
+        <div class="clicker-card-inner">
+          <div class="clicker-main">
+            <div class="clicker-num" id="ck-balls">0</div>
+            <div class="clicker-pips" id="ck-balls-pips"></div>
+          </div>
+          <div class="clicker-wheel">
+            <div class="clicker-wheel-up" data-ck-wheel="balls" data-ck-dir="1">▲</div>
+            <div class="wheel-divider"></div>
+            <div class="clicker-wheel-dn" data-ck-wheel="balls" data-ck-dir="-1">▼</div>
+          </div>
+        </div>
         <div class="clicker-btn" id="ck-balls-btn">TAP TO ADD</div>
       </div>
       <div class="clicker-card strikes" data-ck="strikes" style="cursor:pointer;">
         <div class="clicker-label">Strikes</div>
-        <div class="clicker-num" id="ck-strikes">0</div>
-        <div class="clicker-pips" id="ck-strikes-pips"></div>
+        <div class="clicker-card-inner">
+          <div class="clicker-main">
+            <div class="clicker-num" id="ck-strikes">0</div>
+            <div class="clicker-pips" id="ck-strikes-pips"></div>
+          </div>
+          <div class="clicker-wheel">
+            <div class="clicker-wheel-up" data-ck-wheel="strikes" data-ck-dir="1">▲</div>
+            <div class="wheel-divider"></div>
+            <div class="clicker-wheel-dn" data-ck-wheel="strikes" data-ck-dir="-1">▼</div>
+          </div>
+        </div>
         <div class="clicker-btn" id="ck-strikes-btn">TAP TO ADD</div>
       </div>
       <div class="clicker-card outs" data-ck="outs" style="cursor:pointer;">
         <div class="clicker-label">Outs</div>
-        <div class="clicker-num" id="ck-outs">0</div>
-        <div class="clicker-pips" id="ck-outs-pips"></div>
+        <div class="clicker-card-inner">
+          <div class="clicker-main">
+            <div class="clicker-num" id="ck-outs">0</div>
+            <div class="clicker-pips" id="ck-outs-pips"></div>
+          </div>
+          <div class="clicker-wheel">
+            <div class="clicker-wheel-up" data-ck-wheel="outs" data-ck-dir="1">▲</div>
+            <div class="wheel-divider"></div>
+            <div class="clicker-wheel-dn" data-ck-wheel="outs" data-ck-dir="-1">▼</div>
+          </div>
+        </div>
         <div class="clicker-btn" id="ck-outs-btn">TAP TO ADD</div>
       </div>
       <div class="clicker-card inning" data-ck="inning" style="cursor:pointer;">
         <div class="clicker-label">Inning</div>
-        <div class="clicker-num" id="ck-inning">1</div>
-        <div class="clicker-pips"></div>
+        <div class="clicker-card-inner">
+          <div class="clicker-main">
+            <div class="clicker-num" id="ck-inning">1</div>
+            <div class="clicker-pips"></div>
+          </div>
+          <div class="clicker-wheel">
+            <div class="clicker-wheel-up" data-ck-wheel="inning" data-ck-dir="1">▲</div>
+            <div class="wheel-divider"></div>
+            <div class="clicker-wheel-dn" data-ck-wheel="inning" data-ck-dir="-1">▼</div>
+          </div>
+        </div>
         <div class="clicker-btn" id="ck-inning-btn">NEXT INNING</div>
       </div>
     </div>
@@ -1864,25 +1919,44 @@ function renderGT() {
   // ── Scoreboard ──
   var t = aTeam();
   var teamName = t ? t.name : 'Us';
+  var isAway = gtSettings.homeAway === 'away';
+  var usLabel   = esc(teamName);
+  var usHALabel = isAway ? 'Away' : 'Home';
+  var themHALabel = isAway ? 'Home' : 'Away';
+
+  // Away card (always first/left), Home card (always second/right)
+  var awayCard, homeCard;
+  var usCard = '<div class="gt-score-card us">'
+    +'<div>'
+      +'<div class="gt-score-ha">'+usHALabel+'</div>'
+      +'<div class="gt-score-team">'+usLabel+'</div>'
+      +'<div class="gt-score-num">'+(gt.usScore + gt.runs)+'</div>'
+      +'<div style="font-size:10px;color:var(--pri);margin-top:2px;">'+gt.runs+' this inning</div>'
+    +'</div>'
+    +'</div>';
+  var themCard = '<div class="gt-score-card">'
+    +'<div style="flex:1">'
+      +'<div class="gt-score-ha">'+themHALabel+'</div>'
+      +'<div class="gt-score-team">Opponents</div>'
+      +'<div class="gt-score-num">'+(gt.themScore + gt.themInning)+'</div>'
+      +'<div style="font-size:10px;color:var(--mut);margin-top:2px;">'+gt.themInning+' this inning</div>'
+    +'</div>'
+    +'<div class="gt-score-ctrl">'
+      +'<button class="gt-minus" data-gt-them="-1">−</button>'
+      +'<button class="gt-plus" data-gt-them="1">+</button>'
+    +'</div>'
+    +'</div>';
+
+  if(isAway){
+    awayCard = usCard; homeCard = themCard;
+  } else {
+    awayCard = themCard; homeCard = usCard;
+  }
+
   html += '<div class="gt-scoreboard">'
-    +'<div class="gt-score-card us">'
-      +'<div>'
-        +'<div class="gt-score-team">'+esc(teamName)+'</div>'
-        +'<div class="gt-score-num">'+(gt.usScore + gt.runs)+'</div>'
-        +'<div style="font-size:10px;color:var(--pri);margin-top:2px;">'+gt.runs+' this inning</div>'
-      +'</div>'
-    +'</div>'
-    +'<div class="gt-score-card">'
-      +'<div style="flex:1">'
-        +'<div class="gt-score-team">Opponents</div>'
-        +'<div class="gt-score-num">'+(gt.themScore + gt.themInning)+'</div>'
-        +'<div style="font-size:10px;color:var(--mut);margin-top:2px;">'+gt.themInning+' this inning</div>'
-      +'</div>'
-      +'<div class="gt-score-ctrl">'
-        +'<button class="gt-minus" data-gt-them="-1">−</button>'
-        +'<button class="gt-plus" data-gt-them="1">+</button>'
-      +'</div>'
-    +'</div>'
+    + awayCard
+    +'<div class="gt-score-at"><span>@</span></div>'
+    + homeCard
     +'</div>';
 
   // ── Battery ──
@@ -2114,6 +2188,19 @@ function ckRender() {
 
 }
 
+function ckTapNoHistory(key) {
+  // Tap logic without saving history (called from wheel after history already saved)
+  if(key === 'inning') {
+    ck.inning++; ck.balls=0; ck.strikes=0; ck.outs=0;
+  } else {
+    ck[key]++;
+    if(key==='balls' && ck.balls>=CK_MAX.balls){setTimeout(function(){ck.balls=0;ck.strikes=0;ckRender();},600);}
+    if(key==='strikes' && ck.strikes>=CK_MAX.strikes){setTimeout(function(){ck.balls=0;ck.strikes=0;ck.outs++;if(ck.outs>=CK_MAX.outs){setTimeout(function(){ck.balls=0;ck.strikes=0;ck.outs=0;ck.inning++;ckRender();},800);}ckRender();},600);}
+    if(key==='outs' && ck.outs>=CK_MAX.outs){setTimeout(function(){ck.balls=0;ck.strikes=0;ck.outs=0;ck.inning++;ckRender();},800);}
+  }
+  ckRender();
+}
+
 function ckTap(key) {
   // Save state for undo (keep last 1 action only)
   ckHistory = [{balls:ck.balls, strikes:ck.strikes, outs:ck.outs, inning:ck.inning}];
@@ -2163,9 +2250,24 @@ function ckUndo() {
 
 // Wire up clicker events
 document.addEventListener('click', function(e) {
-  // 1. Undo button - check target directly, stop before bubbling
+  // 1. Undo button
   if(e.target.getAttribute('data-ck-undo') || e.target.closest('#ck-undo-btn')) {
     ckUndo(); return;
+  }
+  // 2. Thumbwheel up/down
+  if(e.target.getAttribute('data-ck-wheel')) {
+    var wKey = e.target.getAttribute('data-ck-wheel');
+    var wDir = parseInt(e.target.getAttribute('data-ck-dir'), 10);
+    ckHistory = [{balls:ck.balls,strikes:ck.strikes,outs:ck.outs,inning:ck.inning}];
+    if(wDir > 0) {
+      ckTapNoHistory(wKey);
+    } else {
+      // Decrement
+      if(wKey==='inning') ck.inning = Math.max(1, ck.inning-1);
+      else ck[wKey] = Math.max(0, ck[wKey]-1);
+      ckRender();
+    }
+    return;
   }
   // 2. Reset buttons
   var ckRst = e.target.getAttribute('data-ck-reset');
