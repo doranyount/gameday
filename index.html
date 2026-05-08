@@ -20,7 +20,8 @@
 body{font-family:-apple-system,sans-serif;background:var(--pri);color:#fff;min-height:100vh;padding-bottom:60px;}
 .hdr{background:var(--pri);height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;position:sticky;top:0;z-index:100;border-bottom:1px solid var(--lit);}
 .hdr-l{display:flex;align-items:center;gap:10px;}
-.hdr-logo{width:34px;height:34px;background:var(--acc);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.hdr-logo{width:34px;height:34px;background:var(--acc);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;transition:opacity .15s;}
+.hdr-l:active .hdr-logo{opacity:.7;}
 .hdr-app{font-size:17px;font-weight:800;color:#fff;letter-spacing:-.3px;line-height:1.1;}
 .hdr-sub{font-size:11px;color:rgba(255,255,255,.5);margin-top:1px;max-width:180px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
 .hbtn{padding:7px 12px;border-radius:16px;border:1.5px solid rgba(255,255,255,.3);background:transparent;color:#fff;font-size:13px;font-weight:600;cursor:pointer;}
@@ -372,6 +373,26 @@ tr:last-child td{border-bottom:none;}
 .clicker-undo{width:100%;padding:9px;border-radius:var(--rad-sm);border:1.5px solid var(--brd);background:#fff;color:var(--txt);font-size:13px;font-weight:700;cursor:pointer;touch-action:manipulation;display:flex;align-items:center;justify-content:center;gap:6px;flex-shrink:0;}
 .clicker-undo:active{background:var(--pri-faint);}
 .clicker-undo:disabled{opacity:.3;cursor:default;}
+
+/* ── ABOUT ── */
+.about-link{width:100%;padding:10px;background:transparent;border:none;color:var(--mut);font-size:13px;cursor:pointer;text-align:center;margin-bottom:4px;}
+.about-link:active{color:var(--pri);}
+.about-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;display:none;align-items:flex-end;justify-content:center;}
+.about-overlay.on{display:flex;}
+.about-sheet{background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:480px;padding:0 0 env(safe-area-inset-bottom,16px);overflow:hidden;}
+.about-drag{width:40px;height:4px;background:var(--brd);border-radius:2px;margin:12px auto 0;}
+.about-header{padding:20px 24px 0;text-align:center;}
+.about-logo{width:64px;height:64px;background:var(--pri);border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 12px;}
+.about-name{font-size:22px;font-weight:800;color:var(--txt);letter-spacing:-.3px;}
+.about-version{font-size:13px;color:var(--mut);margin-top:3px;}
+.about-desc{font-size:14px;color:var(--mut);line-height:1.5;margin-top:10px;padding:0 8px;}
+.about-rows{margin:16px 0 0;}
+.about-row{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-top:1px solid #f0f0f0;font-size:14px;}
+.about-row-lbl{color:var(--mut);font-weight:500;}
+.about-row-val{color:var(--txt);font-weight:600;text-align:right;}
+.about-row-val a{color:var(--pri);text-decoration:none;}
+.about-close{width:calc(100% - 32px);margin:16px 16px 8px;padding:14px;border-radius:12px;border:none;background:var(--pri);color:#fff;font-size:16px;font-weight:700;cursor:pointer;touch-action:manipulation;}
+.about-update-btn{width:calc(100% - 32px);margin:0 16px 4px;padding:12px;border-radius:12px;border:1.5px solid var(--brd);background:#fff;color:var(--txt);font-size:14px;font-weight:600;cursor:pointer;touch-action:manipulation;}
 </style>
 </head>
 <body data-theme="">
@@ -423,6 +444,28 @@ tr:last-child td{border-bottom:none;}
     </div>
   </div>
   <button class="ntbtn" id="new-team-btn">+ Create new team</button>
+<button class="about-link" id="about-btn">&#x2139;&#xFE0F; About GameDay</button>
+
+<!-- About overlay -->
+<div class="about-overlay" id="about-overlay" onclick="if(event.target===this)closeAbout()">
+  <div class="about-sheet">
+    <div class="about-drag"></div>
+    <div class="about-header">
+      <div class="about-logo">&#x26BE;</div>
+      <div class="about-name">GameDay</div>
+      <div class="about-version" id="about-ver">Version 1.0.0</div>
+      <div class="about-desc">Youth baseball lineup &amp; game management for coaches. Built for 8U but works for any age group.</div>
+    </div>
+    <div class="about-rows">
+      <div class="about-row"><span class="about-row-lbl">Hosted at</span><span class="about-row-val"><a href="https://doranyount.github.io/gameday" target="_blank">doranyount.github.io/gameday</a></span></div>
+      <div class="about-row"><span class="about-row-lbl">Built with</span><span class="about-row-val">Claude &amp; Anthropic AI</span></div>
+      <div class="about-row"><span class="about-row-lbl">Session</span><span class="about-row-val" id="about-session">Logged in (30 days)</span></div>
+      <div class="about-row" id="about-update-row" style="display:none"><span class="about-row-lbl">Update</span><span class="about-row-val" style="color:#1a7a40;font-weight:700;">&#x1F4E6; New version available!</span></div>
+    </div>
+    <button class="about-update-btn" onclick="checkForUpdate();closeAbout()">&#x1F504; Check for updates</button>
+    <button class="about-close" onclick="closeAbout()">Done</button>
+  </div>
+</div>
 </div>
 
 <div class="scr" id="scr-settings">
@@ -945,7 +988,7 @@ function switchTab(tabId){
   }
 }
 
-el('nb-teams').addEventListener('click',function(){renderTeams();showScr('teams');});
+el('nb-teams').addEventListener('click',function(){goHome();});
 el('nb-gt').addEventListener('click',function(){if(!locked){alert('Lock the lineup first to start GameTime!');return;}showScr('gt');renderGT();});
 el('nb-game').addEventListener('click',function(){if(!aTeam()){renderTeams();showScr('teams');return;}showScr('game');render();});
 el('lock-btn').addEventListener('click',function(){
@@ -2124,7 +2167,53 @@ el('nb-clicker').addEventListener('click', function(){
   showScr('clicker');
 });
 
-loadTeam('fc');
+function goHome(){
+  if(TEAMS.length === 1){
+    loadTeam(TEAMS[0].id);
+  } else {
+    renderTeams();
+    showScr('teams');
+  }
+}
+
+// Make header brand tappable to go home
+var brand = document.querySelector('.hdr-l');
+if(brand){
+  brand.style.cursor = 'pointer';
+  brand.addEventListener('click', function(){
+    if(locked) return; // don't navigate away while locked
+    goHome();
+  });
+}
+
+// Smart default on launch
+
+/* ── ABOUT ── */
+function openAbout(){
+  var av=el('about-ver'); if(av) av.textContent='Version '+GD_VERSION;
+  var as=el('about-session');
+  if(as){
+    try{
+      var raw=localStorage.getItem('gd_auth');
+      if(raw){
+        var tok=JSON.parse(raw);
+        if(tok&&tok.exp){
+          var days=Math.ceil((tok.exp-Date.now())/(1000*60*60*24));
+          as.textContent='Logged in ('+days+' day'+(days!==1?'s':'')+' remaining)';
+        }
+      } else { as.textContent='Not logged in'; }
+    }catch(e){ as.textContent='Active'; }
+  }
+  var ur=el('about-update-row');
+  if(ur) ur.style.display=(el('update-banner')&&el('update-banner').className.indexOf('visible')>=0)?'flex':'none';
+  el('about-overlay').className='about-overlay on';
+}
+function closeAbout(){
+  el('about-overlay').className='about-overlay';
+}
+el('about-btn').addEventListener('click',openAbout);
+
+goHome();
 </script>
 </body>
 </html>
