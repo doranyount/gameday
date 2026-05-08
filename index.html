@@ -321,7 +321,7 @@ tr:last-child td{border-bottom:none;}
 
 /* ── NEXT INNING PREVIEW ── */
 .gt-preview{background:#fff;border-radius:var(--rad);border:1px solid var(--brd);overflow:hidden;margin-bottom:12px;}
-.gt-preview-hdr{padding:8px 14px;background:var(--pri-mid);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#fff;border-left:4px solid var(--acc);}
+.gt-preview-hdr{padding:10px 14px;background:#1a3060;font-size:14px;font-weight:700;color:#ffffff;border-left:4px solid #e8b800;display:flex;align-items:center;gap:8px;border-radius:var(--rad) var(--rad) 0 0;}
 .gt-preview-body{padding:10px 14px;display:flex;flex-direction:column;gap:8px;}
 .gt-preview-battery{display:flex;gap:16px;flex-wrap:wrap;}
 .gt-preview-role{display:flex;align-items:center;gap:6px;font-size:13px;}
@@ -334,7 +334,7 @@ tr:last-child td{border-bottom:none;}
 .catcher-status-icon{font-size:18px;flex-shrink:0;}
 
 /* ══ CLICKER ══════════════════════════════════════════════════ */
-.clicker-wrap{padding:14px;display:flex;flex-direction:column;gap:8px;height:calc(100dvh - 118px);overflow:hidden;}
+.clicker-wrap{padding:12px;display:flex;flex-direction:column;gap:8px;height:calc(100dvh - 148px);overflow:hidden;box-sizing:border-box;}
 .clicker-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:480px;margin:0 auto;flex:1;min-height:0;}
 .clicker-card{background:#fff;border-radius:16px;border:2px solid var(--brd);overflow:hidden;display:flex;flex-direction:column;box-shadow:0 2px 8px rgba(0,0,0,.06);-webkit-user-select:none;user-select:none;touch-action:manipulation;min-height:0;}
 .clicker-card:active{filter:brightness(.94);transform:scale(.98);}
@@ -359,8 +359,8 @@ tr:last-child td{border-bottom:none;}
 .inning  .clicker-btn{background:var(--fnt);color:var(--pri);}
 .clicker-btn:active{filter:brightness(.92);}
 .clicker-max{background:#c0392b!important;color:#fff!important;}
-.clicker-pips{display:flex;gap:6px;justify-content:center;padding:2px 0 6px;flex-shrink:0;}
-.clicker-pip{width:12px;height:12px;border-radius:50%;border:2px solid var(--brd);background:transparent;}
+.clicker-pips{display:flex;gap:6px;justify-content:center;padding:2px 0 6px;flex-shrink:0;min-height:22px;width:100%;}
+.clicker-pip{width:14px;height:14px;border-radius:50%;border:2px solid var(--brd);background:transparent;flex-shrink:0;}
 .clicker-pip.on.balls  {background:#2E8B57;border-color:#2E8B57;}
 .clicker-pip.on.strikes{background:#c0392b;border-color:#c0392b;}
 .clicker-pip.on.outs   {background:#e67e22;border-color:#e67e22;}
@@ -1799,6 +1799,13 @@ function renderGT() {
           +'<button class="gt-plus" data-gt-set="maxOuts" data-gt-set-delta="1">+</button>'
         +'</div>'
       +'</div>'
+      +'<div class="gt-settings-row">'
+        +'<div><div class="gt-settings-lbl">Home or Away?</div><div class="gt-settings-sub">Away = we bat first each inning</div></div>'
+        +'<div style="display:flex;border:1.5px solid var(--brd);border-radius:8px;overflow:hidden;flex-shrink:0;">'
+          +'<button data-gt-set-val="away" style="padding:8px 16px;border:none;font-size:13px;font-weight:700;cursor:pointer;background:'+(gtSettings.homeAway==='away'?'var(--pri)':'#fff')+';color:'+(gtSettings.homeAway==='away'?'#fff':'var(--txt)')+';">Away</button>'
+          +'<button data-gt-set-val="home" style="padding:8px 16px;border:none;font-size:13px;font-weight:700;cursor:pointer;background:'+(gtSettings.homeAway==='home'?'var(--pri)':'#fff')+';color:'+(gtSettings.homeAway==='home'?'#fff':'var(--txt)')+';">Home</button>'
+        +'</div>'
+      +'</div>'
       +'</div></div>';
     sh += '<button class="gt-start-btn" data-gt-action="start">&#x26BE; Start Game!</button>';
     content.innerHTML = sh;
@@ -1928,7 +1935,7 @@ function renderGT() {
     var isAway = gtSettings.homeAway === 'away';
 
     html += '<div class="gt-preview">'
-      +'<div class="gt-preview-hdr">&#x1F52D; Coming Up — Inning '+(gt.inning+1)+' Battery Preview</div>'
+      +'<div class="gt-preview-hdr"><span style="font-size:18px;">&#x1F52D;</span> Next Up: Inning '+(gt.inning+1)+' Battery</div>'
       +'<div class="gt-preview-body">'
       +'<div class="gt-preview-battery">'
         +'<div class="gt-preview-role"><span class="gt-preview-role-lbl">⚾ PITCHER</span>&nbsp;<span class="gt-preview-role-name">'+nb.pitcher+'</span></div>'
