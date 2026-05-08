@@ -423,7 +423,7 @@ tr:last-child td{border-bottom:none;}
 </head>
 <body data-theme="">
 
-<div class="gt-sync-flash" id="gt-sync-flash">&#x2191; Synced from Clicker</div>
+<div class="gt-sync-flash" id="gt-sync-flash" style="display:none">&#x2191; Synced from Clicker</div>
 <div class="update-banner" id="update-banner"><span class="update-msg">&#x1F4E6; A new version of GameDay is available!</span><button class="update-btn" onclick="doUpdate()">Refresh</button><button class="update-dismiss" onclick="dismissUpdate()" aria-label="Dismiss">&#x00D7;</button></div>
 <div class="hdr">
   <div class="hdr-l">
@@ -1096,8 +1096,9 @@ function syncCkToGT(){
     var flash = el('gt-sync-flash');
     if(flash){
       flash.innerHTML = '&#x2191; Outs synced from Clicker (' + ck.outs + ' out' + (ck.outs!==1?'s':'') + ')';
+      flash.style.display = 'block';
       flash.className = 'gt-sync-flash show';
-      setTimeout(function(){ flash.className = 'gt-sync-flash'; }, 1800);
+      setTimeout(function(){ flash.className = 'gt-sync-flash'; setTimeout(function(){ flash.style.display='none'; }, 300); }, 1800);
     }
   }
 }
