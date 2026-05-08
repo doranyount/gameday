@@ -400,7 +400,10 @@ tr:last-child td{border-bottom:none;}
 /* ── THUMBWHEEL ── */
 .clicker-card-inner{display:flex;flex:1;min-height:0;}
 .clicker-main{display:flex;flex-direction:column;flex:1;min-height:0;}
-.clicker-wheel{width:36px;background:rgba(0,0,0,.04);border-left:1px solid var(--brd);display:flex;flex-direction:column;flex-shrink:0;cursor:ns-resize;-webkit-user-select:none;user-select:none;touch-action:none;}
+.clicker-wheel{width:36px;background:rgba(0,0,0,.04);border-left:1px solid var(--brd);display:flex;flex-direction:column;flex-shrink:0;cursor:ns-resize;-webkit-user-select:none;user-select:none;touch-action:none;order:2;}
+.clicker-main{order:1;}
+.clicker-wrap.left-hand .clicker-wheel{order:0;border-left:none;border-right:1px solid var(--brd);}
+.clicker-wrap.left-hand .clicker-main{order:1;}
 .clicker-wheel-up,.clicker-wheel-dn{flex:1;display:flex;align-items:center;justify-content:center;font-size:18px;color:rgba(0,0,0,.25);font-weight:700;transition:background .1s;}
 .clicker-wheel-up:active,.clicker-wheel-dn:active{background:rgba(0,0,0,.08);}
 .balls    .clicker-wheel{border-color:#2E8B57;background:#f0faf4;}
@@ -645,7 +648,10 @@ tr:last-child td{border-bottom:none;}
       <button class="clicker-reset" data-ck-reset="batter">New Batter</button>
       <button class="clicker-reset-all" data-ck-reset="all">Reset All</button>
     </div>
-    <div class="clicker-hint">Tap any panel to increment &bull; Undo reverses last tap</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+      <div class="clicker-hint" style="text-align:left;">Tap panel to add &bull; Undo reverses</div>
+      <button id="ck-hand-btn" style="padding:5px 10px;border-radius:8px;border:1.5px solid var(--brd);background:#fff;color:var(--txt);font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0;touch-action:manipulation;">&#x1F91A; Right hand</button>
+    </div>
   </div>
 </div>
 
@@ -2285,6 +2291,30 @@ el('nb-clicker').addEventListener('click', function(){
   ckRender();
   showScr('clicker');
 });
+
+// Hand preference
+var ckHandPref = 'right';
+try{ var _h=localStorage.getItem('gd_hand'); if(_h) ckHandPref=_h; }catch(e){}
+
+function applyHandPref(){
+  var wrap = document.querySelector('.clicker-wrap');
+  if(!wrap) return;
+  if(ckHandPref==='left'){
+    wrap.classList.add('left-hand');
+    var btn=el('ck-hand-btn'); if(btn) btn.textContent='\u270b Left hand';
+  } else {
+    wrap.classList.remove('left-hand');
+    var btn=el('ck-hand-btn'); if(btn) btn.textContent='\u1f91a Right hand';
+  }
+}
+
+el('ck-hand-btn').addEventListener('click',function(){
+  ckHandPref = ckHandPref==='right' ? 'left' : 'right';
+  try{ localStorage.setItem('gd_hand', ckHandPref); }catch(e){}
+  applyHandPref();
+});
+
+applyHandPref();
 
 function goHome(){
   if(TEAMS.length === 1){
