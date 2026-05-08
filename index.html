@@ -415,10 +415,15 @@ tr:last-child td{border-bottom:none;}
 .outs     .clicker-wheel-up,.outs     .clicker-wheel-dn{color:#e67e22;}
 .inning   .clicker-wheel-up,.inning   .clicker-wheel-dn{color:var(--pri);}
 .wheel-divider{height:1px;background:var(--brd);margin:0;}
+
+/* ── CLICKER SYNC ── */
+.gt-sync-flash{position:fixed;top:58px;left:0;right:0;background:#1a7a40;color:#fff;font-size:13px;font-weight:700;text-align:center;padding:7px;z-index:200;transform:translateY(-100%);transition:transform .2s ease;pointer-events:none;}
+.gt-sync-flash.show{transform:translateY(0);}
 </style>
 </head>
 <body data-theme="">
 
+<div class="gt-sync-flash" id="gt-sync-flash">&#x2191; Synced from Clicker</div>
 <div class="update-banner" id="update-banner"><span class="update-msg">&#x1F4E6; A new version of GameDay is available!</span><button class="update-btn" onclick="doUpdate()">Refresh</button><button class="update-dismiss" onclick="dismissUpdate()" aria-label="Dismiss">&#x00D7;</button></div>
 <div class="hdr">
   <div class="hdr-l">
@@ -1050,7 +1055,38 @@ function switchTab(tabId){
 }
 
 el('nb-teams').addEventListener('click',function(){renderTeams();showScr('teams');});
-el('nb-gt').addEventListener('click',function(){if(!locked){alert('Lock the lineup first to start GameTime!');return;}showScr('gt');renderGT();});
+var ckWasActive = false;
+
+el('nb-clicker').addEventListener('click', function(){
+  ckWasActive = false; // reset
+  ckRender();
+  showScr('clicker');
+  ckWasActive = true; // now on clicker
+});
+
+el('nb-gt').addEventListener('click',function(){
+  if(!locked){alert('Lock the lineup first to start GameTime!');return;}
+  if(ckWasActive) syncCkToGT(); // sync when switching FROM clicker TO gametime
+  ckWasActive = false;
+  showScr('gt');
+  renderGT();
+});
+
+function syncCkToGT(){
+  // Only sync if game is active
+  if(!gt.active) return;
+  // Only sync outs — innings and runs have their own GameTime logic
+  if(ck.outs !== gt.outs){
+    gt.outs = ck.outs;
+    renderGT();
+    var flash = el('gt-sync-flash');
+    if(flash){
+      flash.innerHTML = '&#x2191; Outs synced from Clicker (' + ck.outs + ' out' + (ck.outs!==1?'s':'') + ')';
+      flash.className = 'gt-sync-flash show';
+      setTimeout(function(){ flash.className = 'gt-sync-flash'; }, 1800);
+    }
+  }
+}
 el('nb-game').addEventListener('click',function(){if(!aTeam()){renderTeams();showScr('teams');return;}showScr('game');render();});
 el('lock-btn').addEventListener('click',function(){
   locked=!locked;
@@ -2287,10 +2323,7 @@ document.addEventListener('click', function(e) {
   }
 });
 
-el('nb-clicker').addEventListener('click', function(){
-  ckRender();
-  showScr('clicker');
-});
+
 
 // Hand preference
 var ckHandPref = 'right';
