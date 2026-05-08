@@ -1043,7 +1043,7 @@ function switchTab(tabId){
   }
 }
 
-el('nb-teams').addEventListener('click',function(){goHome();});
+el('nb-teams').addEventListener('click',function(){renderTeams();showScr('teams');});
 el('nb-gt').addEventListener('click',function(){if(!locked){alert('Lock the lineup first to start GameTime!');return;}showScr('gt');renderGT();});
 el('nb-game').addEventListener('click',function(){if(!aTeam()){renderTeams();showScr('teams');return;}showScr('game');render();});
 el('lock-btn').addEventListener('click',function(){
