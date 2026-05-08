@@ -334,8 +334,8 @@ tr:last-child td{border-bottom:none;}
 .catcher-status-icon{font-size:18px;flex-shrink:0;}
 
 /* ══ CLICKER ══════════════════════════════════════════════════ */
-.clicker-wrap{padding:12px;display:flex;flex-direction:column;gap:8px;height:calc(100dvh - 148px);overflow:hidden;box-sizing:border-box;}
-.clicker-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:480px;margin:0 auto;flex:1;min-height:0;}
+.clicker-wrap{padding:12px 12px 0;display:flex;flex-direction:column;gap:8px;height:calc(100svh - 58px - 56px);overflow:hidden;box-sizing:border-box;}
+.clicker-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;max-width:480px;margin:0 auto;flex:1;min-height:0;}
 .clicker-card{background:#fff;border-radius:16px;border:2px solid var(--brd);overflow:hidden;display:flex;flex-direction:column;box-shadow:0 2px 8px rgba(0,0,0,.06);-webkit-user-select:none;user-select:none;touch-action:manipulation;min-height:0;}
 .clicker-card:active{filter:brightness(.94);transform:scale(.98);}
 .clicker-card.balls  {border-color:#2E8B57;}
@@ -359,7 +359,7 @@ tr:last-child td{border-bottom:none;}
 .inning  .clicker-btn{background:var(--fnt);color:var(--pri);}
 .clicker-btn:active{filter:brightness(.92);}
 .clicker-max{background:#c0392b!important;color:#fff!important;}
-.clicker-pips{display:flex;gap:6px;justify-content:center;padding:2px 0 6px;flex-shrink:0;min-height:22px;width:100%;}
+.clicker-pips{display:flex;gap:6px;justify-content:center;padding:2px 0 6px;flex-shrink:0;height:22px;width:100%;overflow:hidden;}
 .clicker-pip{width:14px;height:14px;border-radius:50%;border:2px solid var(--brd);background:transparent;flex-shrink:0;}
 .clicker-pip.on.balls  {background:#2E8B57;border-color:#2E8B57;}
 .clicker-pip.on.strikes{background:#c0392b;border-color:#c0392b;}
@@ -2080,7 +2080,11 @@ function ckPips(id, val, max, cls) {
   var wrap = el(id);
   if(!wrap) return;
   var h = '';
-  for(var i=1;i<max;i++) h += '<div class="clicker-pip'+(val>=i?' on '+cls:''+'')+'"></div>';
+  // Always render max-1 pips so layout never shifts
+  for(var i=1;i<max;i++) {
+    var on = val >= i;
+    h += '<div class="clicker-pip'+(on?' on '+cls:'')+'" style="opacity:'+(on?'1':'0.2')+'"></div>';
+  }
   wrap.innerHTML = h;
 }
 
@@ -2159,14 +2163,20 @@ function ckUndo() {
 
 // Wire up clicker events
 document.addEventListener('click', function(e) {
-  var ckEl = e.target;
-  while(ckEl && ckEl !== document && !ckEl.getAttribute('data-ck') && !ckEl.getAttribute('data-ck-reset')) {
-    ckEl = ckEl.parentNode;
+  // 1. Undo button - check target directly, stop before bubbling
+  if(e.target.getAttribute('data-ck-undo') || e.target.closest('#ck-undo-btn')) {
+    ckUndo(); return;
   }
-  var ckKey = ckEl ? ckEl.getAttribute('data-ck') : null;
-  if(ckKey && !e.target.getAttribute('data-ck-reset')) { ckTap(ckKey); return; }
+  // 2. Reset buttons
   var ckRst = e.target.getAttribute('data-ck-reset');
   if(ckRst) { ckReset(ckRst); return; }
+  // 3. Card tap - walk up to find data-ck
+  var ckEl = e.target;
+  while(ckEl && ckEl !== document.body) {
+    if(ckEl.getAttribute('data-ck-reset') || ckEl.getAttribute('data-ck-undo')) return; // stop at other controls
+    if(ckEl.getAttribute('data-ck')) { ckTap(ckEl.getAttribute('data-ck')); return; }
+    ckEl = ckEl.parentNode;
+  }
 });
 
 el('nb-clicker').addEventListener('click', function(){
