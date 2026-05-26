@@ -549,6 +549,13 @@ tr:last-child td{border-bottom:none;}
         <label class="tog" style="margin:0 10px;"><input type="checkbox" id="catch-tog" checked><span class="ttr"></span></label>
         <span class="mtag mton" id="mode-tag">Player</span>
       </div>
+      <div class="crow" style="display:inline-flex;background:var(--fnt);padding:8px 14px;border-radius:10px;width:100%;">
+        <span class="clbl" style="margin-right:auto;">Field size</span>
+        <div style="display:flex;border:1.5px solid var(--brd);border-radius:8px;overflow:hidden;flex-shrink:0;">
+          <button id="field-9-btn" style="padding:6px 14px;border:none;font-size:13px;font-weight:700;cursor:pointer;background:var(--pri);color:#fff;touch-action:manipulation;">9 players</button>
+          <button id="field-10-btn" style="padding:6px 14px;border:none;font-size:13px;font-weight:700;cursor:pointer;background:#fff;color:var(--txt);touch-action:manipulation;">10 players</button>
+        </div>
+      </div>
       <div class="srow">
         <button class="sfb" id="shuf-bat"><span class="sfic">&#x1F500;</span>Batting</button>
         <button class="sfb" id="shuf-pos"><span class="sfic">&#x1F500;</span>Positions</button>
@@ -702,8 +709,11 @@ var TEAMS=[{id:'fc',name:'Fisher Cats',theme:'navy',roster:['Berry, Bode','Cogen
 var THEMES=[{id:'navy',bg:'#0f2044',em:'Navy',lbl:'Navy'},{id:'red',bg:'#8b0000',em:'Red',lbl:'Red'},{id:'green',bg:'#1a4d2e',em:'Green',lbl:'Green'},{id:'purple',bg:'#3b1a6e',em:'Purple',lbl:'Purple'},{id:'black',bg:'#111',em:'Black',lbl:'Black'},{id:'maroon',bg:'#4a0020',em:'Maroon',lbl:'Maroon'},{id:'orange',bg:'#b84a00',em:'Orange',lbl:'Orange'}];
 var INF=['1st Base','2nd Base','3rd Base','Shortstop'];
 var OUT=['Left Field','Center Field','Right Field'];
+var OUT10=['Left Field','Left-Center Field','Right-Center Field','Right Field'];
 var POS=INF.concat(OUT);
+var POS10=INF.concat(OUT10);
 var activeId='fc',editTheme='navy',pendingDel=null,batting=[],posOrder=[],locked=false;
+var fieldSize=9; // 9 or 10 players in field
 var manualEdits=[{},{},{}]; // per-inning overrides: {playerName: position}
 var manualEdits4={}; // inning 4 overrides
 var currentInnings=null; // last computed innings
@@ -722,7 +732,7 @@ function getTeam(id){for(var i=0;i<TEAMS.length;i++)if(TEAMS[i].id===id)return T
 function getTheme(id){for(var i=0;i<THEMES.length;i++)if(THEMES[i].id===id)return THEMES[i];return THEMES[0];}
 function aTeam(){return getTeam(activeId);}
 function applyTheme(id){document.body.setAttribute('data-theme',id==='navy'?'':id);}
-function posC(p){return {Pitcher:'pp',Catcher:'pc','1st Base':'pi','2nd Base':'pi','3rd Base':'pi',Shortstop:'pi','Left Field':'po','Center Field':'po','Right Field':'po',Bench:'pb2'}[p]||'pi';}
+function posC(p){return {Pitcher:'pp',Catcher:'pc','1st Base':'pi','2nd Base':'pi','3rd Base':'pi',Shortstop:'pi','Left Field':'po','Center Field':'po','Right Field':'po','Left-Center Field':'po','Right-Center Field':'po',Bench:'pb2'}[p]||'pi';}
 function chip(p, player, inningIdx, isManual){
   var editAttr = (!locked && player !== undefined && inningIdx !== undefined)
     ? ' data-player="'+esc(player)+'" data-inning="'+inningIdx+'" data-pos="'+esc(p)+'"' : '';
@@ -896,45 +906,37 @@ function toggleAll(){
 }
 
 function assignPositions(fielders, withC) {
-  // fielders = players who are NOT on bench this inning
-  // Returns a map of player -> position with no duplicates guaranteed
   var result = {};
   var remaining = fielders.slice();
+  var outPool = fieldSize === 10 ? OUT10.slice() : OUT.slice();
 
-  // Always assign pitcher first from remaining fielders
   result[remaining[0]] = 'Pitcher';
   remaining = remaining.slice(1);
 
-  // Assign catcher if using player catcher and we have enough
   if (withC && remaining.length > 0) {
     result[remaining[0]] = 'Catcher';
     remaining = remaining.slice(1);
   }
 
-  // Build a pool of field positions - exactly enough for remaining players
-  // Rotate through INF and OUT to ensure good mix across innings
   var fieldPool = [];
   var infCopy = INF.slice();
-  var outCopy = OUT.slice();
-  // Interleave infield and outfield
+  var outCopy = outPool;
   while(fieldPool.length < remaining.length) {
     if(infCopy.length > 0) fieldPool.push(infCopy.shift());
     if(fieldPool.length < remaining.length && outCopy.length > 0) fieldPool.push(outCopy.shift());
   }
-  // Shuffle the pool so positions vary each game
   fieldPool = shuf(fieldPool);
 
-  // Assign remaining players to field positions - one each, no duplicates
   for(var k = 0; k < remaining.length; k++) {
     result[remaining[k]] = fieldPool[k] || 'Left Field';
   }
-
   return result;
 }
 
 function buildInnings(withC, pres) {
   var n = pres.length;
-  var spots = Math.min(withC ? 9 : 8, n);
+  var maxSpots = fieldSize === 10 ? (withC ? 10 : 9) : (withC ? 9 : 8);
+  var spots = Math.min(maxSpots, n);
   var bpc = n - spots;
   var r = [{}, {}, {}];
   if (n < 2) return r;
@@ -967,7 +969,8 @@ function buildInnings(withC, pres) {
 function build4(withC, pres, inn) {
   var n = pres.length;
   if (n < 2) return { inn4: {}, bc: {} };
-  var spots = Math.min(withC ? 9 : 8, n);
+  var maxSpots = fieldSize === 10 ? (withC ? 10 : 9) : (withC ? 9 : 8);
+  var spots = Math.min(maxSpots, n);
   var bc = {};
   pres.forEach(function(p) {
     bc[p] = [0,1,2].filter(function(i) { return inn[i][p] === 'Bench'; }).length;
@@ -987,7 +990,8 @@ function build4(withC, pres, inn) {
 function render(){
   var ct=el('catch-tog');var withC=ct?ct.checked:false;
   var pres=getPresent(),n=pres.length;
-  var t=aTeam(),roster=t?t.roster:[],spots=Math.min(withC?9:8,n),bpc=n-spots;
+  var maxSpots=fieldSize===10?(withC?10:9):(withC?9:8);
+  var t=aTeam(),roster=t?t.roster:[],spots=Math.min(maxSpots,n),bpc=n-spots;
   var mt=el('mode-tag');if(mt){mt.textContent=withC?'Player':'Coach';mt.className='mtag '+(withC?'mton':'mtof');}
   var cp=el('cpill');if(cp){cp.textContent=n+' player'+(n!==1?'s':'');cp.className='cpill '+(n>=9?'pg':n>=6?'pw':'pb');}
   var hs=el('hdr-sub');if(hs)hs.textContent=locked?'Locked: '+(t?t.name:''):(t?t.name:'Select a team');
@@ -1050,6 +1054,8 @@ function updateLockUI(){
   var lb=el('lock-btn');if(lb){lb.textContent=locked?'Unlock':'Lock';lb.className='hbtn'+(locked?' gold':'');}
   var ids=['shuf-bat','shuf-pos','shuf-both'];for(var i=0;i<ids.length;i++){var b=el(ids[i]);if(b)b.disabled=locked;}
   var ct=el('catch-tog');if(ct)ct.disabled=locked;
+  var f9=el('field-9-btn');if(f9)f9.disabled=locked;
+  var f10=el('field-10-btn');if(f10)f10.disabled=locked;
   var sa=el('sel-all');if(sa)sa.disabled=locked;
   var t=aTeam(),r=t?t.roster:[];for(var i=0;i<r.length;i++){var cb=el('cb'+i);if(cb)cb.disabled=locked;}
 }
@@ -1128,6 +1134,20 @@ el('new-player').addEventListener('keydown',function(e){if(e.key==='Enter'){e.pr
 el('csv-pick').addEventListener('click',function(){el('csv-input').click();});
 el('csv-input').addEventListener('change',function(){handleCSV(this.files[0]);this.value='';});
 el('catch-tog').addEventListener('change',function(){if(!locked)render();});
+el('field-9-btn').addEventListener('click',function(){
+  if(locked)return;
+  fieldSize=9;
+  el('field-9-btn').style.background='var(--pri)';el('field-9-btn').style.color='#fff';
+  el('field-10-btn').style.background='#fff';el('field-10-btn').style.color='var(--txt)';
+  clearManualEdits();render();
+});
+el('field-10-btn').addEventListener('click',function(){
+  if(locked)return;
+  fieldSize=10;
+  el('field-10-btn').style.background='var(--pri)';el('field-10-btn').style.color='#fff';
+  el('field-9-btn').style.background='#fff';el('field-9-btn').style.color='var(--txt)';
+  clearManualEdits();render();
+});
 el('shuf-bat').addEventListener('click',function(){if(locked)return;batting=shuf(getPresent().slice());clearManualEdits();render();});
 el('shuf-pos').addEventListener('click',function(){if(locked)return;posOrder=shuf(getPresent().slice());clearManualEdits();render();});
 el('shuf-both').addEventListener('click',function(){if(locked)return;var p=getPresent();batting=shuf(p.slice());posOrder=shuf(p.slice());clearManualEdits();render();});
@@ -1272,7 +1292,8 @@ function posPrint(p){
   if(p==='Pitcher') return '<span class="pr-pos pr-p">&#9968; Pitcher</span>';
   if(p==='Catcher') return '<span class="pr-pos pr-c">&#x1F9E4; Catcher</span>';
   var m={'1st Base':'pr-inf','2nd Base':'pr-inf','3rd Base':'pr-inf','Shortstop':'pr-inf',
-    'Left Field':'pr-out','Center Field':'pr-out','Right Field':'pr-out','Bench':'pr-bench'};
+    'Left Field':'pr-out','Center Field':'pr-out','Right Field':'pr-out',
+    'Left-Center Field':'pr-out','Right-Center Field':'pr-out','Bench':'pr-bench'};
   return '<span class="pr-pos '+(m[p]||'pr-inf')+'">'+p+'</span>';
 }
 
@@ -1366,11 +1387,14 @@ el('print-btn').addEventListener('click',function(){
 
 
 /* ── POSITION EDIT POPOVER ── */
-var ALL_POS_OPTS = ['Pitcher','Catcher','1st Base','2nd Base','3rd Base','Shortstop','Left Field','Center Field','Right Field','Bench'];
+var ALL_POS_OPTS_9  = ['Pitcher','Catcher','1st Base','2nd Base','3rd Base','Shortstop','Left Field','Center Field','Right Field','Bench'];
+var ALL_POS_OPTS_10 = ['Pitcher','Catcher','1st Base','2nd Base','3rd Base','Shortstop','Left Field','Left-Center Field','Right-Center Field','Right Field','Bench'];
+var ALL_POS_OPTS = ALL_POS_OPTS_9;
 var POS_COLORS = {
   'Pitcher':'#3c3480','Catcher':'#8a4500',
   '1st Base':'#6b2d0e','2nd Base':'#6b2d0e','3rd Base':'#6b2d0e','Shortstop':'#6b2d0e',
   'Left Field':'#1a5c2a','Center Field':'#1a5c2a','Right Field':'#1a5c2a',
+  'Left-Center Field':'#1a5c2a','Right-Center Field':'#1a5c2a',
   'Bench':'#888'
 };
 var activePopPlayer=null, activePopInning=null;
@@ -1389,7 +1413,8 @@ function openPopover(player, inningIdx, currentPos, anchorEl) {
   var items = el('pop-items');
   if(!items) return;
   var h = '';
-  ALL_POS_OPTS.forEach(function(pos) {
+  var opts = fieldSize===10 ? ALL_POS_OPTS_10 : ALL_POS_OPTS_9;
+  opts.forEach(function(pos) {
     // Hide Catcher option if coach catching
     if(pos==='Catcher' && !withC) return;
     var isCurrent = pos===currentPos;
