@@ -1381,13 +1381,11 @@ function buildPrintHTML(){
 
 function buildBlankFormHTML(){
   var t = aTeam(); if(!t) return '';
-  var roster = t.roster.slice(); // all players, regardless of check-in
+  var roster = t.roster.slice();
+  var n = Math.max(roster.length, 11); // at least 11 blank rows
   var now = new Date();
   var dateStr = now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
   var is10 = fieldSize === 10;
-  var outLabels = is10
-    ? ['LF','LCF','RCF','RF']
-    : ['LF','CF','RF'];
 
   var html = '<!DOCTYPE html><html><head><meta charset="UTF-8">'
     +'<title>'+t.name+' Lineup Card</title>'
@@ -1395,87 +1393,97 @@ function buildBlankFormHTML(){
     +'@page{size:portrait;margin:0.4in;}'
     +'*{box-sizing:border-box;margin:0;padding:0;print-color-adjust:exact;-webkit-print-color-adjust:exact;}'
     +'body{font-family:-apple-system,Arial,sans-serif;font-size:11px;color:#000;background:#fff;}'
-    +'.top{display:flex;align-items:flex-end;justify-content:space-between;border-bottom:2.5px solid #000;padding-bottom:6px;margin-bottom:10px;}'
+    +'.top{display:flex;align-items:flex-end;justify-content:space-between;border-bottom:2.5px solid #000;padding-bottom:6px;margin-bottom:12px;}'
     +'.title{font-size:18px;font-weight:800;}'
-    +'.meta{font-size:11px;color:#555;text-align:right;line-height:1.6;}'
-    +'.meta-line{display:flex;align-items:center;gap:6px;justify-content:flex-end;}'
-    +'.meta-label{font-weight:700;}'
-    +'.meta-blank{border-bottom:1px solid #999;min-width:120px;display:inline-block;height:14px;}'
-    +'table{width:100%;border-collapse:collapse;margin-bottom:12px;}'
-    +'th{background:#000;color:#fff;padding:5px 6px;text-align:center;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;}'
-    +'th.name-col{text-align:left;width:22%;}'
-    +'th.bat-col{width:8%;}'
-    +'th.pos-col{width:'+(is10?'10':'12')+'%;}'
-    +'td{border:1px solid #ccc;padding:5px 6px;height:24px;font-size:11px;}'
-    +'td.name{font-weight:600;background:#fafafa;border-left:2px solid #000;}'
-    +'td.fill{background:#fff;}'
-    +'tr:nth-child(even) td{background:#f7f7f7;}'
-    +'tr:nth-child(even) td.fill{background:#f7f7f7;}'
-    +'.sub-head{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin:10px 0 4px;color:#333;border-bottom:1px solid #ccc;padding-bottom:3px;}'
-    +'.footer{text-align:center;font-size:9px;color:#aaa;margin-top:8px;border-top:1px solid #eee;padding-top:5px;}'
+    +'.subtitle{font-size:11px;color:#555;margin-top:2px;}'
+    +'.meta-line{display:flex;align-items:center;gap:6px;justify-content:flex-end;margin-bottom:3px;}'
+    +'.meta-label{font-weight:700;font-size:11px;}'
+    +'.uline{border-bottom:1px solid #999;min-width:110px;display:inline-block;height:13px;}'
+    +'table{width:100%;border-collapse:collapse;margin-bottom:14px;}'
+    +'th{background:#000;color:#fff;padding:6px 8px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;}'
+    +'th.left{text-align:left;}'
+    +'th.center{text-align:center;}'
+    +'td{border:1px solid #bbb;height:28px;padding:4px 8px;font-size:11px;vertical-align:middle;}'
+    +'td.num{width:28px;text-align:center;font-weight:700;color:#555;border-right:2px solid #555;background:#f5f5f5;}'
+    +'td.name-cell{width:32%;border-right:2px solid #000;}'
+    +'td.pos-cell{text-align:center;}'
+    +'tr:nth-child(even) td{background:#f9f9f9;}'
+    +'tr:nth-child(even) td.num{background:#efefef;}'
+    +'.section-head{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;'
+      +'margin:0 0 4px;padding:4px 8px;background:#000;color:#fff;}'
+    +'.roster-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px 16px;padding:8px;border:1px solid #bbb;margin-bottom:10px;}'
+    +'.roster-name{font-size:11px;padding:2px 0;border-bottom:1px dotted #ddd;}'
+    +'.key-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px 8px;padding:8px;border:1px solid #bbb;margin-bottom:10px;}'
+    +'.key-item{font-size:10px;display:flex;gap:5px;align-items:baseline;}'
+    +'.key-code{font-weight:800;min-width:28px;}'
+    +'.footer{text-align:center;font-size:9px;color:#aaa;margin-top:6px;border-top:1px solid #eee;padding-top:4px;}'
     +'@media print{.no-print{display:none;}}'
     +'</style>'
-    +'<script>window.onload=function(){}<\/script>'
     +'</head><body>'
 
-    // Top header
+    // ── Header ──
     +'<div class="top">'
       +'<div>'
         +'<div class="title">&#x26BE; '+t.name+'</div>'
-        +'<div style="font-size:11px;color:#555;margin-top:3px;">Game Day Lineup Card</div>'
+        +'<div class="subtitle">Game Day Lineup Card &mdash; fill in as players arrive</div>'
       +'</div>'
-      +'<div class="meta">'
-        +'<div class="meta-line"><span class="meta-label">Date:</span><span class="meta-blank"></span></div>'
-        +'<div class="meta-line"><span class="meta-label">Opponent:</span><span class="meta-blank"></span></div>'
-        +'<div class="meta-line"><span class="meta-label">Field:</span><span class="meta-blank" style="min-width:80px;"></span>'
-          +'&nbsp;&nbsp;<span class="meta-label">Home / Away</span></div>'
+      +'<div>'
+        +'<div class="meta-line"><span class="meta-label">Date:</span><span class="uline"></span></div>'
+        +'<div class="meta-line"><span class="meta-label">Opponent:</span><span class="uline"></span></div>'
+        +'<div class="meta-line"><span class="meta-label">&#x25A1;&nbsp;Home &nbsp;&nbsp; &#x25A1;&nbsp;Away</span></div>'
       +'</div>'
     +'</div>'
 
-    // Batting order + positions table
-    +'<div class="sub-head">Batting Order &amp; Field Positions</div>'
+    // ── Lineup grid ──
+    +'<div class="section-head">Lineup &mdash; write names in batting order, top to bottom</div>'
     +'<table><thead><tr>'
-      +'<th class="name-col">Player</th>'
-      +'<th class="bat-col">#</th>'
-      +'<th class="pos-col">Inn 1</th>'
-      +'<th class="pos-col">Inn 2</th>'
-      +'<th class="pos-col">Inn 3</th>'
-      +'<th class="pos-col">Inn 4</th>'
+      +'<th class="center" style="width:28px;">#</th>'
+      +'<th class="left" style="width:32%;">Player Name</th>'
+      +'<th class="center">Inning 1</th>'
+      +'<th class="center">Inning 2</th>'
+      +'<th class="center">Inning 3</th>'
+      +'<th class="center">Inning 4</th>'
     +'</tr></thead><tbody>';
 
-  // One row per roster player
-  roster.forEach(function(p) {
+  for(var i=0;i<n;i++){
     html += '<tr>'
-      +'<td class="name">'+fn(p)+'</td>'
-      +'<td class="fill"></td>'
-      +'<td class="fill"></td>'
-      +'<td class="fill"></td>'
-      +'<td class="fill"></td>'
-      +'<td class="fill"></td>'
+      +'<td class="num">'+(i+1)+'</td>'
+      +'<td class="name-cell"></td>'
+      +'<td class="pos-cell"></td>'
+      +'<td class="pos-cell"></td>'
+      +'<td class="pos-cell"></td>'
+      +'<td class="pos-cell"></td>'
       +'</tr>';
-  });
+  }
+  html += '</tbody></table>';
 
-  html += '</tbody></table>'
+  // ── Roster cheat sheet ──
+  html += '<div class="section-head">Roster &mdash; '+roster.length+' players</div>'
+    +'<div class="roster-grid">';
+  roster.forEach(function(p){ html += '<div class="roster-name">'+fn(p)+'</div>'; });
+  html += '</div>';
 
-  // Position reference key
-  +'<div class="sub-head">Position Key</div>'
-  +'<table><thead><tr>'
-    +'<th style="text-align:left;width:12%;">Code</th><th style="text-align:left;width:25%;">Position</th>'
-    +'<th style="text-align:left;width:12%;">Code</th><th style="text-align:left;width:25%;">Position</th>'
-    +'<th style="text-align:left;width:12%;">Code</th><th style="text-align:left;width:14%;">Position</th>'
-  +'</tr></thead><tbody>'
-  +'<tr><td>P</td><td>Pitcher</td><td>1B</td><td>1st Base</td><td>LF</td><td>Left Field</td></tr>'
-  +'<tr><td>C</td><td>Catcher</td><td>2B</td><td>2nd Base</td><td>'+(is10?'LCF':'CF')+'</td><td>'+(is10?'Left-Center':'Center Field')+'</td></tr>'
-  +'<tr><td>B</td><td>Bench</td><td>3B</td><td>3rd Base</td><td>'+(is10?'RCF':'RF')+'</td><td>'+(is10?'Right-Center':'Right Field')+'</td></tr>'
-  +'<tr><td></td><td></td><td>SS</td><td>Shortstop</td>'+(is10?'<td>RF</td><td>Right Field</td>':'<td></td><td></td>')+'</tr>'
-  +'</tbody></table>'
+  // ── Position key ──
+  var posKeys = [
+    ['P','Pitcher'],['C','Catcher'],['B','Bench'],
+    ['1B','1st Base'],['2B','2nd Base'],['3B','3rd Base'],['SS','Shortstop']
+  ];
+  if(is10){
+    posKeys = posKeys.concat([['LF','Left Field'],['LCF','Left-Center'],['RCF','Right-Center'],['RF','Right Field']]);
+  } else {
+    posKeys = posKeys.concat([['LF','Left Field'],['CF','Center Field'],['RF','Right Field']]);
+  }
 
-  +'<div class="footer">GameDay &bull; '+t.name+' &bull; '+roster.length+' players on roster &bull; Printed '+dateStr+'</div>'
-  +'<div class="no-print" style="text-align:center;padding:16px;">'
-    +'<button onclick="window.print()" style="padding:10px 28px;font-size:15px;font-weight:700;background:#0f2044;color:#fff;border:none;border-radius:8px;cursor:pointer;margin-right:10px;">&#x1F5A8; Print</button>'
-    +'<button onclick="window.close()" style="padding:10px 20px;font-size:15px;font-weight:700;background:#f0f0f0;color:#333;border:none;border-radius:8px;cursor:pointer;">Close</button>'
-  +'</div>'
-  +'</body></html>';
+  html += '<div class="section-head">Position Key</div><div class="key-grid">';
+  posKeys.forEach(function(k){ html += '<div class="key-item"><span class="key-code">'+k[0]+'</span><span>'+k[1]+'</span></div>'; });
+  html += '</div>';
+
+  html += '<div class="footer">GameDay &bull; '+t.name+' &bull; Printed '+dateStr+'</div>'
+    +'<div class="no-print" style="text-align:center;padding:14px;">'
+      +'<button onclick="window.print()" style="padding:10px 28px;font-size:15px;font-weight:700;background:#0f2044;color:#fff;border:none;border-radius:8px;cursor:pointer;margin-right:10px;">&#x1F5A8; Print</button>'
+      +'<button onclick="window.close()" style="padding:10px 20px;font-size:15px;font-weight:700;background:#f0f0f0;color:#333;border:none;border-radius:8px;cursor:pointer;">Close</button>'
+    +'</div>'
+    +'</body></html>';
 
   return html;
 }
