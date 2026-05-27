@@ -1466,17 +1466,17 @@ function buildBlankFormHTML(){
   // ── Position key ──
   var posKeys = [
     ['P','Pitcher'],['C','Catcher'],['B','Bench'],
-    ['1B','1st Base'],['2B','2nd Base'],['3B','3rd Base'],['SS','Shortstop']
+    ['1B','1st Base'],['2B','2nd Base'],['3B','3rd Base'],['SS','Shortstop'],
+    ['LF','Left Field'],['CF','Center Field'],['RF','Right Field'],
+    ['LCF','Left-Center Field'],['RCF','Right-Center Field']
   ];
-  if(is10){
-    posKeys = posKeys.concat([['LF','Left Field'],['LCF','Left-Center'],['RCF','Right-Center'],['RF','Right Field']]);
-  } else {
-    posKeys = posKeys.concat([['LF','Left Field'],['CF','Center Field'],['RF','Right Field']]);
-  }
 
   html += '<div class="section-head">Position Key</div><div class="key-grid">';
   posKeys.forEach(function(k){ html += '<div class="key-item"><span class="key-code">'+k[0]+'</span><span>'+k[1]+'</span></div>'; });
-  html += '</div>';
+  html += '</div>'
+    +'<div style="font-size:9px;color:#888;padding:3px 8px 6px;font-style:italic;">'
+    +'9 players: LF / CF / RF outfield &nbsp;&bull;&nbsp; 10 players: LF / LCF / RCF / RF outfield'
+    +'</div>';
 
   html += '<div class="footer">GameDay &bull; '+t.name+' &bull; Printed '+dateStr+'</div>'
     +'<div class="no-print" style="text-align:center;padding:14px;">'
