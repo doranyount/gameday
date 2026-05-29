@@ -1337,13 +1337,42 @@ function buildPrintHTML(){
       +'</tr>';
   }).join('');
 
+  var is10 = fieldSize === 10;
+
+  // Roster cheat sheet
+  var rosterHTML = '<div class="section-head">Roster &mdash; '+t.roster.length+' players</div>'
+    +'<div class="roster-grid">';
+  t.roster.forEach(function(p){ rosterHTML += '<div class="roster-name">'+fn(p)+'</div>'; });
+  rosterHTML += '</div>';
+
+  // Position key
+  var posKeys = [
+    ['P','Pitcher'],['C','Catcher'],['B','Bench'],
+    ['1B','1st Base'],['2B','2nd Base'],['3B','3rd Base'],['SS','Shortstop'],
+    ['LF','Left Field'],['CF','Center Field'],['RF','Right Field'],
+    ['LCF','Left-Center Field'],['RCF','Right-Center Field']
+  ];
+  var keyHTML = '<div class="section-head">Position Key</div><div class="key-grid">';
+  posKeys.forEach(function(k){ keyHTML += '<div class="key-item"><span class="key-code">'+k[0]+'</span><span>'+k[1]+'</span></div>'; });
+  keyHTML += '</div>'
+    +'<div style="font-size:9px;color:#888;padding:3px 8px 6px;font-style:italic;">'
+    +'9 players: LF / CF / RF &nbsp;&bull;&nbsp; 10 players: LF / LCF / RCF / RF'
+    +'</div>';
+
   var body = ''
+    // Header
     +'<div class="top">'
       +'<div>'
         +'<div class="title">&#x26BE; '+esc(t.name)+' &mdash; Game Lineup</div>'
-        +'<div class="subtitle">'+dateStr+' &nbsp;&bull;&nbsp; '+(withC?'Player catching':'Coach catching')+(fieldSize===10?' &nbsp;&bull;&nbsp; 10-player field':'')+'</div>'
+        +'<div class="subtitle">'+(withC?'Player catching':'Coach catching')+(is10?' &nbsp;&bull;&nbsp; 10-player field':'')+'</div>'
+      +'</div>'
+      +'<div>'
+        +'<div class="meta-line"><span class="meta-label">Date:</span><span class="uline"></span></div>'
+        +'<div class="meta-line"><span class="meta-label">Opponent:</span><span class="uline"></span></div>'
+        +'<div class="meta-line"><span class="meta-label">&#x25A1;&nbsp;Home &nbsp;&nbsp; &#x25A1;&nbsp;Away</span></div>'
       +'</div>'
     +'</div>'
+    // Lineup table
     +'<table><thead><tr>'
       +'<th class="center" style="width:28px;">#</th>'
       +'<th class="left" style="width:34%;">Player</th>'
@@ -1352,7 +1381,10 @@ function buildPrintHTML(){
       +'<th class="center">Inning 3</th>'
       +'<th class="center">Inning 4</th>'
     +'</tr></thead><tbody>'+rows+'</tbody></table>'
-    +'<div class="ftr">GameDay &bull; '+n+' active players &bull; '+dateStr+'</div>';
+    // Roster + key
+    + rosterHTML
+    + keyHTML
+    +'<div class="ftr">GameDay &bull; '+n+' active players &bull; Printed '+dateStr+'</div>';
 
   return '<!DOCTYPE html><html><head><meta charset="UTF-8">'
     +'<title>'+esc(t.name)+' Lineup</title>'
@@ -1381,6 +1413,15 @@ function buildPrintHTML(){
     +'.pos-1b,.pos-2b,.pos-3b,.pos-ss{color:#6b2d0e;}'
     +'.pos-lf,.pos-cf,.pos-rf,.pos-lcf,.pos-rcf{color:#1a5c2a;}'
     +'.ftr{text-align:center;font-size:10px;color:#aaa;margin-top:8px;border-top:1px solid #eee;padding-top:4px;}'
+    +'.section-head{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin:10px 0 4px;padding:4px 8px;background:#000;color:#fff;}'
+    +'.roster-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px 16px;padding:8px;border:1px solid #bbb;margin-bottom:6px;}'
+    +'.roster-name{font-size:11px;padding:2px 0;border-bottom:1px dotted #ddd;}'
+    +'.key-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px 8px;padding:8px;border:1px solid #bbb;margin-bottom:4px;}'
+    +'.key-item{font-size:10px;display:flex;gap:5px;align-items:baseline;}'
+    +'.key-code{font-weight:800;min-width:28px;}'
+    +'.meta-line{display:flex;align-items:center;gap:6px;justify-content:flex-end;margin-bottom:3px;}'
+    +'.meta-label{font-weight:700;font-size:11px;}'
+    +'.uline{border-bottom:1px solid #999;min-width:110px;display:inline-block;height:13px;}'
     +'</style>'
     +'</head><body>'
     +'<div class="no-print" style="text-align:center;padding:10px 0 14px;border-bottom:2px solid #000;margin-bottom:12px;">'
